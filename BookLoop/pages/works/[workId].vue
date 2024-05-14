@@ -7,6 +7,9 @@
 
 <script setup>
 const { workId } = useRoute().params
+definePageMeta({
+    layout: 'works'
+})
 </script>
 
 <style lang="scss" scoped>
