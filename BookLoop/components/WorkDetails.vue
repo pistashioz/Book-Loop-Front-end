@@ -5,7 +5,7 @@
     <div class="lg:w-4/5 mx-auto flex flex-wrap">
       <img alt="ecommerce" class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200" v-if="work.coverImage" :src="work.coverImage">
       <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-        <h2 class="text-sm title-font text-gray-500 tracking-widest"v-if="work.author">{{ work.author }}</h2>
+        <h2 class="text-m title-font text-gray-500 tracking-widest"v-if="work.author">{{ work.author }}</h2>
         <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{{ work.originalTitle }}</h1>
         <div class="flex mb-4">
           <span class="flex items-center">
@@ -37,7 +37,11 @@
   </div>
   
 </section>
+<div class="grid grid-cols-1 gap-8">
+          <LiteraryReviews :review="review" v-if="work && work.reviews.length > 0" :work="work" />
+        </div>
 <Editions :editions="work.editions" v-if="work && work.editions.length > 0" :work="work"/> 
+
     </div>
 </template>
 

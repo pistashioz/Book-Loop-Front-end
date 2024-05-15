@@ -15,7 +15,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchWorkById, fetchEditionsByWorkId, fetchAuthorByWorkId } from '~/composables/api/workService';
+import { fetchWorkById, fetchEditionsByWorkId, fetchAuthorByWorkId, fetchLiteraryReviews } from '~/composables/api/workService';
 import WorkDetails from '~/components/WorkDetails.vue';
 
 const route = useRoute();
@@ -23,7 +23,6 @@ const workId = route.params.workId;
 
 const work = ref(null);
 const isLoading = ref(true);
-
 onMounted(async () => {
   try {
     const workData = await fetchWorkById(workId);
@@ -32,16 +31,25 @@ onMounted(async () => {
 
       const authorData = await fetchAuthorByWorkId(workId);
       if (authorData.success) {
+        work.value.personId = authorData.data.personId
         work.value.author = authorData.data.person.personName;
       } else {
         console.error("Error fetching author data:", authorData.error);
+      }
+      const reviewsData = await fetchLiteraryReviews(workId)
+      console.log('reviews data',reviewsData)
+      if (reviewsData.success) {
+        work.value.reviews = reviewsData.data
+        console.log('REVIEWS:',work.value.reviews)
+      }
+      else{
+        console.log("Error fetching reviews", reviewsData.error)
       }
 
       const editionsData = await fetchEditionsByWorkId(workId);
       if (editionsData.success) {
         work.value.editions = editionsData.editions;
 
-        // If no coverImage in workData, use the first edition's
         if (!work.value.coverImage && editionsData.editions.length > 0) {
           work.value.coverImage = editionsData.editions[0].coverImage;
         }

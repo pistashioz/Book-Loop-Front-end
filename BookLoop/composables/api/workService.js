@@ -38,3 +38,12 @@ export async function fetchAuthorByWorkId(workId) {
     throw error;
   }
 }
+
+export async function fetchLiteraryReviews(workId){
+  try {
+    const response = await axios.get(`${baseURL}/works/${workId}/reviews`);
+    return response.data; 
+  } catch (error) {
+    throw error;
+  }
+}
