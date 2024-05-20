@@ -47,3 +47,12 @@ export async function fetchLiteraryReviews(workId){
     throw error;
   }
 }
+
+export async function fetchBookGenres(workId){
+  try {
+    const response = await axios.get(`${baseURL}/book-genres/${workId}`);
+    return response.data; 
+  } catch (error) {
+    throw error;
+  }
+}

@@ -15,7 +15,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchWorkById, fetchEditionsByWorkId, fetchAuthorByWorkId, fetchLiteraryReviews } from '~/composables/api/workService';
+import { fetchWorkById, fetchEditionsByWorkId, fetchAuthorByWorkId, fetchLiteraryReviews, fetchBookGenres } from '~/composables/api/workService';
 import WorkDetails from '~/components/WorkDetails.vue';
 
 const route = useRoute();
@@ -45,6 +45,14 @@ onMounted(async () => {
       else{
         console.log("Error fetching reviews", reviewsData.error)
       }
+      const bookGenresData = await fetchBookGenres(workId)
+      if (bookGenresData.success){
+        work.value.genres = bookGenresData.data
+      }
+      else{
+        console.log('Error fetching work genres data', bookGenresData.error)
+      }
+
 
       const editionsData = await fetchEditionsByWorkId(workId);
       if (editionsData.success) {

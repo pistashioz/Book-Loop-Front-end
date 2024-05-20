@@ -34,7 +34,12 @@
         <p class="leading-relaxed" v-if="work.editions && work.editions.length > 0">
             {{ work.editions[0].synopsis }}
         </p>
-
+        <br>
+        <div class="inline-flex rounded-md shadow-sm" v-for="genre in work.genres" :key="genre.genreId">
+  <button class="py-2 px-4 shadow-md no-underline rounded-full bg-blue text-white font-sans font-semibold text-sm border-blue btn-primary hover:text-white hover:bg-blue-light focus:outline-none active:shadow-none mr-2 my-2">
+    {{genre.genre.genreName}}
+  </button>
+</div>
       </div>
     </div>
   </div>
@@ -53,5 +58,7 @@ const {work} = defineProps(['work'])
 </script>
 
 <style scoped>
-
+button{
+  background-color: #7DBB7D
+}
 </style>
