@@ -56,30 +56,26 @@ async function login() {
   error.value = null; // Reset error message
   try {
     // Make a POST request to the backend login endpoint
-    const response = await fetch(`${config.public.apiBaseUrl}/users/login`, {
+    const { data, error: fetchError } = await useFetch(`${config.public.apiBaseUrl}/users/login`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json' // Specify JSON content type
-      },
-      body: JSON.stringify({ usernameOrEmail: usernameOrEmail.value, password: password.value }) // Send request body as JSON
+      body: { usernameOrEmail: usernameOrEmail.value, password: password.value } // Send request body as JSON
     });
 
-    // Parse the response JSON
-    const data = await response.json();
-
-    if (!response.ok) {
-      // If response is not OK, display error message from the backend
-      error.value = data.message || 'Login failed';
+    // Check if there was an error in the response
+    if (fetchError.value) {
+      // If there's an error, set the error message from the backend response
+      error.value = fetchError.value.data.message || 'Login failed';
       return;
     }
 
-    if (data) {
+    if (data.value) {
       // Set user data in Pinia store if login is successful
-      userStore.setUser(data.user, data.accessToken);
-      // router.push('/'); // Redirect to specfic page after login
+      userStore.setUser(data.value.user, data.value.accessToken);
+      // Redirect to the specific page after login
+      router.push('/works');
     }
   } catch (err) {
-    // Catch any errors and set the error message
+    // Catch any other errors and set the error message
     error.value = err.message || 'Login failed';
   }
 }
