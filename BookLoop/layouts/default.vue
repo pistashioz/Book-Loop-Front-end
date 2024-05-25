@@ -1,16 +1,14 @@
 <template>
   <div>
     <Navbar />  
-    <Nuxt /> 
-  </div>
-  <div>
-    <slot />
+    <NuxtPage />
   </div>
   </template>
 <script>
-import Navbar from '../components/Navbar.vue'; 
+import Navbar from '../components/Navbar.vue';
 
 export default {
+  name: 'DefaultLayout',
   components: {
     Navbar
   }

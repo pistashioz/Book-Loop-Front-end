@@ -1,4 +1,5 @@
 <template>
+
 <section class="py-24 relative">
         <div class="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
             <div class="grid grid-cols-12 py-6 border-y border-gray-200 mb-11">
@@ -7,6 +8,7 @@
                         <span class="lg:hidden font-manrope font-semibold text-2xl leading-9 text-black text-center"> &
                             Rating</span>
                     </h5>
+                    
                 </div>
                 <div class="col-span-12 lg:col-span-2 max-lg:hidden">
                     <h5 class="font-manrope font-semibold text-2xl leading-9 text-black text-center">Rating</h5>

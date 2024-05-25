@@ -1,8 +1,7 @@
 import axios from 'axios';
-const baseURL = 'http://127.0.0.1:3360'; 
 export const fetchUserDetails = async () => {
   try {
-    const response = await axios.get(`${baseURL}/users`);
+    const response = await axios.get(`${config.public.apiBaseUrl}/users`);
     console.log(response)
     return response.data;
   } catch (error) {

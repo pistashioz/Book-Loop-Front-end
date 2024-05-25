@@ -44,13 +44,12 @@
 
 <script setup>
 import { useUserStore } from '~/composables/stores/user.js';
-import { storeToRefs } from 'pinia'; 
+import { storeToRefs } from 'pinia';
 
 const userStore = useUserStore();
-const { user } = storeToRefs(userStore); 
+const { user } = storeToRefs(userStore);
 
 async function logout() {
   await userStore.logout();
 }
 </script>
-

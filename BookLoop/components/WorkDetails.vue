@@ -1,10 +1,10 @@
 <template>
     <div>
-        <section class="text-gray-700 body-font overflow-hidden bg-white" v-if="work">
-  <div class="container px-5 py-24 mx-auto">
-    <div class="lg:w-4/5 mx-auto flex flex-wrap">
-      <img alt="ecommerce" class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200" v-if="work.coverImage" :src="work.coverImage">
-      <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+      <section class="text-gray-700 body-font overflow-hidden bg-white" v-if="work">
+      <div class="container px-5 py-24 mx-auto">
+        <div class="lg:w-4/5 mx-auto flex flex-wrap">
+          <img alt="ecommerce" class="lg:w-1/2 w-full object-cover object-center border border-gray-200" v-if="work.coverImage" :src="work.coverImage">
+          <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
         <h2 class="text-m title-font text-gray-500 tracking-widest"v-if="work.author">{{ work.author }}</h2>
         <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{{ work.originalTitle }}</h1>
         <div class="flex mb-4">
@@ -28,6 +28,7 @@
           </span>
           <span v-else>
             <span class="text-gray-600 ml-3">{{work.reviews.length}} Reviews</span>
+            
           </span>
 
         </div>
@@ -45,20 +46,63 @@
   </div>
   
 </section>
+<button @click="toggleReviewForm" class="py-2 px-4 bg-blue-500 text-white rounded-md">
+      {{ showReviewForm ? 'Cancel Review' : 'Add Review' }}
+    </button>
+    <div v-if="showReviewForm">
+      <textarea v-model="newReviewText" rows="4" cols="50" placeholder="Enter your review"></textarea>
+      <button @click="submitReview" class="py-2 px-4 bg-blue-500 text-white rounded-md">Submit Review</button>
+    </div>
 <div class="grid grid-cols-1 gap-8">
           <LiteraryReviews :review="review" v-if="work && work.reviews.length > 0" :work="work" />
         </div>
 <Editions :editions="work.editions" v-if="work && work.editions.length > 0" :work="work"/> 
-
     </div>
 </template>
 
 <script setup>
-const {work} = defineProps(['work'])
+import { ref } from 'vue';
+import LiteraryReviews from './LiteraryReviews.vue';
+import Editions from './Editions.vue';
+import { addLiteraryReview } from '~/composables/api/workService';
+const { work } = defineProps(['work']);
+const showReviewForm = ref(false);
+const newReviewText = ref('');
+
+const toggleReviewForm = () => {
+  showReviewForm.value = !showReviewForm.value;
+};
+
+const submitReview = async () => {
+  try {
+    const reviewData = {
+      userId: 2,
+      LiteraryReview: newReviewText.value, 
+      literaryRating: 5,
+    };
+    const response = await addLiteraryReview(work.workId, reviewData);
+    
+    console.log('response: ', response)
+    if (response.success) {
+      if (!work.value.reviews) {
+        work.value.reviews = [];
+      }
+      work.value.reviews.push(response.data);
+      console.log('response data: ',response.data)
+      newReviewText.value = ''; 
+      showReviewForm.value = false; 
+    } else {
+      console.error('Failed to add review', response.error);
+    }
+  } catch (error) {
+    console.error('An unexpected error occurred:', error);
+  }
+};
 </script>
 
 <style scoped>
 button{
   background-color: #7DBB7D
 }
+
 </style>

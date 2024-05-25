@@ -1,11 +1,12 @@
-import axios from 'axios';
-
-const baseURL = 'http://127.0.0.1:3360'; 
+const config = useRuntimeConfig()
 
 export async function fetchAuthors(authorId) {
   try {
-    const response = await axios.get(`${baseURL}/authors/${authorId}`);
-    return response.data;
+    const { data, error } = await useFetch(`${config.public.apiBaseUrl}/authors/${authorId}`);
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value;
   } catch (error) {
     throw error;
   }
