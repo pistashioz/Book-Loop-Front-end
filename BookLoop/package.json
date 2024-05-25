@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/dotenv": "^1.4.2",
     "@pinia/nuxt": "^0.5.1",
     "axios": "^1.6.8",
     "nuxt": "^3.11.2",
@@ -19,8 +20,5 @@
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.0"
-  },
-  "overrides": {
-    "vue": "latest"
   }
 }
