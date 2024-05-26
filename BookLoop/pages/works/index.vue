@@ -19,15 +19,15 @@
   
   <script setup>
   import { ref, onMounted } from 'vue';
-  import { fetchWorks, fetchEditionsByWorkId, fetchAuthorByWorkId } from '~/composables/api/workService';
+  // import { fetchWorks, fetchEditionsByWorkId, fetchAuthorByWorkId } from '~/composables/api/workService';
   import WorkCard from '~/components/WorkCard.vue';
   
   const works = ref([]);
   const isLoading = ref(true);
   
-  onMounted(async () => {
+/*   onMounted(async () => {
     try {
-      const data = await fetchWorks();
+      // const data = await fetchWorks();
       if (data.success) {
         // fetch editions for each work
         for (const work of data.data) {
@@ -55,7 +55,7 @@
     } finally {
       isLoading.value = false;
     }
-  });
+  }); */
   </script>
   
   

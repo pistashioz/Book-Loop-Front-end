@@ -1,18 +1,32 @@
 import { defineStore } from 'pinia';
 
+
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
-    accessToken: null,
   }),
   actions: {
-    setUser(user, accessToken) {
+    setUser(user) {
       this.user = user;
-      this.accessToken = accessToken;
     },
     clearUser() {
       this.user = null;
-      this.accessToken = null;
     },
+    async logout() {
+      const config = useRuntimeConfig();
+      try {
+        const { error } = await useFetch(`${config.public.apiBaseUrl}/users/logout`, {
+          method: 'POST',
+          credentials: 'include'  // Ensure cookies are sent
+        });
+        if (error.value) {
+          throw new Error(error.value.message);
+        }
+        this.clearUser();
+      } catch (err) {
+        console.error('Logout failed:', err.message || 'Unknown error');
+      }
+    },    
   },
 });
+

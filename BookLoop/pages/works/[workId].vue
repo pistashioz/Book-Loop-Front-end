@@ -15,7 +15,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchWorkById, fetchEditionsByWorkId, fetchAuthorByWorkId, fetchLiteraryReviews, fetchBookGenres } from '~/composables/api/workService';
+// import { fetchWorkById, fetchEditionsByWorkId, fetchAuthorByWorkId, fetchLiteraryReviews, fetchBookGenres } from '~/composables/api/workService';
 import WorkDetails from '~/components/WorkDetails.vue';
 
 const route = useRoute();

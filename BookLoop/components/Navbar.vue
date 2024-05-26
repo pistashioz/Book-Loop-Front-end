@@ -16,11 +16,9 @@
             <li class="font-semibold text-gray-700">
               <NuxtLink to="/works">Works</NuxtLink>
             </li>
-
             <li v-if="!user" class="font-semibold text-gray-700">
               <NuxtLink to="/login">Login</NuxtLink>
             </li>
-
             <template v-else>
               <li class="font-semibold text-gray-700">
                 <NuxtLink to="/wishlist">Wishlist</NuxtLink>
@@ -43,14 +41,17 @@
 </template>
 
 <script setup>
-import { useUserStore } from '~/composables/stores/user.js';
+import { useUserStore } from '~/composables/stores/user';
 import { storeToRefs } from 'pinia'; 
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore); 
+const router = useRouter();
 
 async function logout() {
   await userStore.logout();
+  // Redirect to the landing page after logout
+  router.push('/');
 }
 </script>
-
