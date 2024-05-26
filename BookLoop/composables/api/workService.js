@@ -48,6 +48,7 @@ export async function fetchAuthorByWorkId(workId) {
 export async function fetchLiteraryReviews(workId) {
   try {
     const { data, error } = await useFetch(`${config.public.apiBaseUrl}/works/${workId}/reviews`);
+    console.log('reviews:', data)
     if (error.value) {
       throw error.value;
     }
@@ -69,20 +70,23 @@ export async function fetchBookGenres(workId) {
 }
 export async function addLiteraryReview(workId, reviewData) {
   try {
-    const response = await fetch(`${config.public.apiBaseUrl}/works/${workId}/reviews`, {
+    console.log(JSON.stringify(reviewData))
+    const response = await useFetch(`${config.public.apiBaseUrl}/works/${workId}/reviews`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify(reviewData),
     });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const data = await response.json();
-    return data;
+    return response.data; 
+  } catch (error) {
+    throw error;
+  }
+}
+export async function addWork(workData){
+  try{
+    const response = await useFetch(`${config.public.apiBaseUrl}/works`, {
+      method: 'POST',
+      body:JSON.stringify(workData)
+    })
+    return response.data;
   } catch (error) {
     throw error;
   }

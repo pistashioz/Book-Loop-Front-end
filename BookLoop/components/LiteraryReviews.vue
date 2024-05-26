@@ -89,7 +89,7 @@
                                         </defs>
                                     </svg>
                                 </div>
-                                <p class="font-normal text-base leading-7 text-gray-400 mb-4 lg:pr-8">{{ review.LiteraryReview }}</p>
+                                <p class="font-normal text-base leading-7 text-gray-400 mb-4 lg:pr-8">{{ review.literaryReview }}</p>
                                 <div class="flex items-center justify-between">
                                     <div class="cursor-pointers flex items-center gap-2">
                                         <a href="javascript:;" class="font-semibold text-lg cursor-pointer leading-8 text-indigo-600 whitespace-nowrap">
@@ -196,6 +196,7 @@
       required: true
   }
   });
+
   
   </script>
   

@@ -72,7 +72,6 @@ const newReviewText = ref('');
 const toggleReviewForm = () => {
   showReviewForm.value = !showReviewForm.value;
 };
-
 const submitReview = async () => {
   try {
     const reviewData = {
@@ -81,18 +80,21 @@ const submitReview = async () => {
       literaryRating: 5,
     };
     const response = await addLiteraryReview(work.workId, reviewData);
-    
-    console.log('response: ', response)
-    if (response.success) {
-      if (!work.value.reviews) {
-        work.value.reviews = [];
+    console.log('Response from API:', response);
+
+    // Access the data object that was posted
+    const postedData = response._rawValue.data;
+    console.log('Posted data:', postedData);
+
+    if (response._rawValue.success) {
+      if (!work.reviews) {
+        work.reviews = [];
       }
-      work.value.reviews.push(response.data);
-      console.log('response data: ',response.data)
+      work.reviews.push(postedData); 
       newReviewText.value = ''; 
       showReviewForm.value = false; 
     } else {
-      console.error('Failed to add review', response.error);
+      console.error('Failed to add review', response._rawValue.error);
     }
   } catch (error) {
     console.error('An unexpected error occurred:', error);

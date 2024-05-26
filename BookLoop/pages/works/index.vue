@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Hola</h1>
+    <Navbar/>
     <div class="text-center" v-if="isLoading">
       <div role="status">
         <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -11,27 +11,35 @@
       </div>
     </div>
     <div v-else class="bg-white">
+      <div class="save-btn">
+    <button @click="showModal = true">Save</button>
+</div>
+<SavedModal v-show="showModal" @close-modal="showModal = false" class="modal-container" />
+
       <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+
         <WorkCard v-for="w in works" :key="w.workId" :work="w" :coverImage="w.coverImage" />
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
+import Navbar from '~/components/Navbar.vue';
+import SavedModal from '~/components/addWork.vue'
 import { ref, onMounted } from 'vue';
 import { fetchWorks, fetchEditionsByWorkId, fetchAuthorByWorkId } from '~/composables/api/workService';
 import WorkCard from '~/components/WorkCard.vue';
-
-const works = ref([]);
+const config = useRuntimeConfig(); 
 const isLoading = ref(true);
-
+const works = ref([]);
+const showModal = ref(false)
 onMounted(async () => {
   try {
-    const {data: work} = await fetchWorks();
-    console.log(work)
-    if (data.success) {
-      for (const work of data.data) {
+    const { data: fetchedWorks } = await fetchWorks();
+    if (fetchedWorks) {
+      for (const work of fetchedWorks) {
         try {
           const [editionsData, authorData] = await Promise.all([
             fetchEditionsByWorkId(work.workId),
@@ -52,9 +60,9 @@ onMounted(async () => {
           console.error('Error fetching editions or author data:', error);
         }
       }
-      works.value = data.data;
+      works.value = fetchedWorks; // Assign fetched works to works variable
     } else {
-      console.error('Error fetching data:', data.error);
+      console.error('Error fetching data:', fetchedWorks.error);
     }
   } catch (error) {
     console.error('An unexpected error occurred:', error);
@@ -62,7 +70,15 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
+
 definePageMeta({
   layout: 'works'
 })
 </script>
+
+
+<style>
+.modal-container {
+  z-index: 2; 
+}
+</style>
