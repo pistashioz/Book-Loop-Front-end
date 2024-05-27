@@ -103,14 +103,14 @@ const newEdition = async () => {
     }
     console.log('edition data: ',editionData)
     const response = await addEdition(props.workId, editionData);
-
+    console.log('response addEdition', response)
       console.log('yeee', response._rawValue.book)
       const newEditionData = response._rawValue.book
       console.log('new edition dataa',newEditionData)
       // Update reactively using push
-      console.log('workkk')
+      /*
       console.log(work)
-      work.value.bookEditions.push(newEditionData);
+      work.value.bookEditions.push(newEditionData);*/
 /*
           isbn.value = '';
           titleEdition.value = '';

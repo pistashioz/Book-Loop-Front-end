@@ -49,7 +49,7 @@
             <div class="mt-8">
               <h3 class="text-lg font-bold text-gray-800">About</h3>
               <ul class="space-y-3 list-disc mt-4 pl-4 text-sm text-gray-800">
-                    <p class="leading-relaxed" v-if="work.bookEditions && work.bookEditions.length > 0">{{ work.synopsis }}</p>
+                    <p class="leading-relaxed" v-if="work.bookEditions && work.bookEditions.length > 0">{{ work.bookEditions[0].synopsis }}</p>
               </ul>
             </div>
             <div class="mt-8">
@@ -125,6 +125,7 @@
         </div>
       </div>
     </div>
+    
     <div>
   
     <form class="max-w-md mx-auto mt-16 p-4 bg-white shadow rounded">
@@ -214,7 +215,7 @@
   </form>
   </div>
   <LiteraryReviews :review="review" v-if="work && work.reviews && work.reviews.length > 0" :work="work" />
-  <Editions :editions="work.bookEditions" v-if="work && work.bookEditions && work.bookEditions.length > 0" :work="work"/> 
+  <Editions :editions="work.editions" v-if="work && work.editions && work.editions.length > 0" :work="work"/> 
 </template>
 
 <script setup>

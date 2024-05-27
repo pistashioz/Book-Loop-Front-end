@@ -109,10 +109,10 @@ export async function addEdition(workId, editionData) {
         body: JSON.stringify(editionData),
       }
     );
-    console.log('response: ', response)
-    console.log('response data; ', response.data)
-    console.log('booook', response.data._rawValue)
-    console.log('booook', response.data._rawValue.book)
+    console.log('response response: ', response)
+    console.log('response response data; ', response.data)
+    console.log('booook raw value', response.data._rawValue)
+    console.log('booook book', response.data._rawValue.book)
     return response.data
   } catch (error) {
     throw error;
