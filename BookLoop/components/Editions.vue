@@ -1,6 +1,7 @@
 <template>
     <section class="text-gray-700 body-font overflow-hidden bg-white">
       <div class="p-1 flex flex-wrap items-center justify-center">
+        
         <div 
           class="flex-shrink-0 m-6 relative overflow-hidden rounded-lg max-w-xs shadow-lg group bg-edition" 
           v-for="edition in editions" 
@@ -31,6 +32,10 @@ const props = defineProps({
   editions: {
     type: Array,
     required: true
+  },
+  bookEditions: {
+    type: Array,
+    required: false
   },
   work: {
       type: Object,

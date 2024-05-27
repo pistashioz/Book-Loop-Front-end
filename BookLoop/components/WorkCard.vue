@@ -15,12 +15,12 @@
             </h3>
             <p class="mt-1 text-sm text-gray-500" v-if="work.author">{{ work.author }}</p>
           </div>
-          <button  class="text-sm font-medium text-gray-900" @click="openAddEditionModal(work.workId)">Add Edition</button> 
+          <button  class="text-sm font-medium text-gray-900" @click="openAddEditionModal(work)">Add Edition</button> 
         </div>
       </div>
 
 
-<SavedModal v-if="showModal" @close-modal="showModal = false" :workId="selectedWorkId" />
+<SavedModal v-if="showModal" @close-modal="showModal = false" :work="selectedWorkId"  @edition-added="handleEditionAdded"/>
     
 
 
@@ -37,8 +37,12 @@ const props = defineProps({
 const showModal = ref(false);
 const selectedWorkId = ref(null); 
 
-const openAddEditionModal = (workId) => {
-  selectedWorkId.value = workId;
+const openAddEditionModal = (work) => {
+  selectedWorkId.value = work;
   showModal.value = true;
+};
+
+const handleEditionAdded = (newEdition) => {
+  selectedWork.value.bookEditions.push(newEdition);
 };
 </script>

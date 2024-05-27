@@ -11,11 +11,8 @@
       </div>
     </div>
     <div v-else class="bg-white">
-      <div class="save-btn">
-    <button @click="showModal = true">Add Work</button>
-</div>
-<SavedModal v-show="showModal" @close-modal="showModal = false" class="modal-container" />
 
+      <SavedModal @click="showModal = true" class="modal-container mx-auto max-w-sm px-4 py-1 lg:max-w-7xl" />
 <div class="bg-white">
   <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
 

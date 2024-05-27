@@ -81,9 +81,9 @@ const synopsis = ref('');
 
 const publicationDate = ref('')
 const props = defineProps({
-  workId: [Number], 
+  work: Object, 
 });
-
+console.log('props workkk',props.work)
 const coverImage = ref('');
 console.log('cover image',coverImage.value)
 console.log(editionType.value)
@@ -102,11 +102,16 @@ const newEdition = async () => {
         publicationDate: publicationDate.value,
     }
     console.log('edition data: ',editionData)
-    const response = await addEdition(props.workId, editionData);
+    const response = await addEdition(props.work.workId, editionData);
     console.log('response addEdition', response)
       console.log('yeee', response._rawValue.book)
       const newEditionData = response._rawValue.book
       console.log('new edition dataa',newEditionData)
+      props.$emit('edition-added', newEditionData);
+      console.log('props', props)
+      console.log('props work', props.work)
+    // Close the modal
+    props.$emit('close-modal');
       // Update reactively using push
       /*
       console.log(work)
