@@ -66,7 +66,9 @@ async function login() {
 
     if (data) {
       // Set user data in Pinia store if login is successful
-      userStore.setUser(data.user, data.accessToken);
+      userStore.setUser(data.user);
+      console.log(data.user);
+      console.log(userStore.user);
       // Redirect to the specific page after login
       router.push('/');
     }

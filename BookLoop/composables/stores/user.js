@@ -3,14 +3,18 @@ import api from '~/utils/api';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    user: null,
+    userId: null,
+    isAdmin: null,
   }),
   actions: {
     setUser(user) {
-      this.user = user;
+      this.userId = user.id;
+      this.isAdmin = user.isAdmin;
     },
     clearUser() {
-      this.user = null;
+      this.userId = null;
+      this.isAdmin = null;
+      localStorage.removeItem('userStore'); // Remove userStore from localStorage
     },
     async logout() {
       try {
@@ -21,5 +25,10 @@ export const useUserStore = defineStore('user', {
         console.error('Logout failed:', err.response?.data?.message || 'Unknown error');
       }
     },
+  },
+  persist: {
+    storage: persistedState.localStorage, 
+    key: 'userStore', 
+    paths: ['userId', 'isAdmin'],
   },
 });

@@ -13,10 +13,10 @@
             <input class="ml-2 outline-none bg-transparent font-" type="text" name="search" id="search" placeholder="Search..." />
           </div>
           <ul class="flex items-center space-x-6">
-            <li class="font-semibold text-gray-700">
+            <li v-if="isAdmin" class="font-semibold text-gray-700">
               <NuxtLink to="/works">Works</NuxtLink>
             </li>
-            <li v-if="!user" class="font-semibold text-gray-700">
+            <li v-if="!userId" class="font-semibold text-gray-700">
               <NuxtLink to="/login">Login</NuxtLink>
             </li>
             <template v-else>
@@ -46,7 +46,7 @@ import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
-const { user } = storeToRefs(userStore); 
+const { userId, isAdmin } = storeToRefs(userStore); 
 const router = useRouter();
 
 async function logout() {
