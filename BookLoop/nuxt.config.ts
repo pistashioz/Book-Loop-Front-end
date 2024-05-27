@@ -1,11 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  plugins: [
-    '~/plugins/flowbite.js'
-  ],
   ssr: true,
-  css: ['~/assets/css/main.css', 'flowbite/dist/flowbite.min.css'],
+  css: ['~/assets/css/main.css'],
   postcss: {
     plugins: {
       tailwindcss: {},
