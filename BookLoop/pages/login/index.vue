@@ -38,7 +38,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '~/composables/stores/user';
-
+import api from '~/utils/api';
 
 // Router for navigation
 const router = useRouter();
@@ -53,37 +53,26 @@ const password = ref('');
 const error = ref(null);
 
 // Login function to handle form submission
-async function login(event) {
+async function login() {
   error.value = null; // Reset error message
-  // let accessToken = getCookie(event, 'accessToken');
-  console.log(event);
   try {
     // Make a POST request to the backend login endpoint
-    const { data, error: fetchError } = await useFetch(`${config.public.apiBaseUrl}/users/login`, {
-      method: 'POST',
-      body: { usernameOrEmail: usernameOrEmail.value, password: password.value },
-      credentials: 'include' // Include credentials (cookies) with the request
+    const response = await api.post('/users/login', {
+      usernameOrEmail: usernameOrEmail.value,
+      password: password.value
     });
-    
-    
-    // Check if there was an error in the response
-    if (fetchError.value) {
-      // If there's an error, set the error message from the backend response
-      error.value = fetchError.value.data.message || 'Login failed';
-      return;
-    }
-    
-    if (data.value) {
+
+    const data = response.data;
+
+    if (data) {
       // Set user data in Pinia store if login is successful
-      userStore.setUser(data.value.user, data.value.accessToken);
-      // Log user from userStore
-      console.log(userStore.user);
+      userStore.setUser(data.user, data.accessToken);
       // Redirect to the specific page after login
-      router.push('/works');
+      router.push('/');
     }
   } catch (err) {
     // Catch any other errors and set the error message
-    error.value = err.message || 'Login failed';
+    error.value = err.response?.data?.message || 'Login failed';
   }
 }
 </script>

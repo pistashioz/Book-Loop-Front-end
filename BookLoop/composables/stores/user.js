@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-
+import api from '~/utils/api';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -13,20 +13,13 @@ export const useUserStore = defineStore('user', {
       this.user = null;
     },
     async logout() {
-      const config = useRuntimeConfig();
       try {
-        const { error } = await useFetch(`${config.public.apiBaseUrl}/users/logout`, {
-          method: 'POST',
-          credentials: 'include'  // Ensure cookies are sent
-        });
-        if (error.value) {
-          throw new Error(error.value.message);
-        }
+        // Make a POST request to the backend logout endpoint
+        await api.post('/users/logout');
         this.clearUser();
       } catch (err) {
-        console.error('Logout failed:', err.message || 'Unknown error');
+        console.error('Logout failed:', err.response?.data?.message || 'Unknown error');
       }
-    },    
+    },
   },
 });
-
