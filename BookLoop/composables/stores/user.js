@@ -12,8 +12,7 @@ export const useUserStore = defineStore('user', {
       this.isAdmin = user.isAdmin;
     },
     clearUser() {
-      this.userId = null;
-      this.isAdmin = null;
+      this.$reset(); // Reset the state to its initial value
       localStorage.removeItem('userStore'); // Remove userStore from localStorage
     },
     async logout() {
