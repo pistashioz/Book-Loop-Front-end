@@ -61,6 +61,7 @@ onMounted(async () => {
 
         if (!work.value.coverImage && editionsData.editions.length > 0) {
           work.value.coverImage = editionsData.editions[0].coverImage;
+          work.value.synopsis = editionsData.editions[0].synopsis;
         }
       } else {
         console.error("Error fetching editions data:", editionsData.error);

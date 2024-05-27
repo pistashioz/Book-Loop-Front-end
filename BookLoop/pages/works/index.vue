@@ -12,14 +12,18 @@
     </div>
     <div v-else class="bg-white">
       <div class="save-btn">
-    <button @click="showModal = true">Save</button>
+    <button @click="showModal = true">Add Work</button>
 </div>
 <SavedModal v-show="showModal" @close-modal="showModal = false" class="modal-container" />
 
-      <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+<div class="bg-white">
+  <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
 
+    <div class="mt-2 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
         <WorkCard v-for="w in works" :key="w.workId" :work="w" :coverImage="w.coverImage" />
       </div>
+    </div>
+</div>
     </div>
   </div>
 </template>
@@ -51,6 +55,7 @@ onMounted(async () => {
             );
             if (englishEditions.length > 0) {
               work.coverImage = englishEditions[0].coverImage;
+              work.synopsis = englishEditions[0].synopsis;
             }
           }
           if (authorData.success) {
