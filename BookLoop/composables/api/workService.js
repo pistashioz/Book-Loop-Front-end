@@ -1,8 +1,10 @@
-import api from '~/utils/api';
+// composables/api/workService.js
+const { $api } = useNuxtApp();
 
 export async function fetchWorks() {
+
   try {
-    const response = await api.get('/works');
+    const response = await $api.get('/works');
     return response.data;
   } catch (error) {
     throw error;
@@ -10,8 +12,9 @@ export async function fetchWorks() {
 }
 
 export async function fetchWorkById(workId) {
+
   try {
-    const response = await api.get(`/works/${workId}`);
+    const response = await $api.get(`/works/${workId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -19,8 +22,9 @@ export async function fetchWorkById(workId) {
 }
 
 export async function fetchEditionsByWorkId(workId) {
+
   try {
-    const response = await api.get(`/works/${workId}/editions`);
+    const response = await $api.get(`/works/${workId}/editions`);
     return response.data;
   } catch (error) {
     throw error;
@@ -28,8 +32,9 @@ export async function fetchEditionsByWorkId(workId) {
 }
 
 /* export async function fetchAuthorByWorkId(workId) {
+  const { $api } = useNuxtApp();
   try {
-    const response = await api.get(`/authors/${workId}`);
+    const response = await $api.get(`/authors/${workId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -37,8 +42,9 @@ export async function fetchEditionsByWorkId(workId) {
 } */
 
 export async function fetchLiteraryReviews(workId) {
+
   try {
-    const response = await api.get(`/works/${workId}/reviews`);
+    const response = await $api.get(`/works/${workId}/reviews`);
     console.log('reviews:', response.data);
     return response.data;
   } catch (error) {
@@ -47,8 +53,9 @@ export async function fetchLiteraryReviews(workId) {
 }
 
 export async function fetchBookGenres(workId) {
+
   try {
-    const response = await api.get(`/genres/${workId}`);
+    const response = await $api.get(`/genres/${workId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -56,8 +63,9 @@ export async function fetchBookGenres(workId) {
 }
 
 export async function addLiteraryReview(workId, reviewData) {
+
   try {
-    const response = await api.post(`/works/${workId}/reviews`, reviewData, {
+    const response = await $api.post(`/works/${workId}/reviews`, reviewData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -69,8 +77,9 @@ export async function addLiteraryReview(workId, reviewData) {
 }
 
 export async function addWork(workData) {
+
   try {
-    const response = await api.post('/works', workData, {
+    const response = await $api.post('/works', workData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -82,8 +91,9 @@ export async function addWork(workData) {
 }
 
 export async function addEdition(workId, editionData) {
+
   try {
-    const response = await api.post(`/works/${workId}/editions`, editionData, {
+    const response = await $api.post(`/works/${workId}/editions`, editionData, {
       headers: {
         'Content-Type': 'application/json',
       },

@@ -33,13 +33,13 @@ import WorkCard from '~/components/WorkCard.vue';
 const isLoading = ref(true);
 const works = ref([]);
 const showModal = ref(false);
-console.log(works)
+// console.log(works)
 onMounted(async () => {
   try {
     const fetchedWorksResponse = await fetchWorks();
     const fetchedWorks = fetchedWorksResponse.works; // Extract the works array from the response
 
-    console.log(fetchedWorks);
+    // console.log(fetchedWorks);
 
     if (fetchedWorks) {
       for (const work of fetchedWorks) {
@@ -51,7 +51,7 @@ onMounted(async () => {
           ]);
           
           if (editionsData.success && editionsData.editions.length > 0) {
-            console.log(editionsData);
+            // console.log(editionsData);
             const englishEditions = editionsData.editions.filter(
               edition => edition.title.toLowerCase() === work.originalTitle.toLowerCase()
             );

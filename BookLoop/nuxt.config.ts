@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt'
   ],
   plugins: [
-    '~/plugins/flowbite.js'
+    '~/plugins/flowbite.js',
   ],
   ssr: true,
   css: ['flowbite/dist/flowbite.min.css'],

@@ -38,8 +38,9 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '~/composables/stores/user';
-import api from '~/utils/api';
+import api from '~/plugins/api';
 
+const { $api } = useNuxtApp();
 // Router for navigation
 const router = useRouter();
 // User store to manage user state
@@ -56,19 +57,20 @@ const error = ref(null);
 async function login() {
   error.value = null; // Reset error message
   try {
+    console.log('login');
     // Make a POST request to the backend login endpoint
-    const response = await api.post('/users/login', {
+    const response = await $api.post('/users/login', {
       usernameOrEmail: usernameOrEmail.value,
       password: password.value
     });
-
+    console.log(response);
     const data = response.data;
 
     if (data) {
       // Set user data in Pinia store if login is successful
       userStore.setUser(data.user);
       console.log(data.user);
-      console.log(userStore.user);
+   
       // Redirect to the specific page after login
       router.push('/');
     }

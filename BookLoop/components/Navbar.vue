@@ -20,12 +20,12 @@
               <NuxtLink to="/login">Login</NuxtLink>
             </li>
             <template v-else>
-              <li class="font-semibold text-gray-700">
+<!--               <li class="font-semibold text-gray-700">
                 <NuxtLink to="/wishlist">Wishlist</NuxtLink>
               </li>
               <li class="font-semibold text-gray-700">
                 <NuxtLink to="/cart">Cart</NuxtLink>
-              </li>
+              </li> -->
               <li class="font-semibold text-gray-700">
                 <NuxtLink to="/account">Account</NuxtLink>
               </li>

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import api from '~/utils/api';
+import { useNuxtApp } from '#app';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -16,9 +16,10 @@ export const useUserStore = defineStore('user', {
       localStorage.removeItem('userStore'); // Remove userStore from localStorage
     },
     async logout() {
+      const { $api } = useNuxtApp();
       try {
         // Make a POST request to the backend logout endpoint
-        await api.post('/users/logout');
+        await $api.post('/users/logout');
         this.clearUser();
       } catch (err) {
         console.error('Logout failed:', err.response?.data?.message || 'Unknown error');
