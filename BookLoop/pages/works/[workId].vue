@@ -30,7 +30,6 @@ import { useRoute } from 'vue-router';
 import {
   fetchWorkById,
   fetchEditionsByWorkId,
-  fetchAuthorByWorkId,
   fetchLiteraryReviews,
   fetchBookGenres,
 } from '~/composables/api/workService';
@@ -49,20 +48,10 @@ onMounted(async () => {
     if (workData.success) {
       work.value = workData.data;
 
-      // Fetch the author data for the work
-      const authorData = await fetchAuthorByWorkId(workId);
-      if (authorData.success) {
-        work.value.personId = authorData.data.personId;
-        work.value.author = authorData.data.person.personName;
-      } else {
-        console.error('Error fetching author data:', authorData.error);
-      }
-
       // Fetch the literary reviews for the work
       const reviewsData = await fetchLiteraryReviews(workId);
       if (reviewsData.success) {
         work.value.reviews = reviewsData.data;
-        console.log('REVIEWS:', work.value.reviews);
       } else {
         console.error('Error fetching reviews', reviewsData.error);
       }

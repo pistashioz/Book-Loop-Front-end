@@ -27,14 +27,14 @@ export async function fetchEditionsByWorkId(workId) {
   }
 }
 
-export async function fetchAuthorByWorkId(workId) {
+/* export async function fetchAuthorByWorkId(workId) {
   try {
     const response = await api.get(`/authors/${workId}`);
     return response.data;
   } catch (error) {
     throw error;
   }
-}
+} */
 
 export async function fetchLiteraryReviews(workId) {
   try {
@@ -48,7 +48,7 @@ export async function fetchLiteraryReviews(workId) {
 
 export async function fetchBookGenres(workId) {
   try {
-    const response = await api.get(`/book-genres/${workId}`);
+    const response = await api.get(`/genres/${workId}`);
     return response.data;
   } catch (error) {
     throw error;

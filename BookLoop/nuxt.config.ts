@@ -1,7 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt'],
+  modules: [
+    '@nuxtjs/tailwindcss', 
+    '@pinia/nuxt', 
+    '@pinia-plugin-persistedstate/nuxt'
+  ],
   app: {
     head: {
       title: 'Book Loop',
@@ -14,5 +18,6 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3360/',
     }
-  }
+  },
+  components: true, // Enable auto-import of components
 });

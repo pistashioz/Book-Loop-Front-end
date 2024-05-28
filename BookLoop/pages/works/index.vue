@@ -27,35 +27,42 @@
 import Navbar from '~/components/Navbar.vue';
 import SavedModal from '~/components/addWork.vue';
 import { ref, onMounted } from 'vue';
-import { fetchWorks, fetchEditionsByWorkId, fetchAuthorByWorkId } from '~/composables/api/workService';
+import { fetchWorks, fetchEditionsByWorkId } from '~/composables/api/workService';  // fetchAuthorByWorkId
 import WorkCard from '~/components/WorkCard.vue';
 
 const isLoading = ref(true);
 const works = ref([]);
 const showModal = ref(false);
-
+console.log(works)
 onMounted(async () => {
   try {
-    const fetchedWorks = await fetchWorks();
+    const fetchedWorksResponse = await fetchWorks();
+    const fetchedWorks = fetchedWorksResponse.works; // Extract the works array from the response
+
+    console.log(fetchedWorks);
+
     if (fetchedWorks) {
       for (const work of fetchedWorks) {
         try {
           const [editionsData, authorData] = await Promise.all([
             fetchEditionsByWorkId(work.workId),
-            fetchAuthorByWorkId(work.workId)
+            // fetchAuthorByWorkId(work.workId)
+          
           ]);
+          
           if (editionsData.success && editionsData.editions.length > 0) {
+            console.log(editionsData);
             const englishEditions = editionsData.editions.filter(
-              edition => edition.language.toLowerCase() === 'english'
+              edition => edition.title.toLowerCase() === work.originalTitle.toLowerCase()
             );
             if (englishEditions.length > 0) {
               work.coverImage = englishEditions[0].coverImage;
               work.synopsis = englishEditions[0].synopsis;
             }
           }
-          if (authorData.success) {
+/*           if (authorData.success) {
             work.author = authorData.data.person.personName;
-          }
+          } */
         } catch (error) {
           console.error('Error fetching editions or author data:', error);
         }
