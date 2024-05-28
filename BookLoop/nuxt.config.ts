@@ -6,6 +6,11 @@ export default defineNuxtConfig({
     '@pinia/nuxt', 
     '@pinia-plugin-persistedstate/nuxt'
   ],
+  plugins: [
+    '~/plugins/flowbite.js'
+  ],
+  ssr: true,
+  css: ['flowbite/dist/flowbite.min.css'],
   app: {
     head: {
       title: 'Book Loop',
