@@ -45,7 +45,7 @@
           <div class="mt-8">
             <h3 class="text-lg font-bold text-gray-800">About</h3>
             <p class="leading-relaxed mt-4 text-sm text-gray-800" v-if="work.BookEditions && work.BookEditions.length > 0">
-              {{ work.BookEditions[0].synopsis }}
+              {{ work.synopsis }}
             </p>
           </div>
           <div class="mt-8">
@@ -120,7 +120,7 @@
     </div>
     <SubmitReviewForm :workId="work.workId" @review-submitted="handleReviewSubmitted" />
     <LiteraryReviews :reviews="work.reviews" v-if="work.reviews && work.reviews.length > 0" :work="work" />
-    <Editions :editions="work.editions" v-if="work.editions && work.editions.length > 0" :work="work" />
+    <Editions :editions="work.BookEditions" v-if="work.BookEditions && work.BookEditions.length > 0" :work="work" />
   </div>
 </template>
 
@@ -135,7 +135,7 @@ const props = defineProps({
     required: true,
   }
 });
-
+console.log('work', props.work)
 const handleReviewSubmitted = (newReview) => {
   if (!props.work.reviews) {
     props.work.reviews = [];

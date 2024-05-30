@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     '~/plugins/flowbite.js',
   ],
   ssr: true,
-  css: ['flowbite/dist/flowbite.min.css'],
+  css: ['flowbite/dist/flowbite.min.css', ],
   app: {
     head: {
       title: 'Book Loop',

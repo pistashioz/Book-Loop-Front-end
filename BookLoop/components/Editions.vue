@@ -3,7 +3,7 @@
     <div class="p-1 flex flex-wrap items-center justify-center">
       <div 
         class="flex-shrink-0 m-6 relative overflow-hidden rounded-lg max-w-xs shadow-lg group bg-edition" 
-        v-for="edition in editions" 
+        v-for="edition in work.BookEditions" 
         :key="edition.ISBN"
       >
         <svg 
@@ -45,6 +45,7 @@ const props = defineProps({
     required: true,
   },
 });
+
 </script>
 
 <style scoped>

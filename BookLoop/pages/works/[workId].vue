@@ -47,36 +47,41 @@ onMounted(async () => {
     const workData = await fetchWorkById(workId);
     if (workData.success) {
       work.value = workData.data;
-
-      // Fetch the literary reviews for the work
-      const reviewsData = await fetchLiteraryReviews(workId);
-      if (reviewsData.success) {
-        work.value.reviews = reviewsData.data;
-      } else {
-        console.error('Error fetching reviews', reviewsData.error);
-      }
-
-      // Fetch the book genres for the work
-      const bookGenresData = await fetchBookGenres(workId);
-      if (bookGenresData.success) {
-        work.value.genres = bookGenresData.data;
-      } else {
-        console.error('Error fetching work genres data', bookGenresData.error);
-      }
-
-      // Fetch the editions data for the work
-      const editionsData = await fetchEditionsByWorkId(workId);
-      if (editionsData.success) {
-        work.value.editions = editionsData.editions;
-
-        if (!work.value.coverImage && editionsData.editions.length > 0) {
-          work.value.coverImage = editionsData.editions[0].coverImage;
+      try{
+        const editionsData = await fetchEditionsByWorkId(workId);
+        if (editionsData.success && editionsData.editions.length > 0){
+          const matchingEdition = editionsData.editions.find(
+            edition => edition.publicationDate == work.value.firstPublishedDate
+          )
+          if (matchingEdition) {
+            work.value.coverImage = matchingEdition.coverImage;
+            work.value.synopsis = matchingEdition.synopsis;
+            work.value.edition = matchingEdition; 
+          }
         }
-      } else {
-        console.error('Error fetching editions data:', editionsData.error);
+        // Fetch the literary reviews for the work
+        const reviewsData = await fetchLiteraryReviews(workId);
+        console.log('review data', reviewsData)
+        if (reviewsData.success) {
+          work.value.reviews = reviewsData.reviews;
+          console.log('work value reviews', work.value.reviews)
+        } else {
+          console.error('Error fetching reviews', reviewsData.error);
+        }
+        // Fetch the book genres for the work
+        const bookGenresData = await fetchBookGenres(workId);
+        if (bookGenresData.success) {
+          work.value.genres = bookGenresData.data;
+        } else {
+          console.error('Error fetching work genres data', bookGenresData.error);
+        }
+
+      }
+
+      catch(error) {
+        console.log('Error fetching data', error)
       }
     } else {
-      work.value = null;
       console.error('Error fetching work data:', workData.error);
     }
   } catch (error) {

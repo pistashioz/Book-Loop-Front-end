@@ -39,7 +39,7 @@ onMounted(async () => {
     const fetchedWorksResponse = await fetchWorks();
     const fetchedWorks = fetchedWorksResponse.works; // Extract the works array from the response
 
-    // console.log(fetchedWorks);
+    console.log('fethed works: ',fetchedWorks);
 
     if (fetchedWorks) {
       for (const work of fetchedWorks) {
