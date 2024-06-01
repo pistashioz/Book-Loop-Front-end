@@ -21,9 +21,8 @@
                 alt="Default user image" 
                 class="w-8 h-8" 
               />
-              <NuxtLink :to="`/works/${work.workId}/reviews/${review.literaryReviewId}/comments`">
                 <h6 class="font-semibold text-lg leading-8 text-indigo-600">{{ review.user.username }}</h6>
-            </NuxtLink>
+              <NuxtPage :work = "work"/>
 
               
             </div>
