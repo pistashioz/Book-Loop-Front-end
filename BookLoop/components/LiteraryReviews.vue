@@ -2,9 +2,8 @@
   <section class="py-24 relative">
     <div class="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
       <div class="w-full">
-        <h2 class="font-manrope text-4xl text-black mb-8 text-center">Reviews</h2>
         <div
-          v-for="review in work.reviews"
+          v-for="review in work.LiteraryReviews"
           :key="review.literaryReviewId"
           class="pt-11 pb-8 border-b border-gray-100 max-xl:max-w-2xl max-xl:mx-auto"
         >
@@ -22,9 +21,11 @@
                 alt="Default user image" 
                 class="w-8 h-8" 
               />
-              <h6 class="font-semibold text-lg leading-8 text-indigo-600">
-                {{ review.user.username }}
-              </h6>
+              <NuxtLink :to="`/works/${work.workId}/reviews/${review.literaryReviewId}/comments`">
+                <h6 class="font-semibold text-lg leading-8 text-indigo-600">{{ review.user.username }}</h6>
+            </NuxtLink>
+
+              
             </div>
           </div>
           <p class="font-normal text-lg leading-8 text-gray-400 max-xl:text-justify">{{ review.reviewContent }}</p>
@@ -37,8 +38,9 @@
 </template>
 
 <script setup>
-defineProps({
-  reviews: {
+
+const props = defineProps({
+  review: {
     type: Object,
     required: true,
   },
@@ -52,4 +54,20 @@ const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   return date.toLocaleDateString('en-US', options);
 };
+
+
+onMounted(async () => {
+  try {
+    // Fetch the comment data by work and review ID
+    const commentData = await getReviewsComments(workId, literaryReviewId);
+    if (commentData.success) {
+      review.value = commentData.data;
+      console.log('review valuee', review.value)
+    } else {
+      console.error('Error fetching comments data:', commentData.error);
+    }
+  } catch (error) {
+    console.error('An unexpected error occurred:', error);
+  }
+});
 </script>

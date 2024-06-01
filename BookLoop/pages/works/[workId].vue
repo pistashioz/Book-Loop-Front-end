@@ -47,37 +47,16 @@ onMounted(async () => {
     const workData = await fetchWorkById(workId);
     if (workData.success) {
       work.value = workData.data;
-      try{
-        const editionsData = await fetchEditionsByWorkId(workId);
-        if (editionsData.success && editionsData.editions.length > 0){
-          const matchingEdition = editionsData.editions.find(
-            edition => edition.publicationDate == work.value.firstPublishedDate
-          )
-          if (matchingEdition) {
-            work.value.coverImage = matchingEdition.coverImage;
-            work.value.synopsis = matchingEdition.synopsis;
-            work.value.edition = matchingEdition; 
-          }
+      console.log('work valuee', work.value)
+      try {
+        const reviewsData = await fetchLiteraryReviews(workId)
+        if (reviewsData.success && reviewsData.reviews.length > 0){
+          work.value.LiteraryReviews = reviewsData.reviews
         }
-        // Fetch the literary reviews for the work
-        const reviewsData = await fetchLiteraryReviews(workId);
-        console.log('review data', reviewsData)
-        if (reviewsData.success) {
-          work.value.reviews = reviewsData.reviews;
-          console.log('work value reviews', work.value.reviews)
-        } else {
+        else{
           console.error('Error fetching reviews', reviewsData.error);
         }
-        // Fetch the book genres for the work
-        const bookGenresData = await fetchBookGenres(workId);
-        if (bookGenresData.success) {
-          work.value.genres = bookGenresData.data;
-        } else {
-          console.error('Error fetching work genres data', bookGenresData.error);
-        }
-
       }
-
       catch(error) {
         console.log('Error fetching data', error)
       }

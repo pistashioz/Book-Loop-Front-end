@@ -96,3 +96,12 @@ export async function addEdition(workId, editionData) {
     throw error;
   }
 }
+
+export async function getReviewsComments(workId, literaryReviewId) {
+  try {
+    const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}/comments`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

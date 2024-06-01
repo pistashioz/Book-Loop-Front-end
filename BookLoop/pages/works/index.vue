@@ -33,41 +33,13 @@ import WorkCard from '~/components/WorkCard.vue';
 const isLoading = ref(true);
 const works = ref([]);
 const showModal = ref(false);
-// console.log(works)
 onMounted(async () => {
   try {
     const fetchedWorksResponse = await fetchWorks();
     const fetchedWorks = fetchedWorksResponse.works; // Extract the works array from the response
-
-    console.log('fethed works: ',fetchedWorks);
-
     if (fetchedWorks) {
-      for (const work of fetchedWorks) {
-        try {
-          const [editionsData, authorData] = await Promise.all([
-            fetchEditionsByWorkId(work.workId),
-            // fetchAuthorByWorkId(work.workId)
-          
-          ]);
-          
-          if (editionsData.success && editionsData.editions.length > 0) {
-            // console.log(editionsData);
-            const englishEditions = editionsData.editions.filter(
-              edition => edition.title.toLowerCase() === work.originalTitle.toLowerCase()
-            );
-            if (englishEditions.length > 0) {
-              work.coverImage = englishEditions[0].coverImage;
-              work.synopsis = englishEditions[0].synopsis;
-            }
-          }
-/*           if (authorData.success) {
-            work.author = authorData.data.person.personName;
-          } */
-        } catch (error) {
-          console.error('Error fetching editions or author data:', error);
-        }
-      }
       works.value = fetchedWorks; // Assign fetched works to works variable
+      console.log('works value: ',works.value)
     } else {
       console.error('Error fetching data:', fetchedWorks.error);
     }

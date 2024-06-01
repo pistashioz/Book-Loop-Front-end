@@ -12,8 +12,8 @@
     </NuxtLink>
     <div class="mt-4 flex justify-between">
       <div>
-        <h3 class="text-sm text-gray-700">{{ work.originalTitle }}</h3>
-        <p class="mt-1 text-sm text-gray-500" v-if="work.author">{{ work.author }}</p>
+        <h3 class="text-sm text-gray-700">{{ work.title }}</h3>
+        <p class="mt-1 text-sm text-gray-500"  v-for="author in work.Authors" :key="author.personId" >{{ author.personName }}</p>
       </div>
       <button class="text-sm font-medium text-gray-900" @click="openAddEditionModal(work)">Add Edition</button>
     </div>

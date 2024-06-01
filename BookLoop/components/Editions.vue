@@ -3,8 +3,8 @@
     <div class="p-1 flex flex-wrap items-center justify-center">
       <div 
         class="flex-shrink-0 m-6 relative overflow-hidden rounded-lg max-w-xs shadow-lg group bg-edition" 
-        v-for="edition in work.BookEditions" 
-        :key="edition.ISBN"
+        v-for="edition in work.otherEditions" 
+        :key="edition.title" 
       >
         <svg 
           class="absolute bottom-0 left-0 mb-8 scale-150 group-hover:scale-[1.65] transition-transform"
@@ -17,7 +17,19 @@
           <div class="block absolute w-48 h-48 bottom-5 left-0 -mb-24 ml-3"
             style="background: radial-gradient(black, transparent 70%); transform: rotate3d(0, 0, 1, 0deg) scale3d(1.5, 0.5,1.5); opacity: 0.2;">
           </div>
-          <img class="relative w-40" :src="edition.coverImage" :alt="edition.title" />
+
+              <img 
+                v-if="edition.coverImage" 
+                :src="edition.coverImage" 
+                :alt="edition.title"
+                class="relative w-40" 
+              />
+              <img 
+                v-else
+                :src="noCoverImage" 
+                :alt="edition.title"
+                class="relative w-40" 
+              />
         </div>
         <div class="relative text-white px-6 pb-6 mt-6 bg-edition">
           <span class="block opacity-75 -mb-1">{{ edition.language }}</span>
@@ -31,15 +43,8 @@
 </template>
 
 <script setup>
+import noCoverImage from '@/assets/images/no-cover-image-book-editions.png'
 const props = defineProps({
-  editions: {
-    type: Array,
-    required: true,
-  },
-  bookEditions: {
-    type: Array,
-    required: false,
-  },
   work: {
     type: Object,
     required: true,
