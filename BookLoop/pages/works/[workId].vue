@@ -1,4 +1,5 @@
 <template>
+   <NuxtPage />
   <div class="text-center" v-if="isLoading">
     <div role="status">
       <svg

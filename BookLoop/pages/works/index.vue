@@ -27,7 +27,7 @@
 import Navbar from '~/components/Navbar.vue';
 import SavedModal from '~/components/addWork.vue';
 import { ref, onMounted } from 'vue';
-import { fetchWorks, fetchEditionsByWorkId } from '~/composables/api/workService';  // fetchAuthorByWorkId
+import { fetchWorks } from '~/composables/api/workService';  // fetchAuthorByWorkId
 import WorkCard from '~/components/WorkCard.vue';
 
 const isLoading = ref(true);

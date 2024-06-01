@@ -21,8 +21,11 @@
                 alt="Default user image" 
                 class="w-8 h-8" 
               />
+              <NuxtLink :to="`/works/${work.workId}/reviews/${review.literaryReviewId}/comments`">
                 <h6 class="font-semibold text-lg leading-8 text-indigo-600">{{ review.user.username }}</h6>
-              <NuxtPage :work = "work"/>
+              </NuxtLink>
+                
+              
 
               
             </div>
@@ -37,7 +40,7 @@
 </template>
 
 <script setup>
-
+import {getReviewsComments} from '~/composables/api/workService'; 
 const props = defineProps({
   review: {
     type: Object,
@@ -54,11 +57,11 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('en-US', options);
 };
 
-
+/*
 onMounted(async () => {
   try {
     // Fetch the comment data by work and review ID
-    const commentData = await getReviewsComments(workId, literaryReviewId);
+    const commentData = await getReviewsComments(props.work.workId, props.review.literaryReviewId);
     if (commentData.success) {
       review.value = commentData.data;
       console.log('review valuee', review.value)
@@ -68,5 +71,5 @@ onMounted(async () => {
   } catch (error) {
     console.error('An unexpected error occurred:', error);
   }
-});
+});*/
 </script>
