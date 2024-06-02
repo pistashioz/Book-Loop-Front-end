@@ -73,11 +73,7 @@ export async function addLiteraryReview(workId, reviewData) {
 
 export async function addWork(workData) {
   try {
-    const response = await $api.post('/works', workData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await $api.post('/works', workData, {});
     return response.data;
   } catch (error) {
     throw error;
@@ -136,5 +132,14 @@ export async function likeReview(workId, literaryReviewId){
     } catch (error) {
       console.error('Error liking review:', error);
       // Handle error, show error message to user
+    }
+  }
+
+  export async function findGenres(){
+    try{
+      const response = await $api.get('/genres');
+      return response.data;
+    } catch (error){
+      throw error; 
     }
   }
