@@ -1,4 +1,4 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+// nuxt.config.ts
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
@@ -8,9 +8,10 @@ export default defineNuxtConfig({
   ],
   plugins: [
     '~/plugins/flowbite.js',
+    '~/plugins/darkMode.js', // Add the dark mode plugin
   ],
   ssr: true,
-  css: ['flowbite/dist/flowbite.min.css', ],
+  css: ['flowbite/dist/flowbite.min.css'],
   app: {
     head: {
       title: 'Book Loop',
