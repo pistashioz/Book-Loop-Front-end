@@ -105,3 +105,36 @@ export async function getReviewsComments(workId, literaryReviewId) {
     throw error;
   }
 }
+
+export async function getReview(workId, literaryReviewId){
+  try {
+    const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function likeReview(workId, literaryReviewId){
+    try {
+      const response = await fetch(`/works/${workId}/reviews/${literaryReviewId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          //'Authorization': `Bearer ${yourAuthToken}`,
+        },
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to like review');
+      }
+      
+      // Handle success, update UI or show message
+      console.log('Review liked:', data);
+    } catch (error) {
+      console.error('Error liking review:', error);
+      // Handle error, show error message to user
+    }
+  }
