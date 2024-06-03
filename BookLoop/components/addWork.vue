@@ -1,8 +1,6 @@
 <template>
   <div>
-    <button @click="showModal = true">Add New Work</button>
-
-    <div id="crud-modal" v-show="showModal" tabindex="-1" aria-hidden="true" class="modal-overlay fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50">
+    <div id="crud-modal"  tabindex="-1" aria-hidden="true" class="modal-overlay fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50">
       <div class="relative p-2 w-full max-w-2xl max-h-full">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -11,7 +9,7 @@
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
               Create New Work
             </h3>
-            <button @click="closeModal" type="button" class="close text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+            <button @click="$emit('close-modal')" type="button" class="close text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
               <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
               </svg>
@@ -27,12 +25,12 @@
               </div>
               <div>
                 <label for="seriesName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Series</label>
-                <input v-model="seriesName" type="text" name="seriesName" id="seriesName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Series" required>
+                <input v-model="seriesName" type="text" name="seriesName" id="seriesName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Series">
               </div>
               
               <div>
                 <label for="seriesOrder" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Series Order</label>
-                <input v-model.number="seriesOrder" type="number" name="seriesOrder" id="seriesOrder" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Series Order" required>
+                <input v-model.number="seriesOrder" type="number" name="seriesOrder" id="seriesOrder" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Series Order">
               </div>
               <div>
                 <label for="author" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Authors</label>
@@ -40,6 +38,10 @@
                 <ul>
                   <li v-for="(author, index) in authors" :key="index">{{ author }}</li>
                 </ul>
+              </div>
+              <div>  
+                <label for="publisherName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Publisher Name</label>
+                <input v-model="publisherName" type="text" name="publisherName" id="publisherName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Publisher Name" required>
               </div>
               <div>
               <label for="genre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Genres</label>
@@ -51,7 +53,13 @@
               </div>
               <div>  
                 <label for="editionType" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Edition Type</label>
-                <input v-model="editionType" type="text" required name="editionType" id="editionType" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Add Edition Type">
+                <select id="editionType" v-model="editionType" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                  <option value="" disabled>Select</option>
+                  <option value="Hardcover">Hardcover</option>
+                  <option value="Paperback">Paperback</option>
+                  <option value="Ebook">Ebook</option>
+                  <option value="Audiobook">Audiobook</option>
+                </select>
               </div>
               <div>  
                 <label for="languageId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Language ID</label>
@@ -97,7 +105,6 @@ const seriesOrder = ref(null);
 const authors = ref([]);
 const genres = ref([]);
 const author = ref('');
-const genre = ref('');
 const ISBN = ref('');
 const synopsis = ref('');
 const editionType = ref('');
@@ -105,8 +112,7 @@ const languageId = ref('');
 const pageNumber = ref(null);
 const coverImage = ref('');
 const publicationDate = ref('');
-const showModal = ref(false);
-const selectedGenres = ref([]);
+const publisherName = ref([]);
 const selectedOptions = ref([]);
 const props = defineProps({
   formFieldName: String,
@@ -118,6 +124,7 @@ onMounted(async () => {
     const genreData = await findGenres();
     if (genreData.success) {
       genres.value = genreData.genres.map(genre => genre.genreName); // Only store genreName
+      console.log('genres.value', genres.value)
     } else {
       console.error('Error fetching genres:', genreData.error);
     }
@@ -138,18 +145,12 @@ const handleSelectedGenres = (selectedGenres) => {
   console.log('selected genres', selectedGenres);
   selectedOptions.value = selectedGenres;
 };
-const addGenre = () => {
-  console.log('holaaaa')
-  console.log(genre.value)
-  if (genre.value.trim() !== '') {
-    genres.value.push(genre.value.trim());
-    genre.value = '';
-  }
-};
+
 
 
 const submitForm = async () => {
   try {
+    
     console.log('seleted options ',selectedOptions.value)
     const workData = {
       title: title.value,
@@ -159,6 +160,7 @@ const submitForm = async () => {
       genres: [...selectedOptions.value], 
       edition: {
         ISBN: ISBN.value,
+        publisherName: publisherName.value,
         synopsis: synopsis.value,
         editionType: editionType.value,
         languageId: languageId.value,
@@ -167,10 +169,10 @@ const submitForm = async () => {
         publicationDate: publicationDate.value
       }
     };
-    console.log('Form Data:', workData);/*
+    console.log('Form Data:', workData);
     const response = await addWork(workData);
-    console.log('API Response:', response);*/
-  
+    console.log('API Response:', response);
+    props.$emit('close-modal');
   } catch (error) {
     console.error('Error:', error);
   }

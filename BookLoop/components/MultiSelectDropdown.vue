@@ -2,7 +2,7 @@
     <label class = "relative">
         <input type = "checkbox" class = "hidden peer">
         <div class = "cursor-pointer after:content-['▼'] after:text-xs after:ml-1 after:inline-flex after:items-center peer-checked:after:-rotate-180 after:transition-transform ">
-            Select Genres
+            Select
         </div>
         <div class = "absolute bg-white border p-2 transition-opacity opacity-0 pointer-events-none peer-checked:opacity-100 peer-checked:pointer-events-auto">
             <ul>
@@ -51,31 +51,6 @@ export default {
       this.$emit('selectionChanged', this.selectedOptions);
     }
   }, // <-- Add a semicolon here
-};/*
-export default function MultiSelectDropdown({
-  formFieldName,
-  options,
-  onChange,
-}) {
-  const [selectedOptions, setSelectedOptions] = useState([]);
-
-  const handleChange = (e) => {
-  const isChecked = e.target.checked;
-  const option = e.target.value;
-
-  const selectedOptionSet = new Set(selectedOptions);
-
-  if (isChecked) {
-    selectedOptionSet.add(option);
-  } else {
-    selectedOptionSet.delete(option);
-  }
-
-  const newSelectedOptions = Array.from(selectedOptionSet);
-
-  setSelectedOptions(newSelectedOptions);
-  onChange(newSelectedOptions);
 };
-}*/
 
 </script>

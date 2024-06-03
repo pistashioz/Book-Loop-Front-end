@@ -137,7 +137,7 @@ export async function likeReview(workId, literaryReviewId){
 
   export async function findGenres(){
     try{
-      const response = await $api.get('/genres');
+      const response = await $api.get('/genres?simple=true&page=1&limit=10');
       return response.data;
     } catch (error){
       throw error; 

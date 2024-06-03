@@ -11,28 +11,36 @@
       </div>
     </div>
     <div v-else class="bg-white">
-      <SavedModal @click="showModal = true" class="modal-container mx-auto max-w-sm px-4 py-1 lg:max-w-7xl" />
       <div class="bg-white">
+        <button @click="openAddWork">Add New Work</button>
         <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <div class="mt-2 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             <WorkCard v-for="w in works" :key="w.workId" :work="w" :coverImage="w.coverImage" />
           </div>
         </div>
       </div>
+      <AddWork 
+      v-if="showModal"
+      @close-modal="showModal = false"
+    />
     </div>
   </div>
 </template>
 
 <script setup>
 import Navbar from '~/components/Navbar.vue';
-import SavedModal from '~/components/addWork.vue';
 import { ref, onMounted } from 'vue';
 import { fetchWorks } from '~/composables/api/workService';  // fetchAuthorByWorkId
 import WorkCard from '~/components/WorkCard.vue';
-
+import AddWork from '~/components/addWork.vue';
 const isLoading = ref(true);
 const works = ref([]);
 const showModal = ref(false);
+
+const openAddWork = () => {
+  console.log(showModal.value)
+  showModal.value = true;
+}
 onMounted(async () => {
   try {
     const fetchedWorksResponse = await fetchWorks();
