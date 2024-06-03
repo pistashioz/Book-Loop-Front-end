@@ -1,12 +1,14 @@
+<!-- layouts/settings.vue -->
 <template>
-  <div>
-    <Navbar />  
-    <Nuxt /> 
+  <div class="flex">
+    <Sidebar />
+    <div class="flex-1">
+      <Navbar />
+      <NuxtPage />
+    </div>
   </div>
-  <div>
-    <slot />
-  </div>
-  </template>
-<script>
+</template>
+
+<script setup>
 
 </script>
