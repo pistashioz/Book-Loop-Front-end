@@ -1,4 +1,5 @@
 <template>
+    Landing Page
 </template>
 
 <script setup>

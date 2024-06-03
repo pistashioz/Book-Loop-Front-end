@@ -1,6 +1,6 @@
 <template>
   <div>  
-    <div id="crud-modal" tabindex="-1" aria-hidden="true" class="modal-overlay fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50">
+    <div id="crud-modal" tabindex="-1" aria-hidden="true" class="modal-overlay fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50 overflow-auto ...">
       <div class="relative p-2 w-full max-w-2xl max-h-full">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -38,7 +38,7 @@
                   <option value="Hardcover">Hardcover</option>
                   <option value="Paperback">Paperback</option>
                   <option value="Ebook">Ebook</option>
-                  <option value="AudioBook">AudioBook</option>
+                  <option value="Audiobook">Audiobook</option>
                 </select>
               </div>
               <div class="col-span-3 sm:col-span-1">
@@ -139,10 +139,11 @@ const newEdition = async () => {
     };
     
     const response = await addEdition(props.work.workId, editionData);
-    const newEditionData = response._rawValue.book;
+    console.log(response)
+    //const newEditionData = response.value;
 
     // Emit events to close modal and update parent data
-    props.$emit('edition-added', newEditionData);
+   // props.$emit('edition-added', newEditionData);
     props.$emit('close-modal');
   } catch (error) {
     console.error('Error adding new edition:', error);

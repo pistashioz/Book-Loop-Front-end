@@ -1,5 +1,5 @@
 <template>
-  <div class="group relative">
+  <div class="group relative" v-if="work">
     <NuxtLink :to="`/works/${work.workId}`">
       <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
         <img
@@ -42,8 +42,8 @@ const openAddEditionModal = (work) => {
   selectedWorkId.value = work;
   showModal.value = true;
 };
-
+////// REVER ISTO!!!!
 const handleEditionAdded = (newEdition) => {
-  selectedWork.value.bookEditions.push(newEdition);
+  selectedWorkId.value.bookEditions.push(newEdition);
 };
 </script>
