@@ -21,18 +21,18 @@
             </li>
             <template v-else>
               <li class="relative p-1">
-                <button id="avatarButton" type="button" @click="toggleDropdown" class="flex w-10 h-10 rounded-full cursor-pointer overflow-hidden bg-gray-100 dark:bg-gray-600">
+                <button id="avatarButton" type="button" @click="toggleDropdown" class="flex w-10 h-10 rounded-full cursor-pointer overflow-hidden bg-gray-100 dark:bg-gray-900">
                   <svg class="w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
                   </svg>
                 </button>
                 <!-- Dropdown menu -->
-                <div v-if="isDropdownOpen" id="userDropdown" class="absolute right-0 z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                  <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                <div v-if="isDropdownOpen" id="userDropdown" class="absolute right-0 z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900 dark:divide-gray-600">
+                  <div class="px-4 py-3 text-sm text-gray-900 dark:text-white font-satoshi-medium">
                     <div>{{ userProfile.username }}</div>
                     <div class="font-medium truncate">{{ userProfile.email }}</div>
                   </div>
-                  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
+                  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-satoshi-medium" aria-labelledby="avatarButton">
                     <li>
                       <NuxtLink to="/users/:userId" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</NuxtLink>
                     </li>

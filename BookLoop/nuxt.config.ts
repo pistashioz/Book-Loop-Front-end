@@ -1,4 +1,3 @@
-// nuxt.config.ts
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
@@ -8,10 +7,13 @@ export default defineNuxtConfig({
   ],
   plugins: [
     '~/plugins/flowbite.js',
-    '~/plugins/darkMode.js', // Add the dark mode plugin
+    '~/plugins/darkMode.js',
   ],
   ssr: true,
-  css: ['flowbite/dist/flowbite.min.css'],
+  css: [
+    'flowbite/dist/flowbite.min.css',
+    '~/assets/css/main.css'
+  ],
   app: {
     head: {
       title: 'Book Loop',
@@ -25,5 +27,5 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3360/',
     }
   },
-  components: true, // Enable auto-import of components
+  components: true,
 });
