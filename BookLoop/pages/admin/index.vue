@@ -1,15 +1,13 @@
+<!-- pages/users/me/settings.vue -->
 <template>
     <div>
-
+      <!-- User settings content -->
     </div>
-</template>
-
-<script>
-    export default {
-        
-    }
-</script>
-
-<style lang="scss" scoped>
-
-</style>
+  </template>
+  
+  <script setup>
+  definePageMeta({
+    layout: 'settings'
+  });
+  </script>
+  
