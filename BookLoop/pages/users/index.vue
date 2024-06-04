@@ -23,10 +23,10 @@
                     <div class="relative">
                         <select
                             class="appearance-none h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
-                            <option>All</option>
-                            <option>Active</option>
-                            <option>Inactive</option>
-                            <option>To be deleted</option>
+                            <option value="all">All</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="to_be_deleted">To be deleted</option>
                         </select>
                         
                     </div>
@@ -123,7 +123,7 @@
                                     </span>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <button  @click="openDeleteUserModal">
+                                    <button  @click="openDeleteUserModal(user)">
                                         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
                                         </svg>
@@ -161,7 +161,7 @@
                 </div>
             </div>
         </div>
-        <ModalDeleteUser v-if="showModal" @close-modal="showModal = false"/>
+        <ModalDeleteUser v-if="showModal" @close-modal="showModal = false" :user="selectedUserId"/>
     </div>
 </body>
       </div>
@@ -173,11 +173,15 @@
   import {findAll} from '~/composables/api/userService';
   import ModalDeleteUser from '~/components/ModalDeleteUser.vue';
   const showModal = ref(false);
-  //const selectedUserId = ref(null);
+  const selectedUserId = ref(null);
 
-  const openDeleteUserModal = () =>{
+  const props = defineProps({
+    user: Object,
+    });
+  const openDeleteUserModal = (user) =>{
     console.log(showModal.value)
-    //selectedUserId.value = user;
+    selectedUserId.value = user;
+    console.log('seleted user: ', selectedUserId)
     showModal.value = true;
 };
   const isLoading = ref(true);

@@ -13,4 +13,3 @@ export async function findAll(currentPage) {
     throw error;
   }
 }
-

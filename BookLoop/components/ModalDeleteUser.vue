@@ -23,3 +23,15 @@
 </div>
 
 </template>
+<script>
+
+const props = defineProps({
+  user: Object, 
+}); 
+import { deleteUser } from '~/composables/api/adminService';
+const removeUser = async () => {
+    console.log(props.user)
+    //const response = await deleteUser(props.user.userId)
+}
+
+</script>
