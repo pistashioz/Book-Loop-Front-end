@@ -5,8 +5,7 @@
 
     <div class="relative flex w-10/12 justify-center top-20 space-x-12">
       <Sidebar />
-      <Container />
-      <!-- <NuxtPage /> -->
+      <NuxtPage class="w-4/12"/>
     </div>
   </div>
 </template>

@@ -2,26 +2,20 @@
   <div>
     <div v-if="loading">Loading...</div>
     <div v-else>
-      <div v-if="queryType === 'profile'">
-        <h2>Profile Details</h2>
-        <!-- Display profile data -->
-        <pre>{{ data }}</pre>
-      </div>
-      <div v-else-if="queryType === 'account'">
-        <h2>Account Settings</h2>
-        <!-- Display account settings data -->
-        <pre>{{ data }}</pre>
-      </div>
-      <div v-else-if="queryType === 'notifications'">
-        <h2>Notifications</h2>
-        <!-- Display notifications data -->
-        <pre>{{ data }}</pre>
-      </div>
-      <div v-else-if="queryType === 'privacy'">
-        <h2>Privacy Settings</h2>
-        <!-- Display privacy settings data -->
-        <pre>{{ data }}</pre>
-      </div>
+      <Container>
+        <template v-if="queryType === 'profile'">
+          <ProfileDetails :data="data" />
+        </template>
+        <template v-else-if="queryType === 'account'">
+          <AccountSettings :data="data" />
+        </template>
+        <template v-else-if="queryType === 'notifications'">
+          <NotificationsSettings :data="data" />
+        </template>
+        <template v-else-if="queryType === 'privacy'">
+          <PrivacySettings :data="data" />
+        </template>
+      </Container>
     </div>
   </div>
 </template>
