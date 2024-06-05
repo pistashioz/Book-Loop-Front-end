@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <nav class="flex justify-between px-20 py-10 items-center bg-white">
+      <nav class="flex w-screen justify-between px-20 py-10 items-center bg-white">
         <h1 class="text-xl text-gray-800 font-bold">
           <NuxtLink to="/">Book Loop</NuxtLink>
         </h1>
