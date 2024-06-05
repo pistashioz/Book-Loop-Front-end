@@ -1,25 +1,16 @@
 const { $api } = useNuxtApp();
-
-export async function toggleSuspension(userId) {
-    const { data, error } = await $api.post(`/admin/suspend/${userId}`, {
-      method: 'POST', // Likely POST for both suspend and unsuspend
-      /*
-      headers: {
-        'Authorization': `Bearer ${getToken()}`, // Replace with your token retrieval logic
-      },
-    body: {
-        suspensionDate:
-      }
-      */
-
-    });
-  
-    if (error) {
-      console.error('Error toggling user suspension:', error);
-      return context.res.status(error.response.status).json(error.response.data);
-    }
-  
-    console.log(data.message); 
+const error = ref(null)
+export async function toggleSuspension(userId, suspension) {
+  error.value = null
+  try{
+    console.log(userId, suspension)
+    const response = await $api.patch(`/users/${userId}`, suspension, 
+    {});
+    return response
+  }
+  catch(err){
+    error.value = err.response?.data?.message || 'Error suspending/unsuspending user';
+  }
     
   }
 
@@ -40,3 +31,20 @@ export async function toggleSuspension(userId) {
     }
   }
   
+  export async function getUsersForDeletion(){
+    try {
+      const response = await $api.get(`/users/scheduled-to-delete`);
+      console.log('response for get users for deletion: ', response)
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  export async function getSuspendedUsers(){
+    try {
+      const response = await $api.get(`/users/suspended-users`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }

@@ -11,7 +11,7 @@
         </div>
       </div>
       <div v-else class="bg-white p-4 sm:ml-64">
-        <!-- component -->
+         
 <body class="antialiased font-sans bg-white">
     <div class="container mx-auto px-4 sm:px-8">
         <div class="py-8">
@@ -21,12 +21,11 @@
             <div class="my-2 flex sm:flex-row flex-col">
                 <div class="flex flex-row mb-1 sm:mb-0">
                     <div class="relative">
-                        <select
+                        <select @change="onFilterChange" v-model="filter" 
                             class="appearance-none h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
                             <option value="all">All</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
                             <option value="to_be_deleted">To be deleted</option>
+                            <option value="suspended">Suspended</option>
                         </select>
                         
                     </div>
@@ -107,7 +106,7 @@
                                         class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
                                         <span aria-hidden 
                                             class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
-                                        <span class="relative">to be deleted</span>
+                                        <span class="relative">To be deleted</span>
                                     </span>
                                     <span v-if = "user.isActiveStatus === 'Inactive'"
                                         class="relative inline-block px-3 py-1 font-semibold text-gray-900 leading-tight">
@@ -118,22 +117,29 @@
                                     <span v-if = "user.isActiveStatus === 'suspended'"
                                         class="relative inline-block px-3 py-1 font-semibold text-black-900 leading-tight">
                                         <span aria-hidden 
-                                            class="absolute inset-0"></span>
+                                            class="absolute inset-0 bg-orange-200 opacity-50 rounded-full"></span>
                                         <span class="relative">Suspended</span>
                                     </span>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <button  @click="openDeleteUserModal(user)">
-                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"  @click="toggleDropdown(user.userId)">
+                                    <button id="dropdownMenuIconButton"  v-if = "user.deletionScheduleDate == null || !isThirtyDaysPassed(user.deletionScheduleDate)" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                            <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                         </svg>
-                                    </button>
-                                    <button>
-                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                                        </svg>
-                                    </button>
-
+                                    </button>       
+                                        <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[user.userId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                                                            <li>
+                                                                <button v-if="user.isActiveStatus === 'to be deleted'" class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="removeUser(user.userId)">Delete</button>
+                                                            </li>
+                                                            <li>
+                                                                <button v-if = "user.isActiveStatus == 'suspended'" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click = "SuspendUser(user)">Unsuspend</button>
+                                                                <button v-else-if = "user.isActiveStatus == 'active'" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"  @click = "SuspendUser(user)">Suspend</button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>  
+                                    
+                                                  
                                 </td>
                             </tr>
                         </tbody>
@@ -141,7 +147,7 @@
                     <div
                         class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                         <span class="text-xs xs:text-sm text-gray-900">
-                            Showing 1 to 4 of {{total}} Entries
+                            Showing 1 to 10 of {{total}} Entries
                         </span>
                         <div class="inline-flex mt-2 xs:mt-0">
                             <button 
@@ -161,7 +167,7 @@
                 </div>
             </div>
         </div>
-        <ModalDeleteUser v-if="showModal" @close-modal="showModal = false" :user="selectedUserId"/>
+        <!--<ModalDeleteUser v-if="showModal" @close-modal="showModal = false" :user="selectedUserId"/> -->
     </div>
 </body>
       </div>
@@ -171,21 +177,14 @@
   <script setup>
   import SideBar from '~/components/SideBar.vue';
   import {findAll} from '~/composables/api/userService';
-  import ModalDeleteUser from '~/components/ModalDeleteUser.vue';
-  const showModal = ref(false);
-  const selectedUserId = ref(null);
-
+  import { toggleSuspension, deleteUser, getUsersForDeletion, getSuspendedUsers } from '~/composables/api/adminService';
+  const isShowDropdown = reactive({})
   const props = defineProps({
     user: Object,
     });
-  const openDeleteUserModal = (user) =>{
-    console.log(showModal.value)
-    selectedUserId.value = user;
-    console.log('seleted user: ', selectedUserId)
-    showModal.value = true;
-};
   const isLoading = ref(true);
   const users = ref([]);
+  const filter = ref('all')
   const currentPage = ref(1)
   const totalPages = ref(0)
   const total = ref(0)
@@ -196,7 +195,9 @@
 };
 
 
-
+const toggleDropdown = async (userId) => {
+    isShowDropdown[userId] = !isShowDropdown[userId];
+}
 const prevPage = async () => {
   if (currentPage.value > 1) {
     currentPage.value--;
@@ -208,6 +209,59 @@ const prevPage = async () => {
     }
   }
 };
+
+const SuspendUser = async(user) => {
+    try{
+        const today = new Date().toISOString().slice(0, 10);
+
+        const suspension = {
+            suspensionDate: today,
+        };
+        const response = await toggleSuspension(user.userId, suspension)
+        console.log('API response: ', response)
+        if (response) {
+            user.isActiveStatus = user.isActiveStatus === 'active' ? 'suspended' : 'active';
+    }
+    } catch(error){
+        console.error("Error suspending/unsuspending user:", error)
+    }
+}
+
+const removeUser = async(userId) => {
+    try {
+        const response = await deleteUser(userId)
+        console.log('API response: ', response)
+        const userToDelete = document.querySelector(`tr[data-user-id="${userId}"]`)
+    if (userToDelete) {
+      const observer = new MutationObserver(() => {
+        if (!userToDelete.parentNode) { // Check if user row is removed
+          observer.disconnect()
+        }
+      })
+      observer.observe(userToDelete.parentNode, { childList: true })
+      userToDelete.parentNode.removeChild(userToDelete)
+    }
+}
+    catch(error){
+        console.error("Error deleting user: ", error)
+    }
+}
+const isThirtyDaysPassed = async (deletionScheduleDate) => {
+  const today = new Date();
+  console.log('today: ', today)
+  const deletionDate = new Date(deletionScheduleDate);
+  console.log(deletionDate)
+  const diffInMs = deletionDate.getTime() - today.getTime() ;
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  console.log(diffInDays)
+  if (diffInDays <= 0){
+    return true
+  }
+  else {
+    return false
+  }
+}
+
 const nextPage = async () => {
 
   if (currentPage.value < totalPages.value) {
@@ -222,8 +276,42 @@ const nextPage = async () => {
     }
   }
 };
+
+const fetchUsers = async () => {
+  isLoading.value = true;
+  try {
+    let usersData
+    if (filter.value === 'all') {
+        usersData = await findAll(currentPage);
+      console.log(usersData)
+    } else if (filter.value === 'to_be_deleted') {
+      usersData = await getUsersForDeletion();
+    } else if (filter.value === 'suspended') {
+      usersData = await getSuspendedUsers();
+    }
+
+    if (usersData) {
+      total.value = usersData.totalUsers;
+      users.value = usersData.data;
+      currentPage.value = usersData.currentPage;
+      totalPages.value = usersData.totalPages;
+    } else {
+      console.error('Error fetching data:', usersData.error);
+    }
+  } catch (error) {
+    console.error('An unexpected error occurred:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const onFilterChange = () => {
+  fetchUsers();
+};
+
   onMounted(async () => {
-    console.log('hola')
+    await fetchUsers();
+/*
     try {
     const usersData = await findAll(currentPage);
     console.log('Users data: ', usersData)
@@ -233,6 +321,9 @@ const nextPage = async () => {
         users.value = usersData.data; // Asign eftched users to users variable
         currentPage.value = usersData.currentPage; // Update current page
         totalPages.value = usersData.totalPages; 
+        users.value.forEach(user => {
+        isShowDropdown[user.userId] = false;
+    })
     } else {
         console.error('Error fetching data:', usersData.error);
     }
@@ -240,7 +331,7 @@ const nextPage = async () => {
     console.error('An unexpected error occurred:', error);
   } finally {
     isLoading.value = false;
-  }
+  }*/
 });
   
 
@@ -250,5 +341,17 @@ const nextPage = async () => {
   .modal-container {
     z-index: 2; 
   }
+  .dropdown-content {
+    visibility: hidden; 
+    opacity: 0; 
+    transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+    position: absolute; 
+}
+
+.dropdown-content.show {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s; 
+}
   </style>
   

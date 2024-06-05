@@ -41,7 +41,6 @@
 
 <script setup>
 import SideBar from '~/components/SideBar.vue';
-import Navbar from '~/components/NavBar.vue'
 import { ref, onMounted } from 'vue';
 import { fetchWorks } from '~/composables/api/workService';  // fetchAuthorByWorkId
 import WorkCard from '~/components/WorkCard.vue';

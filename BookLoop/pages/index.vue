@@ -3,6 +3,8 @@
 </template>
 
 <script setup>
+import 'flowbite';
+import 'flowbite/dist/flowbite.min.css';
 
 </script>
 

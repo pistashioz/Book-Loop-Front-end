@@ -14,6 +14,12 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Book Loop',
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css'
+        }
+      ]
     }
   },
   imports: {
@@ -24,5 +30,8 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3360/',
     }
   },
+
+
+  
   components: true, // Enable auto-import of components
 });

@@ -50,7 +50,7 @@ export default {
       this.selectedOptions = Array.from(selectedOptionSet);
       this.$emit('selectionChanged', this.selectedOptions);
     }
-  }, // <-- Add a semicolon here
+  }
 };
 
 </script>
