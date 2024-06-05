@@ -28,16 +28,16 @@
                 </button>
                 <!-- Dropdown menu -->
                 <div v-if="isDropdownOpen" id="userDropdown" class="absolute right-0 z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900 dark:divide-gray-600">
-                  <div class="px-4 py-3 text-sm text-gray-900 dark:text-white font-satoshi-medium">
+                  <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
                     <div>{{ userProfile.username }}</div>
                     <div class="font-medium truncate">{{ userProfile.email }}</div>
                   </div>
                   <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-satoshi-medium" aria-labelledby="avatarButton">
                     <li>
-                      <NuxtLink to="/users/:userId" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</NuxtLink>
+                      <NuxtLink :to="`/users/${userId}`" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</NuxtLink>
                     </li>
                     <li>
-                      <NuxtLink to="/users/me/settings" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile Settings</NuxtLink>
+                      <NuxtLink :to="{ path: '/users/me/settings', query: { type: 'profile' } }" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile Settings</NuxtLink>
                     </li>
                     <li>
                       <NuxtLink to="/users/me/personalization" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Personalization</NuxtLink>
@@ -60,15 +60,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '~/composables/stores/user';
-import { storeToRefs } from 'pinia'; 
+import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useNuxtApp } from '#app';
 
 // Initialize user store
 const userStore = useUserStore();
-const { userId, isAdmin } = storeToRefs(userStore); 
+const { userId, isAdmin } = storeToRefs(userStore);
+
 const router = useRouter();
 const { $api } = useNuxtApp();
 
@@ -76,10 +77,14 @@ const { $api } = useNuxtApp();
 const isDropdownOpen = ref(false);
 const userProfile = ref({ username: '', email: '' });
 
+// Computed property to ensure userId is correctly referenced
+const userIdValue = computed(() => userId.value);
+
 // Fetch user profile details
 const fetchUserProfile = async () => {
   try {
     const response = await $api.get('/users/me/settings?type=profile');
+    console.log(`the user id is ${userIdValue.value}`);
     userProfile.value = response.data;
     console.log('User profile:', userProfile.value);
   } catch (err) {

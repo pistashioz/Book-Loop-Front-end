@@ -2,6 +2,7 @@
 <template>
   <div class="flex">
     <Sidebar />
+    <Container />
     <div class="flex-1">
       <Navbar />
       <NuxtPage />
