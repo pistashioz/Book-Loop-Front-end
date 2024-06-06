@@ -81,9 +81,9 @@ const userProfile = ref({ username: '', email: '' });
 const userIdValue = computed(() => userId.value);
 
 // Fetch user profile details
-const fetchUserProfile = async () => {
+const fetchUserAccount = async () => {
   try {
-    const response = await $api.get('/users/me/settings?type=profile');
+    const response = await $api.get('/users/me/settings?type=account');
     console.log(`the user id is ${userIdValue.value}`);
     userProfile.value = response.data;
     console.log('User profile:', userProfile.value);
@@ -95,7 +95,7 @@ const fetchUserProfile = async () => {
 // Toggle dropdown visibility
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
-  fetchUserProfile();
+  fetchUserAccount();
 };
 
 // Logout function to handle user logout and redirect to the landing page
@@ -105,6 +105,6 @@ async function logout() {
 }
 
 onMounted(() => {
-  fetchUserProfile();
+  fetchUserAccount();
 });
 </script>

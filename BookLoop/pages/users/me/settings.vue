@@ -2,19 +2,22 @@
   <div>
     <div v-if="loading">Loading...</div>
     <div v-else>
-      <Container>
+      <Container @update-profile="updateProfile">
         <template v-if="queryType === 'profile'">
-          <ProfileDetails :data="data" />
+          <ProfileDetails ref="profileDetailsRef" :data="data" :addressError="addressError" :errorFields="errorFields" />
         </template>
+        <!-- Uncomment these templates if needed -->
+        <!--
         <template v-else-if="queryType === 'account'">
-          <AccountSettings :data="data" />
+          <AccountSettings ref="accountSettingsRef" :data="data" />
         </template>
         <template v-else-if="queryType === 'notifications'">
-          <NotificationsSettings :data="data" />
+          <NotificationsSettings ref="notificationsSettingsRef" :data="data" />
         </template>
         <template v-else-if="queryType === 'privacy'">
-          <PrivacySettings :data="data" />
+          <PrivacySettings ref="privacySettingsRef" :data="data" />
         </template>
+        -->
       </Container>
     </div>
   </div>
@@ -23,7 +26,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useNuxtApp } from '#app';
+import { useUserService } from '~/composables/api/userService';
 
 definePageMeta({
   layout: 'settings'
@@ -31,23 +34,28 @@ definePageMeta({
 
 const route = useRoute();
 const router = useRouter();
-const nuxtApp = useNuxtApp();
-const api = nuxtApp.$api;
+const { fetchUserData, updateUserData, updateUserAddress } = useUserService();
 
 // State to hold the data and loading status
 const data = ref(null);
 const loading = ref(false);
 const queryType = ref(route.query.type || 'profile');
 
+// Refs for accessing component data
+const profileDetailsRef = ref(null);
+
+// State for address errors and fields
+const addressError = ref('');
+const errorFields = ref([]);
+
+// Extract the URI dynamically from the current route
+const currentPath = route.fullPath;
+
 // Function to fetch data based on the query parameter
 const fetchData = async (type) => {
   loading.value = true;
   try {
-    // Extract the URI dynamically from the current route
-    const currentPath = route.fullPath;
-    console.log(`the current path is: ${currentPath}`)
-    const response = await api.get(`${currentPath}`);
-    data.value = response.data;
+    data.value = await fetchUserData(currentPath);
   } catch (error) {
     console.error('Failed to fetch data:', error);
   } finally {
@@ -72,4 +80,59 @@ watch(
 
 // Fetch initial data
 fetchData(queryType.value);
+
+// Function to handle profile update
+const updateProfile = async () => {
+  let profileUpdateData = {};
+  let addressUpdateData = {};
+  let shouldUpdateAddress = false;
+  
+  if (queryType.value === 'profile' && profileDetailsRef.value) {
+    addressError.value = '';
+    errorFields.value = [];
+    
+    profileUpdateData = {
+      profileImage: profileDetailsRef.value.profileImage,
+      about: profileDetailsRef.value.aboutYou,
+      showCity: profileDetailsRef.value.showCity,
+      defaultLanguage: profileDetailsRef.value.defaultLanguage,
+    };
+
+    const { zipCode, streetName, streetNumber, locality, selectedCountry } = profileDetailsRef.value;
+    const country = selectedCountry.name !== 'Select Country' ? selectedCountry.name : undefined;
+    if ((zipCode || locality || country)) {
+      addressUpdateData = {
+        postalCode: zipCode || undefined,
+        locality: locality || undefined,
+        country: country || undefined,
+      };
+    }
+
+    if ((streetName || streetNumber) || (streetName === '' && streetNumber === '')) {
+      addressUpdateData = {
+        ...addressUpdateData,
+        street: streetName || undefined,
+        streetNumber: streetNumber || undefined,
+      };
+    }
+
+    shouldUpdateAddress = Object.keys(addressUpdateData).length > 0;
+  }
+  
+  try {
+    // Update profile data
+    await updateUserData(currentPath, profileUpdateData);
+
+    // Update address data if required
+    if (shouldUpdateAddress) {
+      await updateUserAddress(addressUpdateData);
+    }
+  } catch (error) {
+    console.error('Failed to update profile:', error);
+    if (error.response && error.response.data && error.response.data.message) {
+      addressError.value = error.response.data.message;
+      errorFields.value = error.response.data.missingFields || [];
+    }
+  }
+};
 </script>
