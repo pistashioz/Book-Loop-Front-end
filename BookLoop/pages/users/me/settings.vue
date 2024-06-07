@@ -7,17 +7,13 @@
           <ProfileDetails ref="profileDetailsRef" :data="data" :addressError="addressError" :errorFields="errorFields" />
         </template>
 
-    
         <template v-else-if="queryType === 'account'">
           <AccountSettings ref="accountSettingsRef" :data="data" />
         </template>
-<!--         <template v-else-if="queryType === 'notifications'">
+
+        <template v-else-if="queryType === 'notifications'">
           <NotificationsSettings ref="notificationsSettingsRef" :data="data" />
         </template>
-        <template v-else-if="queryType === 'privacy'">
-          <PrivacySettings ref="privacySettingsRef" :data="data" />
-        </template> -->
-       
       </Container>
     </div>
   </div>
@@ -44,6 +40,7 @@ const queryType = ref(route.query.type || 'profile');
 // Refs for accessing component data
 const profileDetailsRef = ref(null);
 const accountSettingsRef = ref(null);
+const notificationsSettingsRef = ref(null);
 
 // State for address errors and fields
 const addressError = ref('');
@@ -89,11 +86,11 @@ const updateProfile = async () => {
   let profileUpdateData = {};
   let addressUpdateData = {};
   let shouldUpdateAddress = false;
-  
+
   if (queryType.value === 'profile' && profileDetailsRef.value) {
     addressError.value = '';
     errorFields.value = [];
-    
+
     profileUpdateData = {
       profileImage: profileDetailsRef.value.profileImage,
       about: profileDetailsRef.value.aboutYou,
@@ -120,8 +117,21 @@ const updateProfile = async () => {
     }
 
     shouldUpdateAddress = Object.keys(addressUpdateData).length > 0;
+  } else if (queryType.value === 'account' && accountSettingsRef.value) {
+    profileUpdateData = {
+      username: accountSettingsRef.value.username,
+      email: accountSettingsRef.value.email,
+      name: accountSettingsRef.value.name,
+      birthday: accountSettingsRef.value.birthday,
+      holidayMode: accountSettingsRef.value.holidayMode,
+    };
+  } else if (queryType.value === 'notifications' && notificationsSettingsRef.value) {
+    profileUpdateData = {
+      notifications: notificationsSettingsRef.value.notificationsData,
+    };
+    console.log('notifications', notificationsSettingsRef.value.notificationsData);
   }
-  
+
   try {
     // Update profile data
     await updateUserData(currentPath, profileUpdateData);
