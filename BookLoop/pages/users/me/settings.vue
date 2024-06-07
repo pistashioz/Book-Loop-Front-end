@@ -6,18 +6,18 @@
         <template v-if="queryType === 'profile'">
           <ProfileDetails ref="profileDetailsRef" :data="data" :addressError="addressError" :errorFields="errorFields" />
         </template>
-        <!-- Uncomment these templates if needed -->
-        <!--
+
+    
         <template v-else-if="queryType === 'account'">
           <AccountSettings ref="accountSettingsRef" :data="data" />
         </template>
-        <template v-else-if="queryType === 'notifications'">
+<!--         <template v-else-if="queryType === 'notifications'">
           <NotificationsSettings ref="notificationsSettingsRef" :data="data" />
         </template>
         <template v-else-if="queryType === 'privacy'">
           <PrivacySettings ref="privacySettingsRef" :data="data" />
-        </template>
-        -->
+        </template> -->
+       
       </Container>
     </div>
   </div>
@@ -43,6 +43,7 @@ const queryType = ref(route.query.type || 'profile');
 
 // Refs for accessing component data
 const profileDetailsRef = ref(null);
+const accountSettingsRef = ref(null);
 
 // State for address errors and fields
 const addressError = ref('');
@@ -56,6 +57,7 @@ const fetchData = async (type) => {
   loading.value = true;
   try {
     data.value = await fetchUserData(currentPath);
+    console.log('Fetched data:', data.value);
   } catch (error) {
     console.error('Failed to fetch data:', error);
   } finally {

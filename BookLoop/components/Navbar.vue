@@ -104,7 +104,7 @@ async function logout() {
   router.push('/');
 }
 
-onMounted(() => {
+/* onMounted(() => {
   fetchUserAccount();
-});
+}); */
 </script>
