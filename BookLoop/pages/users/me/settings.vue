@@ -50,10 +50,11 @@ const addressError = ref('');
 const errorFields = ref([]);
 
 // Extract the URI dynamically from the current route
-const currentPath = route.fullPath;
+let currentPath;
 
 // Function to fetch data based on the query parameter
 const fetchData = async (type) => {
+  currentPath = route.fullPath;
   loading.value = true;
   try {
     data.value = await fetchUserData(currentPath);

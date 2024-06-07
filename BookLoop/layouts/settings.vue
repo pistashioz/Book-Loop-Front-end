@@ -1,7 +1,7 @@
 <!-- layouts/settings.vue -->
 <template>
   <div class="flex flex-col h-screen items-center">
-    <Navbar />
+    <Navbar class="w-full"/>
 
     <div class="relative flex w-full justify-center top-5 space-x-12">
       <Sidebar />
