@@ -40,7 +40,7 @@
                       <NuxtLink :to="{ path: '/users/me/settings', query: { type: 'profile' } }" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile Settings</NuxtLink>
                     </li>
                     <li>
-                      <NuxtLink to="/users/me/personalization" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Personalization</NuxtLink>
+                      <NuxtLink to="/users/me/favorite-genres" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Personalization</NuxtLink>
                     </li>
                     <li v-if="isAdmin">
                       <NuxtLink to="/admin" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Admin Panel</NuxtLink>

@@ -14,6 +14,10 @@
         <template v-else-if="queryType === 'notifications'">
           <NotificationsSettings ref="notificationsSettingsRef" :data="data" />
         </template>
+
+        <template v-else-if="queryType === 'privacy'">
+          <PrivacySettings ref="privacySettingsRef" :data="data" />
+        </template>
       </Container>
     </div>
   </div>
@@ -41,6 +45,7 @@ const queryType = ref(route.query.type || 'profile');
 const profileDetailsRef = ref(null);
 const accountSettingsRef = ref(null);
 const notificationsSettingsRef = ref(null);
+const privacySettingsRef = ref(null);
 
 // State for address errors and fields
 const addressError = ref('');
@@ -127,9 +132,12 @@ const updateProfile = async () => {
     };
   } else if (queryType.value === 'notifications' && notificationsSettingsRef.value) {
     profileUpdateData = {
-      notifications: notificationsSettingsRef.value.notificationsData,
+      notifications: notificationsSettingsRef.value.getFlattenedData()
     };
-    console.log('notifications', notificationsSettingsRef.value.notificationsData);
+  } else if (queryType.value === 'privacy' && privacySettingsRef.value) {
+    profileUpdateData = {
+      privacy: privacySettingsRef.value.getFlattenedData()
+    };
   }
 
   try {
