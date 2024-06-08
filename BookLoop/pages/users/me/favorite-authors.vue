@@ -18,7 +18,7 @@
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserService } from '~/composables/api/userService';
-// import { useAuthorService } from '~/composables/api/authorService';
+import { useAuthorService } from '~/composables/api/authorService';
 
 definePageMeta({
   layout: 'settings'
@@ -27,7 +27,7 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const { fetchUserData, updateUserData } = useUserService();
-// const { fetchAllAuthors } = useAuthorService();
+const { fetchAllAuthors } = useAuthorService();
 
 // State to hold the data and loading status
 const favoriteAuthorsData = ref(null);
@@ -46,7 +46,8 @@ const fetchData = async () => {
   loading.value = true;
   try {
     favoriteAuthorsData.value = await fetchUserData(currentPath);
-    allAuthorsData.value = await fetchAllAuthors();
+    const allAuthorsResponse = await fetchAllAuthors();
+    allAuthorsData.value = allAuthorsResponse.persons;
     console.log('Fetched favorite authors:', favoriteAuthorsData.value);
     console.log('Fetched all authors:', allAuthorsData.value);
   } catch (error) {
