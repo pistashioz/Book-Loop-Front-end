@@ -48,3 +48,67 @@ export async function toggleSuspension(userId, suspension) {
       throw error;
     }
   }
+
+
+  // person functions
+
+export const getPersons = async (role, currentPage) => {
+  try {
+    console.log('get person role: ', role)
+    console.log('get current page: ', currentPage)
+      const response = await $api.get(`/persons`, {
+        params: {
+          role: role,
+          page: currentPage
+        }
+      });
+      console.log('respose get persons: ', response)
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching persons:', error);
+      throw error;
+  }
+};
+
+export const removePerson = async (personId) => {
+  try {
+    const { data, error} = await $api.delete(`/persons/${personId}`)
+    if (error) {
+      console.error('Error deleting user:', error);
+      return context.res.status(error.response.status).json(error.response.data);
+    }
+    console.log(data.message); 
+  } catch (error) {
+    console.error('Error deleting person:', error);
+    return context.res.status(500).json({ message: 'Error deleting person' });
+  }
+}
+
+export const updatePerson = async (personId, personName) => {
+  try {
+    const response = await $api.patch(`/persons/${personId}`, personName)
+    return response
+  } catch (error) {
+    console.error('Error updating person info:', error);
+    return context.res.status(500).json({ message: 'Error updating person info' });
+  }
+}
+
+// publisher functions
+
+export const getPublishers = async(currentPage, limit = 10) => {
+  try {
+    console.log('get current page: ', currentPage)
+      const response = await $api.get(`/publishers`, {
+        params: {
+          page: currentPage,
+          limit
+        }
+      });
+      console.log('respose get publishers: ', response)
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching publishers:', error);
+      throw error;
+  }
+}
