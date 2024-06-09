@@ -42,7 +42,7 @@ const workId = route.params.workId;
 const work = ref(null);
 const isLoading = ref(true);
 
-onMounted(async () => {
+/* onMounted(async () => {
   try {
     // Fetch the work data by ID
     const workData = await fetchWorkById(workId);
@@ -69,5 +69,5 @@ onMounted(async () => {
   } finally {
     isLoading.value = false;
   }
-});
+}); */
 </script>

@@ -3,9 +3,7 @@
     <Navbar class="w-full"/> 
     <Nuxt /> 
   </div>
-  <div>
-    <slot />
-  </div>
+  <NuxtPage/>
   </template>
 <script>
 /* import Navbar from '../components/Navbar.vue'; 

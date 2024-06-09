@@ -188,7 +188,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineExpose, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 // Define props
 const props = defineProps({

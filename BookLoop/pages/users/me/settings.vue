@@ -2,7 +2,7 @@
   <div>
     <div v-if="loading">Loading...</div>
     <div v-else>
-      <Container @update-profile="updateProfile">
+      <Container :message="message" @update-profile="updateProfile">
         <template v-if="queryType === 'profile'">
           <ProfileDetails ref="profileDetailsRef" :data="data" :addressError="addressError" :errorFields="errorFields" />
         </template>
@@ -32,6 +32,7 @@ definePageMeta({
   layout: 'settings'
 });
 
+// Initialize services
 const route = useRoute();
 const router = useRouter();
 const { fetchUserData, updateUserData, updateUserAddress } = useUserService();
@@ -41,15 +42,27 @@ const data = ref(null);
 const loading = ref(false);
 const queryType = ref(route.query.type || 'profile');
 
+// State for address errors and fields
+const addressError = ref('');
+const errorFields = ref([]);
+
 // Refs for accessing component data
 const profileDetailsRef = ref(null);
 const accountSettingsRef = ref(null);
 const notificationsSettingsRef = ref(null);
 const privacySettingsRef = ref(null);
 
-// State for address errors and fields
-const addressError = ref('');
-const errorFields = ref([]);
+// Message for displaying error/success messages
+const message = ref({ text: '', isSuccess: true });
+
+// Function to display messages
+const displayMessage = (msg, isSuccess) => {
+  message.value.text = msg;
+  message.value.isSuccess = isSuccess;
+  setTimeout(() => {
+    message.value.text = '';
+  }, 5000);
+};
 
 // Extract the URI dynamically from the current route
 let currentPath;
@@ -148,11 +161,17 @@ const updateProfile = async () => {
     if (shouldUpdateAddress) {
       await updateUserAddress(addressUpdateData);
     }
+
+    // Display success message
+    displayMessage('Profile updated successfully', true);
   } catch (error) {
     console.error('Failed to update profile:', error);
     if (error.response && error.response.data && error.response.data.message) {
       addressError.value = error.response.data.message;
       errorFields.value = error.response.data.missingFields || [];
+      displayMessage(error.response.data.message, false); // Display error message
+    } else {
+      displayMessage('Failed to update profile', false); // Generic error message
     }
   }
 };

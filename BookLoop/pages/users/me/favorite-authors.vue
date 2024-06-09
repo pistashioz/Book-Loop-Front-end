@@ -1,13 +1,25 @@
 <template>
   <div>
-    <div v-if="loading">Loading...</div>
+    <div v-if="favoriteAuthorsPending || allAuthorsPending">Loading...</div>
     <div v-else>
-      <Container @update-profile="updateProfile">
+      <Container :message="message" @update-profile="updateProfile">
         <template #default>
-          <FavoriteAuthors ref="favoriteAuthorsRef" :data="favoriteAuthorsData" />
+          <FavoriteAuthors
+            ref="favoriteAuthorsRef"
+            :data="favoriteAuthorsData"
+            @unfollow-author="unfollowAuthor"
+            @follow-author="handleFollowAuthor"
+            @update-message="updateMessage"
+          />
         </template>
         <template #secondary>
-          <AllAuthors :data="allAuthorsData" />
+          <AllAuthors
+            :data="allAuthorsData"
+            :favoriteAuthors="favoriteAuthorsData"
+            @follow-author="handleFollowAuthor"
+            @unfollow-author="handleUnfollowAuthor"
+            @update-message="updateMessage"
+          />
         </template>
       </Container>
     </div>
@@ -19,55 +31,77 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserService } from '~/composables/api/userService';
 import { useAuthorService } from '~/composables/api/authorService';
+import { useAsyncData } from '#imports';
 
 definePageMeta({
   layout: 'settings'
 });
 
+// Initialize services
 const route = useRoute();
 const router = useRouter();
-const { fetchUserData, updateUserData } = useUserService();
-const { fetchAllAuthors } = useAuthorService();
-
-// State to hold the data and loading status
-const favoriteAuthorsData = ref(null);
-const allAuthorsData = ref([]);
-const loading = ref(false);
+const { fetchUserData, updateUserData, addFavoriteAuthor, removeFavoriteAuthor } = useUserService();
+const { fetchAuthorsByLetter } = useAuthorService();
 
 // Ref for accessing component data
 const favoriteAuthorsRef = ref(null);
+const selectedLetter = ref('A');
+const currentPage = ref(1);
 
-// Extract the URI dynamically from the current route
-let currentPath;
+// Message for displaying error/success messages
+const message = ref({ text: '', isSuccess: true });
 
-// Function to fetch data based on the route
-const fetchData = async () => {
-  currentPath = route.fullPath;
-  loading.value = true;
-  try {
-    favoriteAuthorsData.value = await fetchUserData(currentPath);
-    const allAuthorsResponse = await fetchAllAuthors();
-    allAuthorsData.value = allAuthorsResponse.persons;
-    console.log('Fetched favorite authors:', favoriteAuthorsData.value);
-    console.log('Fetched all authors:', allAuthorsData.value);
-  } catch (error) {
-    console.error('Failed to fetch data:', error);
-  } finally {
-    loading.value = false;
+// Function to display messages
+const displayMessage = (msg, isSuccess) => {
+  message.value.text = msg;
+  message.value.isSuccess = isSuccess;
+  setTimeout(() => {
+    message.value.text = '';
+  }, 5000);
+};
+
+// Fetch favorite authors data
+const { data: favoriteAuthorsData, pending: favoriteAuthorsPending } = await useAsyncData(
+  'favoriteAuthors',
+  () => fetchUserData(route.fullPath)
+);
+
+// Fetch all authors data with pagination based on the selected letter
+const { data: allAuthorsData, pending: allAuthorsPending, refresh: refreshAuthors } = await useAsyncData(
+  'allAuthors',
+  () => fetchAuthorsByLetter(selectedLetter.value, currentPage.value).then(response => response.persons),
+  { watch: [selectedLetter, currentPage] }
+);
+
+// Handle follow author event
+const handleFollowAuthor = (author) => {
+  if (!favoriteAuthorsData.value.some(a => a.person.personId === author.person.personId)) {
+    favoriteAuthorsData.value.push(author);
   }
 };
 
-// Fetch initial data
-fetchData();
+// Handle unfollow author event
+const handleUnfollowAuthor = (authorId) => {
+  favoriteAuthorsData.value = favoriteAuthorsData.value.filter(a => a.person.personId !== authorId);
+};
 
-// Watch for changes in the route to fetch new data
-watch(
-  () => route.path,
-  (newPath) => {
-    fetchData();
-  },
-  { immediate: true }
-);
+// Function to update message
+const updateMessage = (msg) => {
+  displayMessage(msg.text, msg.isSuccess);
+};
+
+
+// Function to unfollow an author
+const unfollowAuthor = async (authorId) => {
+  try {
+    const author = favoriteAuthorsData.value.find(a => a.person.personId === authorId);
+    allAuthorsData.value.push(author.person);
+    favoriteAuthorsData.value = favoriteAuthorsData.value.filter(a => a.person.personId !== authorId);
+  } catch (error) {
+    displayMessage(error.response.data.message, false);
+    console.error('Failed to unfollow author:', error);
+  }
+};
 
 // Function to handle profile update
 const updateProfile = async () => {
@@ -80,8 +114,7 @@ const updateProfile = async () => {
   }
 
   try {
-    // Update profile data
-    await updateUserData(currentPath, profileUpdateData);
+    await updateUserData(route.fullPath, profileUpdateData);
   } catch (error) {
     console.error('Failed to update profile:', error);
   }

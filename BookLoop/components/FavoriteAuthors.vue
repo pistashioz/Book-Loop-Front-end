@@ -1,19 +1,17 @@
 <template>
   <div class="space-y-6">
-    <h6 class="text-base font-bold dark:text-white">Select your favorite authors</h6>
+    <h6 class="text-base font-bold dark:text-white">Your Favorite Authors</h6>
     <div id="subtitle" class="text-sm font-satoshi-medium font-bold text-gray-400 dark:text-white">
-      <p > You currently have x favorite authors</p>
-      <!-- <p v-else>You currently don't have any favorite authors saved. Save some!</p> -->
+      <p v-if="numAuthors > 0">You currently have {{ numAuthors }} favorite authors</p>
+      <p v-else>You currently don't have any favorite authors saved. Save some!</p>
     </div>
 
-    <!-- Conditional rendering based on the number of authors -->
-    <div  class="wrapper flex flex-wrap gap-2">
-      <div class="py-2.5 space-x-2 pl-5 pr-4 flex items-center font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600">
-        <p class="text-base font-satoshi-medium font-bold dark:text-white">c</p>
-        <button @click="removeAuthor(author.id)" class="text-sm font-satoshi-medium font-bold dark:text-white border p-2 rounded-full h-7 w-7 flex items-center hover:bg-gray-100 hover:text-blue-700 dark:hover:text-white dark:hover:bg-gray-700">
-          <svg class="w-[32px] h-[32px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L17.94 6M18 18L6.06 6"/>
-          </svg>
+    <!-- Authors list -->
+    <div v-if="sortedAuthors.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div v-for="author in sortedAuthors" :key="author.person.personId" class="author-wrapper flex items-center justify-between font-medium text-gray-900 focus:outline-none bg-white dark:bg-gray-800 dark:text-gray-400 rounded-lg">
+        <p class="text-base font-satoshi-medium font-bold dark:text-white">{{ author.person.personName }}</p>
+        <button @click="unfollowAuthor(author.person.personId)" class="text-xs font-satoshi-medium font-bold dark:text-white border py-2.5 px-5 rounded-full w-fit flex items-center ml-2 hover:bg-gray-100 hover:text-blue-700 dark:hover:text-white dark:hover:bg-gray-700">
+          Unfollow
         </button>
       </div>
     </div>
@@ -21,8 +19,10 @@
 </template>
 
 <script setup>
-/* import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+import { useUserService } from '~/composables/api/userService';
 
+// Define props
 const props = defineProps({
   data: {
     type: Array,
@@ -30,17 +30,41 @@ const props = defineProps({
   }
 });
 
+// Reactive state
 const authors = ref(props.data);
 const numAuthors = computed(() => authors.value.length);
 
-// Computed property to sort authors alphabetically
+// Computed property for sorting authors
 const sortedAuthors = computed(() => {
-  return authors.value.sort((a, b) => a.name.localeCompare(b.name));
+  return authors.value.sort((a, b) => a.person.personName.localeCompare(b.person.personName));
 });
 
-const removeAuthor = (authorId) => {
-  // Logic to remove author
-}; */
+// Service for removing favorite authors
+const { removeFavoriteAuthor } = useUserService();
+
+// Emit events for follow and unfollow actions
+const emit = defineEmits(['unfollow-author', 'follow-author', 'update-message']);
+
+// Function to unfollow an author
+const unfollowAuthor = async (authorId) => {
+  console.log('Unfollowing author:', authorId);
+  try {
+    const response = await removeFavoriteAuthor(authorId);
+    authors.value = authors.value.filter(author => author.person.personId !== authorId);
+    console.log(response.message);
+    emit('unfollow-author', authorId);  // Emit an event to notify other components
+    emit('update-message', { text: response.message, isSuccess: true }); // Emit success message
+  } catch (error) {
+    console.error('Error unfollowing author:', error);
+    emit('update-message', { text: error.response.data.message, isSuccess: false }); // Emit error message
+  }
+};
+
+// Watch for prop data changes
+watch(() => props.data, (newData) => {
+  authors.value = newData;
+});
+
 </script>
 
 <style scoped>

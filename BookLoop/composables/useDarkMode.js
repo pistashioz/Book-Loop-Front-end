@@ -13,7 +13,7 @@ export const useDarkMode = () => {
     }
   };
 
-  onMounted(() => {
+/*   onMounted(() => {
     // Load the initial theme on client-side only
     setDarkMode(localStorage.getItem('darkMode') === 'true');
 
@@ -21,7 +21,7 @@ export const useDarkMode = () => {
     watchEffect(() => {
       localStorage.setItem('darkMode', isDark.value);
     });
-  });
+  }); */
 
   return { isDark, setDarkMode };
 };

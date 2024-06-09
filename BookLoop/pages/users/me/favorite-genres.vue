@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="loading">Loading...</div>
+    <div v-if="pending">Loading...</div>
     <div v-else>
       <Container @update-profile="updateProfile">
         <FavoriteGenres ref="favoriteGenresRef" :data="data" />
@@ -10,55 +10,25 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useUserService } from '~/composables/api/userService';
+import { useAsyncData } from '#imports';
 
 definePageMeta({
-  layout: 'settings'
+  layout: 'settings',
 });
 
 const route = useRoute();
-const router = useRouter();
-const { fetchUserData, updateUserData } = useUserService();
+const { fetchUserData } = useUserService();
 
-// State to hold the data and loading status
-const data = ref(null);
-const loading = ref(false);
-
-// Ref for accessing component data
 const favoriteGenresRef = ref(null);
-
-// Extract the URI dynamically from the current route
-let currentPath;
-
-// Function to fetch data based on the route
-const fetchData = async () => {
-  currentPath = route.fullPath;
-  loading.value = true;
-  try {
-    data.value = await fetchUserData(currentPath);
-    console.log('Fetched data:', data.value);
-  } catch (error) {
-    console.error('Failed to fetch data:', error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-// Fetch initial data
-fetchData();
-
-// Watch for changes in the route to fetch new data
-watch(
-  () => route.path,
-  (newPath) => {
-    fetchData();
-  },
-  { immediate: true }
+const { data, pending, error, refresh } = await useAsyncData(
+  'favoriteGenres',
+  () => fetchUserData(route.fullPath),
+  { watch: [route.path] }
 );
 
-// Function to handle profile update
 const updateProfile = async () => {
   let profileUpdateData = {};
 
@@ -69,8 +39,7 @@ const updateProfile = async () => {
   }
 
   try {
-    // Update profile data
-    await updateUserData(currentPath, profileUpdateData);
+    await updateUserData(route.fullPath, profileUpdateData);
   } catch (error) {
     console.error('Failed to update profile:', error);
   }

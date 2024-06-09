@@ -38,7 +38,6 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '~/composables/stores/user';
-import api from '~/plugins/api';
 
 const { $api } = useNuxtApp();
 // Router for navigation

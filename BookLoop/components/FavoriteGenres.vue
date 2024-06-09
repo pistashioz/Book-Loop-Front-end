@@ -210,8 +210,6 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-
-
 div#genre-dropdown {
   margin-top: 0.5rem;
 }

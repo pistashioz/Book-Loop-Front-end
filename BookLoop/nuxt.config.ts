@@ -9,10 +9,10 @@ export default defineNuxtConfig({
     '~/plugins/flowbite.js',
     '~/plugins/darkMode.js',
   ],
-  ssr: true,
+  ssr: false,
   css: [
     'flowbite/dist/flowbite.min.css',
-    '~/assets/css/main.css'
+    '~/assets/css/input.css'
   ],
   app: {
     head: {

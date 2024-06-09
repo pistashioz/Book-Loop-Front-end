@@ -7,7 +7,7 @@ export function useUserService() {
     try {
       console.log('fetching user data at path: ', path);
       const response = await $api.get(path);
-      console.log(response.data);
+
       return response.data;
     } catch (error) {
       throw error;
@@ -62,11 +62,43 @@ export function useUserService() {
     }
   };
 
+  /**
+   * Add a favorite author.
+   *
+   * @param {Object} author - The author data.
+   * @returns {Promise<Object>} - The response data.
+   */
+  const addFavoriteAuthor = async (author) => {
+    try {
+      const response = await $api.post('users/me/favorite-authors', author);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  /**
+   * Remove a favorite author.
+   *
+   * @param {number} authorId - The author ID.
+   * @returns {Promise<Object>} - The response data.
+   */
+  const removeFavoriteAuthor = async (authorId) => {
+    try {
+      const response = await $api.delete(`users/me/favorite-authors/${authorId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return {
     fetchUserData,
     updateUserData,
     updateUserAddress,
     addFavoriteGenre,
-    removeFavoriteGenre
+    removeFavoriteGenre,
+    addFavoriteAuthor,
+    removeFavoriteAuthor
   };
 }
