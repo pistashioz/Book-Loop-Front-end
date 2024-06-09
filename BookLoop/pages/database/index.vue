@@ -42,7 +42,6 @@
                 <svg class="flex-shrink-0 w-5 h-5 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path fill-rule="evenodd" d="M20.337 3.664c.213.212.354.486.404.782.294 1.711.657 5.195-.906 6.76-1.77 1.768-8.485 5.517-10.611 6.683a.987.987 0 0 1-1.176-.173l-.882-.88-.877-.884a.988.988 0 0 1-.173-1.177c1.165-2.126 4.913-8.841 6.682-10.611 1.562-1.563 5.046-1.198 6.757-.904.296.05.57.191.782.404ZM5.407 7.576l4-.341-2.69 4.48-2.857-.334a.996.996 0 0 1-.565-1.694l2.112-2.111Zm11.357 7.02-.34 4-2.111 2.113a.996.996 0 0 1-1.69-.565l-.422-2.807 4.563-2.74Zm.84-6.21a1.99 1.99 0 1 1-3.98 0 1.99 1.99 0 0 1 3.98 0Z" clip-rule="evenodd"/>
                 </svg>
-
                 Genres
             </button>
         </li>
@@ -249,6 +248,10 @@
                             <tr>
                                 <th
                                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    ID
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Name
                                 </th>
                                 <th
@@ -283,7 +286,20 @@
                                         </div>
                                         <div class="ml-3">
                                             <p class="text-gray-900 whitespace-no-wrap">
-                                                <u>{{person.personName}}</u>
+                                                {{person.personId}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm ">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10">
+
+
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                {{person.personName}}
                                             </p>
                                         </div>
                                     </div>
@@ -320,6 +336,9 @@
                                                                 <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditPerson(person.personId)">Edit</button>
                                                             </li>
                                                             <li>
+                                                                <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openRemoveRole(person.personId)">Remove Role</button>
+                                                            </li>
+                                                            <li>
 
                                                                 <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deletePerson(person.personId)">Delete</button>
                                                                 
@@ -331,8 +350,9 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <editPersonModal v-show="showModal" @close-modal="showModal = false" @update-successful="handleUpdate" :personId="currentPersonId"/>
-                        <AddPersonModal v-show = "showAddPersonModal" @close-modal = "showAddPersonModal = false" @update-successful="handleUpdate" />
+                        <editPersonModal v-show="showModal" @close-modal="showModal = false" @update-successful="handleUpdate('persons')" :personId="currentPersonId"/>
+                        <AddPersonModal v-show = "showAddPersonModal" @close-modal = "showAddPersonModal = false" @update-successful="handleUpdate('persons')" />
+                        <RemoveRoleModal  v-show="showRemoveRoleModal" @close-modal="showRemoveRoleModal = false" @update-successful="handleUpdate('persons')" :personId="currentPersonId"/>
                     </table>
                     <div
                         class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
@@ -388,6 +408,10 @@
                             <tr>
                                 <th
                                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    ID
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Name
                                 </th>
                                 <th
@@ -414,7 +438,20 @@
                                         </div>
                                         <div class="ml-3">
                                             <p class="text-gray-900 whitespace-no-wrap">
-                                                <u>{{publisher.publisherName}}</u>
+                                                {{publisher.publisherId}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm ">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10">
+
+
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                {{publisher.publisherName}}
                                             </p>
                                         </div>
                                     </div>
@@ -441,9 +478,7 @@
                                                                 <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditPublisher(publisher.publisherId)">Edit</button>
                                                             </li>
                                                             <li>
-
                                                                 <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deletePublisher(publisher.publisherId)">Delete</button>
-                                                                
                                                             </li>
                                                         </ul>
                                                     </div>  
@@ -452,8 +487,8 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <AddPublisherModal v-show = "showAddPublisherModal" @close-modal = "showAddPublisherModal = false" @update-successful="handleUpdate" />
-                        <editPublisherModal v-show="showEditPublisherModal" @close-modal="showEditPublisherModal = false" @update-successful="handleUpdate" :publisherId="currentPublisherId"/>
+                        <AddPublisherModal v-show = "showAddPublisherModal" @close-modal = "showAddPublisherModal = false" @update-successful="handleUpdate('publisher')" />
+                        <editPublisherModal v-show="showEditPublisherModal" @close-modal="showEditPublisherModal = false" @update-successful="handleUpdate('publisher')" :publisherId="currentPublisherId"/>
                     </table>
                     <div
                         class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
@@ -510,15 +545,11 @@
                             <tr>
                                 <th
                                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    ID
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Name
-                                </th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Publications
-                                </th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Most Recent Publication
                                 </th>
                                 <th
                                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -527,7 +558,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="publisher in publishers" :key="publisher.publisherId" >
+                            <tr v-for="genre in genres" :key="genre.genreId" >
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm ">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 w-10 h-10">
@@ -536,64 +567,56 @@
                                         </div>
                                         <div class="ml-3">
                                             <p class="text-gray-900 whitespace-no-wrap">
-                                                <u>{{publisher.publisherName}}</u>
+                                                {{genre.genreId}}
                                             </p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">
-                                         {{ publisher.publicationCount }} 
+                                         {{ genre.genreName }} 
                                     </p>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">
-                                         {{ publisher.mostRecentPublication }} 
-                                    </p>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"  @click="toggleDropdown(publisher.publisherId)">
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"  @click="toggleDropdown(genre.genreId)">
                                     <button id="dropdownMenuIconButton"  data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
                                             <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                         </svg>
                                     </button>       
-                                        <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[publisher.publisherId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
-                                                            <li>
-                                                                <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditPublisher(publisher.publisherId)">Edit</button>
-                                                            </li>
-                                                            <li>
+                                    <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[genre.genreId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                                            <li>
+                                                <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditGenre(genre.genreId)">Edit</button>
+                                            </li>
+                                            <li>
 
-                                                                <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deletePublisher(publisher.publisherId)">Delete</button>
-                                                                
-                                                            </li>
-                                                        </ul>
-                                                    </div>  
-                                    
-                                                  
+                                                <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deleteGenre(genre.genreId)">Delete</button>
+                                                
+                                            </li>
+                                        </ul>
+                                    </div>            
                                 </td>
-                            </tr>
+                            </tr>   
                         </tbody>
-                        <AddPublisherModal v-show = "showAddPublisherModal" @close-modal = "showAddPublisherModal = false" @update-successful="handleUpdate" />
-                        <editPublisherModal v-show="showEditPublisherModal" @close-modal="showEditPublisherModal = false" @update-successful="handleUpdate" :publisherId="currentPublisherId"/>
+                        <AddGenreModal v-show = "showAddGenreModal" @close-modal = "showAddGenreModal = false" @update-successful="handleUpdate('genres')" />
+                        <editGenreModal v-show="showEditGenreModal" @close-modal="showEditGenreModal = false" @update-successful="handleUpdate('genres')" :genreId="currentGenreId"/>
                     </table>
                     <div
                         class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                         <span class="text-xs xs:text-sm text-gray-900">
-                            Showing 1 to 10 of {{totalPublishers}} Entries
+                            Showing 1 to 10 of {{totalGenres}} Entries
                         </span>
                         <div class="inline-flex mt-2 xs:mt-0">
                             <button 
                                 class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
-                                 @click="publisherPrevPage">
+                                 @click="genrePrevPage">
                                 Prev
                             </button>
                             <button
                                 class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
-                                 @click="publisherNextPage">
+                                 @click="genreNextPage">
                                 Next
                             </button>
-
                         </div>
                         
                     </div>
@@ -613,8 +636,11 @@
   import editPersonModal from '~/components/UpdatePerson.vue'
   import editPublisherModal from '~/components/UpdatePublisher.vue'
   import AddPersonModal from '~/components/AddPerson.vue'
+  import editGenreModal from '~/components/UpdateGenre.vue'
   import AddPublisherModal from '~/components/AddPublisher.vue'
-  import { toggleSuspension, deleteUser, getUsersForDeletion, getSuspendedUsers, getPersons, removePerson, getPublishers, removePublisher } from '~/composables/api/adminService';
+  import AddGenreModal from '~/components/AddGenre.vue'
+  import RemoveRoleModal from '~/components/RemovePersonRoles.vue'
+  import { toggleSuspension, deleteUser, getUsersForDeletion, getSuspendedUsers, getPersons, removePerson, getPublishers, removePublisher, getGenres, removeGenre } from '~/composables/api/adminService';
   const isShowDropdown = reactive({})
   const props = defineProps({
     user: Object,
@@ -622,6 +648,7 @@
   const isLoading = ref(true);
   const currentPersonId = ref(null);
   const currentPublisherId = ref(null)
+  const currentGenreId = ref(null)
   const users = ref([]);
   const filter = ref('all')
   const currentPage = ref(null)
@@ -636,11 +663,18 @@
   const totalPublishers = ref(0)
   const publisherTotalPages = ref(0)
   const publisherCurrentPage = ref(1)
+  const genres = ref([]);
+  const totalGenres = ref(0);
+  const genreTotalPages = ref(0)
+  const genreCurrentPage = ref(1)
   const selectedPersonId = ref(null)
   const showModal = ref(false)
   const showEditPublisherModal = ref(false)
+  const showEditGenreModal = ref(false)
   const showAddPersonModal = ref(false)
   const showAddPublisherModal = ref(false)
+  const showAddGenreModal = ref(false)
+  const showRemoveRoleModal  = ref(false)
   const formatDate = (dateString) => {
   const date = new Date(dateString);
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -655,9 +689,30 @@ const openEditPublisher = (publisherId) =>   {
     currentPublisherId.value = publisherId;
     showEditPublisherModal.value = true
 }
+const openEditGenre = (genreId) =>   {
+    currentGenreId.value = genreId;
+    showEditGenreModal.value = true
+}
+const openRemoveRole = (personId) => {
+    currentPersonId.value = personId;
+    showRemoveRoleModal.value = true;
+}
 
-const handleUpdate = async () => {
-    await fetchPersons();  // Refetch the list to reflect updated data
+const handleUpdate = async (context) => {
+    switch (context) {
+        case 'persons':
+            await fetchPersons();
+            break;
+        case 'genres':
+            await fetchGenres();
+            break;
+        case 'publishers':
+            await fetchPublishers();
+            break;
+        default:
+            console.error('Invalid context:', context);
+            break;
+    }
 };
 const changePage = (page) => {
   currentPage.value = page;
@@ -722,6 +777,28 @@ const publisherPrevPage = async () => {
   }
 };
 
+const genrePrevPage = async () => {
+
+    if (genreCurrentPage.value > 1) {
+    genreCurrentPage.value--;
+      console.log( genreCurrentPage.value);
+      
+      try {
+          const genreData = await getGenres(genreCurrentPage.value); 
+          console.log('Fetched Genres Data: ', genreData);
+          
+          if (genreData && genreData.success) {
+              genres.value = genreData.genres;
+              console.log('Updated genres: ', genres.value);
+          } else {
+              console.error('Error fetching data:', genreData.error);
+          }
+      } catch (error) {
+          console.error('Error in publisherNextPage:', error);
+      }
+  }
+};
+
 const nextPage = async () => {
 
 if (currentPage.value < totalPages.value) {
@@ -774,9 +851,30 @@ const publisherNextPage = async () => {
           
           if (publisherData && publisherData.success) {
               publishers.value = publisherData.publishers;
-              console.log('Updated publishers: ', persons.value);
+              console.log('Updated publishers: ', publishers.value);
           } else {
               console.error('Error fetching data:', publisherData.error);
+          }
+      } catch (error) {
+          console.error('Error in publisherNextPage:', error);
+      }
+  }
+};
+
+const genreNextPage = async () => {  
+  if (genreCurrentPage.value < genreTotalPages.value) {
+    genreCurrentPage.value++;
+      console.log('Current Page (after increment): ', genreCurrentPage.value);
+      
+      try {
+          const genreData = await getGenres(genreCurrentPage.value); 
+          console.log('Fetched Genres Data: ', genreData);
+          
+          if (genreData && genreData.success) {
+              genres.value = genreData.genres;
+              console.log('Updated genres: ', genres.value);
+          } else {
+              console.error('Error fetching data:', genreData.error);
           }
       } catch (error) {
           console.error('Error in publisherNextPage:', error);
@@ -852,6 +950,16 @@ const deletePublisher = async(publisherId) => {
     }
 }
 
+const deleteGenre = async(genreId) => {
+    try {
+        const response = await removeGenre(genreId)
+        genres.value = genres.value.filter(genre => genre.genreId !== genreId);
+}
+    catch(error){
+        console.error("Error deleting person: ", error)
+    }
+}
+
 
 
 const fetchUsers = async () => {
@@ -908,33 +1016,56 @@ const fetchPersons = async () => {
     }
 };
 
+const fetchPublishers = async () => {
+  isLoading.value = true;
+  try {
+    const publisherData = await getPublishers(publisherCurrentPage.value);
+    console.log('Fetched Publisher Data in fetchPublishers:', publisherData);
 
-const fetchPublishers = async() =>  {
-    isLoading.value = true;
-    try {
-        const publisherData = await getPublishers(publisherCurrentPage.value);
-        console.log('Fetched Publisher Data in fetchPublishers:', publisherData);
-        
-        if (publisherData.success) {
-            publishers.value = publisherData.publishers;
-            totalPublishers.value = publisherData.totalItems;
-            publisherTotalPages.value = publisherData.totalPages;
-            publisherCurrentPage.value = publisherData.currentPage;
-            console.log('Updated publishers in fetchPublisher: ', publishers.value);
-        } else {
-            console.error('Failed to fetch publishers');
-        }
-    } catch (error) {
-        console.error('Error fetching publishers', error);
-    } finally {
-        isLoading.value = false;
+    if (publisherData.success) {
+      publishers.value = publisherData.publishers;
+      totalPublishers.value = publisherData.totalItems;
+      publisherTotalPages.value = publisherData.totalPages;
+      publisherCurrentPage.value = publisherData.currentPage;
+      console.log('Updated publishers in fetchPublishers: ', publishers.value);
+    } else {
+      console.error('Failed to fetch publishers');
     }
-}
-const onFilterChange = (event) => {
-    event.preventDefault();
+  } catch (error) {
+    console.error('Error fetching publishers', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const fetchGenres = async () => {
+  isLoading.value = true;
+  try {
+    const genreData = await getGenres(genreCurrentPage.value);
+    console.log('Fetched Genre Data in fetchGenres:', genreData);
+
+    if (genreData.success) {
+      genres.value = genreData.genres;
+      totalGenres.value = genreData.totalItems;
+      genreTotalPages.value = genreData.totalPages;
+      genreCurrentPage.value = genreData.currentPage;
+      console.log('Updated genres in fetchGenres: ', genres.value);
+    } else {
+      console.error('Failed to fetch genres');
+    }
+  } catch (error) {
+    console.error('Error fetching genres', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const onFilterChange = async (event) => {
+  event.preventDefault();
   fetchUsers();
-  fetchPersons()
-  fetchPublishers()
+  fetchPersons();
+  fetchPublishers();
+  fetchGenres();
 };
 
   onMounted(async () => {
@@ -942,7 +1073,7 @@ const onFilterChange = (event) => {
     await fetchUsers();
     await fetchPersons()
     await fetchPublishers()
-    
+    await fetchGenres()
 });
 // estou a ter um erro no qual quando clico numa das opções da filtragem, faz o reload da pagina, já experimenttei com preventdefault e nada
 

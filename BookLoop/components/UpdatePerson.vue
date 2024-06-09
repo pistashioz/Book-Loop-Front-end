@@ -30,6 +30,14 @@
                 Save Changes
               </button>
             </form>
+            <form @submit.prevent="addRoles" class="p-4 md:p-5">
+              <div class="grid gap-3 mb-4 grid-cols-1">
+                <MultiSelectDropdown formFieldName = "roles" :options = "roles"  @selectionChanged="handleSelectedRoles" v-model:selectedOptions="selectedOptions" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" aria-placeholder="select genres" />
+              </div>
+              <button type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Add Roles
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -38,15 +46,52 @@
   
   <script setup>
   import { ref } from 'vue';
-  import { updatePerson } from '~/composables/api/adminService'; 
+  import { getRoles, updatePerson, addRole } from '~/composables/api/adminService'; 
   import { defineEmits } from 'vue';
-
+  const roles = ref([])
+  const selectedOptions = ref([]);
   const personName = ref('');
   const props = defineProps({
     personId: Number,
   });
   const emit = defineEmits(['update-successful','close-modal']);
 
+  onMounted(async () => {
+  try {
+    // Fetcht existing genres
+    const rolesData = await getRoles();
+    console.log('roles data . data',rolesData.data)
+    if (rolesData.data.success) {
+        console.log(rolesData.data)
+      roles.value = rolesData.data.roles.map(role => role.roleName); // Only store genreName
+      console.log('roles.value', roles.value)
+    } else {
+      console.error('Error fetching roles:', rolesData.data.error);
+    }
+  } catch (error) {
+    console.error('An unexpected error occurred:', error);
+  }
+});
+
+const handleSelectedRoles = (selectedRoles) => {
+  console.log('selected roles', selectedRoles);
+  selectedOptions.value = selectedRoles;
+};
+
+
+const addRoles = async() => {
+  try{
+    const response = await addRole(props.personId, [...selectedOptions.value])
+    if (response) {
+            emit('update-successful');
+            emit('close-modal')
+
+
+        }     
+    } catch (error) {
+    console.error('Error creating person:', error);
+    }
+  }
 const updateName = async () => {
   try {
 

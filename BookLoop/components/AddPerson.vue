@@ -83,8 +83,9 @@ const submitForm = async () => {
         console.log([...selectedOptions.value])
         const response = await createPerson([...selectedOptions.value], personName.value)
         if (response) {
-            emit('close-modal')
             emit('update-successful');
+            emit('close-modal')
+
 
         }     
     } catch (error) {
