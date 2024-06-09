@@ -74,7 +74,7 @@ export const removePerson = async (personId) => {
   try {
     const { data, error} = await $api.delete(`/persons/${personId}`)
     if (error) {
-      console.error('Error deleting user:', error);
+      console.error('Error deleting person:', error);
       return context.res.status(error.response.status).json(error.response.data);
     }
     console.log(data.message); 
@@ -86,11 +86,35 @@ export const removePerson = async (personId) => {
 
 export const updatePerson = async (personId, personName) => {
   try {
-    const response = await $api.patch(`/persons/${personId}`, personName)
-    return response
+    const response = await $api.patch(`/persons/${personId}`, { personName });
+    return response;
   } catch (error) {
     console.error('Error updating person info:', error);
-    return context.res.status(500).json({ message: 'Error updating person info' });
+    return { status: 500, json: { message: 'Error updating person info' } };
+  }
+};
+
+export const createPerson = async (roles,personName) => {
+  try {
+    console.log(personName, roles)
+    const response = await $api.post(`/persons`, {personName, roles}, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const getRoles = async () => {
+  try {
+    const response = await $api.get(`/persons/roles`);
+    return response;
+  } catch (error) {
+    console.error('Error fetching existing roles:', error);
+    return { status: 500, json: { message: 'Error fetching existing roles' } };
   }
 }
 
@@ -112,3 +136,38 @@ export const getPublishers = async(currentPage, limit = 10) => {
       throw error;
   }
 }
+
+export const createPublisher = async(publisherName) => {
+  try {
+    console.log(publisherName)
+    const response = await $api.post(`/publishers`, {publisherName}, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const removePublisher = async(publisherId) =>  {
+  try {
+    const response = await $api.delete(`/publishers/${publisherId}`)
+    console.log(response)
+    return response;
+  } catch (error) {
+    console.error('Error deleting publisher:', error);
+    return { status: 500, json: { message: 'Error deleting publisher' } };
+  }
+}
+
+export const updatePublisher = async (publisherId, publisherName) => {
+  try {
+    const response = await $api.put(`/publishers/${publisherId}`, { publisherName });
+    return response;
+  } catch (error) {
+    console.error('Error updating publisher info:', error);
+    return { status: 500, json: { message: 'Error updating publisher info' } };
+  }
+};

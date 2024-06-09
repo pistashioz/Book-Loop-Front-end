@@ -37,6 +37,15 @@
                 Publishers
             </button>
         </li>
+        <li class="me-2">
+            <button @click.prevent="changePage('genres')" :class="{'text-gray-900': currentPage === 'genres'}" class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group">
+                <svg class="flex-shrink-0 w-5 h-5 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M20.337 3.664c.213.212.354.486.404.782.294 1.711.657 5.195-.906 6.76-1.77 1.768-8.485 5.517-10.611 6.683a.987.987 0 0 1-1.176-.173l-.882-.88-.877-.884a.988.988 0 0 1-.173-1.177c1.165-2.126 4.913-8.841 6.682-10.611 1.562-1.563 5.046-1.198 6.757-.904.296.05.57.191.782.404ZM5.407 7.576l4-.341-2.69 4.48-2.857-.334a.996.996 0 0 1-.565-1.694l2.112-2.111Zm11.357 7.02-.34 4-2.111 2.113a.996.996 0 0 1-1.69-.565l-.422-2.807 4.563-2.74Zm.84-6.21a1.99 1.99 0 1 1-3.98 0 1.99 1.99 0 0 1 3.98 0Z" clip-rule="evenodd"/>
+                </svg>
+
+                Genres
+            </button>
+        </li>
     </ul>
 </div>
 
@@ -150,7 +159,7 @@
                                     </span>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"  @click="toggleDropdown(user.userId)">
-                                    <button id="dropdownMenuIconButton"  v-if = "user.deletionScheduleDate == null ||!isThirtyDaysPassed(user.deletionScheduleDate) || user.isActiveStatus == 'suspended'" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                    <button id="dropdownMenuIconButton"  v-if = "user.deletionScheduleDate == null ||!isThirtyDaysPassed(user.deletionScheduleDate) || user.isActiveStatus == 'suspended' || user.isActiveStatus == 'active'" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
                                             <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                         </svg>
@@ -197,11 +206,16 @@
         </div>
     </div>
     <div class="container mx-auto px-4 sm:px-8" v-if="currentPage === 'persons'">
-        <div class="py-8">
-            <div>
-                <h2 class="text-2xl font-semibold leading-tight">Persons</h2>
-            </div>
+   <div class="py-8">
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-semibold leading-tight">Persons</h2>
+            <button @click = "showAddPersonModal = true" data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Create Person
+            </button>
+        </div>
             <div class="my-2 flex sm:flex-row flex-col">
+
+
                 <div class="flex flex-row mb-1 sm:mb-0">
                     <div class="relative">
                         <select @change.prevent="onFilterChange" v-model="filterPersons" 
@@ -215,6 +229,7 @@
                     </div>
                 </div>
                 <div class="block relative">
+                    
                     <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
                         <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-gray-500">
                             <path
@@ -226,6 +241,7 @@
                         class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
                 </div>
             </div>
+
             <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                 <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
                     <table class="min-w-full leading-normal">
@@ -315,7 +331,8 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <editPersonModal v-show="showModal" @close-modal="showModal = false" />
+                        <editPersonModal v-show="showModal" @close-modal="showModal = false" @update-successful="handleUpdate" :personId="currentPersonId"/>
+                        <AddPersonModal v-show = "showAddPersonModal" @close-modal = "showAddPersonModal = false" @update-successful="handleUpdate" />
                     </table>
                     <div
                         class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
@@ -343,9 +360,12 @@
     </div> 
     <div class="container mx-auto px-4 sm:px-8" v-if="currentPage === 'publishers'">
         <div class="py-8">
-            <div>
-                <h2 class="text-2xl font-semibold leading-tight">Publishers</h2>
-            </div>
+            <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-semibold leading-tight">Publishers</h2>
+            <button @click = "showAddPublisherModal = true" data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Create Publisher
+            </button>
+        </div>
             <div class="my-2 flex sm:flex-row flex-col">
                 <div class="flex flex-row mb-1 sm:mb-0">
                 </div>
@@ -418,11 +438,11 @@
                                         <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[publisher.publisherId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                                                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                                                             <li>
-                                                                <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditPerson(publisher.publisherId)">Edit</button>
+                                                                <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditPublisher(publisher.publisherId)">Edit</button>
                                                             </li>
                                                             <li>
 
-                                                                <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deletePerson(publisher.publisherId)">Delete</button>
+                                                                <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deletePublisher(publisher.publisherId)">Delete</button>
                                                                 
                                                             </li>
                                                         </ul>
@@ -432,7 +452,8 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <editPersonModal v-show="showModal" @close-modal="showModal = false" />
+                        <AddPublisherModal v-show = "showAddPublisherModal" @close-modal = "showAddPublisherModal = false" @update-successful="handleUpdate" />
+                        <editPublisherModal v-show="showEditPublisherModal" @close-modal="showEditPublisherModal = false" @update-successful="handleUpdate" :publisherId="currentPublisherId"/>
                     </table>
                     <div
                         class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
@@ -457,6 +478,129 @@
                 </div>
             </div>
         </div>
+        
+    </div> 
+    <div class="container mx-auto px-4 sm:px-8" v-if="currentPage === 'genres'">
+        <div class="py-8">
+            <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-semibold leading-tight">Genres</h2>
+            <button @click = "showAddGenreModal = true" data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Create Genre
+            </button>
+        </div>
+            <div class="my-2 flex sm:flex-row flex-col">
+                <div class="flex flex-row mb-1 sm:mb-0">
+                </div>
+                <div class="block relative">
+                    <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-gray-500">
+                            <path
+                                d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z">
+                            </path>
+                        </svg>
+                    </span>
+                    <input placeholder="Search"
+                        class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+                </div>
+            </div>
+            <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full leading-normal">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Name
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Publications
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Most Recent Publication
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="publisher in publishers" :key="publisher.publisherId" >
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm ">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10">
+
+
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                <u>{{publisher.publisherName}}</u>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                         {{ publisher.publicationCount }} 
+                                    </p>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                         {{ publisher.mostRecentPublication }} 
+                                    </p>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"  @click="toggleDropdown(publisher.publisherId)">
+                                    <button id="dropdownMenuIconButton"  data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                            <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                        </svg>
+                                    </button>       
+                                        <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[publisher.publisherId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                                                            <li>
+                                                                <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditPublisher(publisher.publisherId)">Edit</button>
+                                                            </li>
+                                                            <li>
+
+                                                                <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deletePublisher(publisher.publisherId)">Delete</button>
+                                                                
+                                                            </li>
+                                                        </ul>
+                                                    </div>  
+                                    
+                                                  
+                                </td>
+                            </tr>
+                        </tbody>
+                        <AddPublisherModal v-show = "showAddPublisherModal" @close-modal = "showAddPublisherModal = false" @update-successful="handleUpdate" />
+                        <editPublisherModal v-show="showEditPublisherModal" @close-modal="showEditPublisherModal = false" @update-successful="handleUpdate" :publisherId="currentPublisherId"/>
+                    </table>
+                    <div
+                        class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
+                        <span class="text-xs xs:text-sm text-gray-900">
+                            Showing 1 to 10 of {{totalPublishers}} Entries
+                        </span>
+                        <div class="inline-flex mt-2 xs:mt-0">
+                            <button 
+                                class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                                 @click="publisherPrevPage">
+                                Prev
+                            </button>
+                            <button
+                                class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                                 @click="publisherNextPage">
+                                Next
+                            </button>
+
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div> 
 </body>
       </div>
@@ -467,12 +611,17 @@
   import SideBar from '~/components/SideBar.vue';
   import {findAll} from '~/composables/api/userService';
   import editPersonModal from '~/components/UpdatePerson.vue'
-  import { toggleSuspension, deleteUser, getUsersForDeletion, getSuspendedUsers, getPersons, removePerson, getPublishers } from '~/composables/api/adminService';
+  import editPublisherModal from '~/components/UpdatePublisher.vue'
+  import AddPersonModal from '~/components/AddPerson.vue'
+  import AddPublisherModal from '~/components/AddPublisher.vue'
+  import { toggleSuspension, deleteUser, getUsersForDeletion, getSuspendedUsers, getPersons, removePerson, getPublishers, removePublisher } from '~/composables/api/adminService';
   const isShowDropdown = reactive({})
   const props = defineProps({
     user: Object,
     });
   const isLoading = ref(true);
+  const currentPersonId = ref(null);
+  const currentPublisherId = ref(null)
   const users = ref([]);
   const filter = ref('all')
   const currentPage = ref(null)
@@ -489,6 +638,9 @@
   const publisherCurrentPage = ref(1)
   const selectedPersonId = ref(null)
   const showModal = ref(false)
+  const showEditPublisherModal = ref(false)
+  const showAddPersonModal = ref(false)
+  const showAddPublisherModal = ref(false)
   const formatDate = (dateString) => {
   const date = new Date(dateString);
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -496,9 +648,17 @@
 };
 
 const openEditPerson = (personId) => {
-    selectedPersonId.value = personId
-    showModal.value = true
+  currentPersonId.value = personId;
+  showModal.value = true;
+};
+const openEditPublisher = (publisherId) =>   {
+    currentPublisherId.value = publisherId;
+    showEditPublisherModal.value = true
 }
+
+const handleUpdate = async () => {
+    await fetchPersons();  // Refetch the list to reflect updated data
+};
 const changePage = (page) => {
   currentPage.value = page;
   
@@ -644,7 +804,6 @@ const SuspendUser = async(user) => {
 const removeUser = async(userId) => {
     try {
         const response = await deleteUser(userId)
-        console.log('API response: ', response)
         const userToDelete = document.querySelector(`tr[data-user-id="${userId}"]`)
     if (userToDelete) {
       const observer = new MutationObserver(() => {
@@ -676,23 +835,22 @@ const isThirtyDaysPassed = async (deletionScheduleDate) => {
 const deletePerson = async(personId) => {
     try {
         const response = await removePerson(personId)
-        console.log('API response: ', response)
-        const personToDelete = document.querySelector(`tr[data-user-id="${personId}"]`)
-    if (personToDelete) {
-      const observer = new MutationObserver(() => {
-        if (!personToDelete.parentNode) { // Check if user row is removed
-          observer.disconnect()
-        }
-      })
-      observer.observe(personToDelete.parentNode, { childList: true })
-      personToDelete.parentNode.removeChild(personToDelete)
-    }
+        persons.value = persons.value.filter(person => person.personId !== personId);
 }
     catch(error){
         console.error("Error deleting person: ", error)
     }
 }
 
+const deletePublisher = async(publisherId) => {
+    try {
+        const response = await removePublisher(publisherId)
+        publishers.value = publishers.value.filter(publisher => publisher.publisherId !== publisherId);
+}
+    catch(error){
+        console.error("Error deleting person: ", error)
+    }
+}
 
 
 
