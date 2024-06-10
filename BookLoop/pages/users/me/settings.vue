@@ -8,7 +8,7 @@
         </template>
 
         <template v-else-if="queryType === 'account'">
-          <AccountSettings ref="accountSettingsRef" :data="data" />
+          <AccountSettings ref="accountSettingsRef" :data="data" :errorFields="errorFields" />
         </template>
 
         <template v-else-if="queryType === 'notifications'">
@@ -55,13 +55,9 @@ const privacySettingsRef = ref(null);
 // Message for displaying error/success messages
 const message = ref({ text: '', isSuccess: true });
 
-// Function to display messages
-const displayMessage = (msg, isSuccess) => {
-  message.value.text = msg;
-  message.value.isSuccess = isSuccess;
-  setTimeout(() => {
-    message.value.text = '';
-  }, 5000);
+// Function to clear error fields
+const clearErrorFields = () => {
+    errorFields.value = [];
 };
 
 // Extract the URI dynamically from the current route
@@ -98,6 +94,15 @@ watch(
 
 // Fetch initial data
 fetchData(queryType.value);
+
+const displayMessage = (msg, isSuccess) => {
+  message.value.text = msg;
+  message.value.isSuccess = isSuccess;
+  setTimeout(() => {
+    message.value.text = '';
+    clearErrorFields(); // Clear error fields after timeout
+  }, 5000);
+};
 
 // Function to handle profile update
 const updateProfile = async () => {
@@ -140,7 +145,7 @@ const updateProfile = async () => {
       username: accountSettingsRef.value.username,
       email: accountSettingsRef.value.email,
       name: accountSettingsRef.value.name,
-      birthday: accountSettingsRef.value.birthday,
+      birthdayDate: accountSettingsRef.value.birthday,
       holidayMode: accountSettingsRef.value.holidayMode,
     };
   } else if (queryType.value === 'notifications' && notificationsSettingsRef.value) {
@@ -155,24 +160,39 @@ const updateProfile = async () => {
 
   try {
     // Update profile data
-    await updateUserData(currentPath, profileUpdateData);
+    const response = await updateUserData(currentPath, profileUpdateData);
 
     // Update address data if required
     if (shouldUpdateAddress) {
       await updateUserAddress(addressUpdateData);
     }
 
+    if (response.status !== 200) {
+      throw response.data;
+    }
+
     // Display success message
-    displayMessage('Profile updated successfully', true);
+    displayMessage(response.data.message, true);
   } catch (error) {
     console.error('Failed to update profile:', error);
     if (error.response && error.response.data && error.response.data.message) {
       addressError.value = error.response.data.message;
-      errorFields.value = error.response.data.missingFields || [];
-      displayMessage(error.response.data.message, false); // Display error message
+      errorFields.value = error.response.data.errors ? error.response.data.errors.map(e => e.field) : [];
+      console.log(error.response.data.errors)
+      const errorMsg = parseErrorMessages(error.response.data);
+      displayMessage(errorMsg, false); // Display error message
     } else {
       displayMessage('Failed to update profile', false); // Generic error message
     }
   }
+};
+
+// Function to parse error messages
+const parseErrorMessages = (errorData) => {
+  let messages = [];
+  if (errorData.errors) {
+    messages = errorData.errors.map(e => typeof e === 'string' ? e : e.message);
+  }
+  return messages.join('<br>');
 };
 </script>

@@ -17,7 +17,7 @@ export function useUserService() {
   const updateUserData = async (path, data) => {
     try {
       const response = await $api.patch(path, data);
-      return response.data;
+      return response;  // Return full response to handle status in the front-end
     } catch (error) {
       throw error;
     }
@@ -32,12 +32,6 @@ export function useUserService() {
     }
   };
 
-  /**
-   * Add a favorite genre.
-   *
-   * @param {Object} genre - The genre data.
-   * @returns {Promise<Object>} - The response data.
-   */
   const addFavoriteGenre = async (genre) => {
     try {
       const response = await $api.post('users/me/favorite-genres', genre);
@@ -47,12 +41,6 @@ export function useUserService() {
     }
   };
 
-  /**
-   * Remove a favorite genre.
-   *
-   * @param {number} genreId - The genre ID.
-   * @returns {Promise<Object>} - The response data.
-   */
   const removeFavoriteGenre = async (genreId) => {
     try {
       const response = await $api.delete(`users/me/favorite-genres/${genreId}`);
@@ -62,12 +50,6 @@ export function useUserService() {
     }
   };
 
-  /**
-   * Add a favorite author.
-   *
-   * @param {Object} author - The author data.
-   * @returns {Promise<Object>} - The response data.
-   */
   const addFavoriteAuthor = async (author) => {
     try {
       const response = await $api.post('users/me/favorite-authors', author);
@@ -77,12 +59,6 @@ export function useUserService() {
     }
   };
 
-  /**
-   * Remove a favorite author.
-   *
-   * @param {number} authorId - The author ID.
-   * @returns {Promise<Object>} - The response data.
-   */
   const removeFavoriteAuthor = async (authorId) => {
     try {
       const response = await $api.delete(`users/me/favorite-authors/${authorId}`);

@@ -8,15 +8,18 @@
     <div v-if="$slots.secondary" class="secondary-container space-y-6 h-fit p-6 pb-3 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <slot name="secondary"></slot>
     </div>
-    <!-- Message element -->
-    <transition name="fade" class="justify-end flex">
-      <p v-if="message.text" :class="message.isSuccess ? 'text-green-500' : 'text-red-500'" class="text-xs font-bold">
-        {{ message.text }}
-      </p>
-    </transition>
-    <!-- Update Profile button -->
-    <div v-if="showUpdateButton" class="flex justify-end">
-      <button type="button" @click="updateProfile" class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Update Profile</button>
+    <div class="bottom-wrapper flex w-full justify-between">
+      <!-- Message element -->
+       <div class="w-8/12 flex">
+        <transition name="fade" >
+        <p v-if="message.text" v-html="message.text" :class="message.isSuccess ? 'text-green-500' : 'text-red-500'" class="text-xs font-bold"></p>
+      </transition>
+       </div>
+
+      <!-- Update Profile button -->
+      <div v-if="showUpdateButton" class="flex justify-end">
+        <button type="button" @click="updateProfile" class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Update Profile</button>
+      </div>
     </div>
   </div>
 </template>
@@ -45,10 +48,6 @@ const updateProfile = () => {
 </script>
 
 <style scoped>
-/* .main-container {
-  width: 35rem;
-}; */
-
 /* Transition for message */
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.5s;

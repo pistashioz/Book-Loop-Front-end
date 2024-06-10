@@ -4,16 +4,19 @@
     <!-- Secondary container for username input -->
     <div class="secondary-container flex justify-between items-center mb-4">
       <h6 class="text-base font-bold dark:text-white">Username</h6>
-      <div class="flex w-7/12">
-        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-e-0 border-gray-300 border-e-0 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+      <div class="relative w-7/12">
+
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+          
           <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
           </svg>
-        </span>
+
+        </div>
         <input 
           type="text" 
           id="username" 
-          class="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+          :class="['bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', errorFields.includes('username') ? 'border-red-500' : '']" 
           :placeholder="usernamePlaceholder" 
           v-model="username"
         >
@@ -33,7 +36,7 @@
         <input 
           type="text" 
           id="email" 
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+          :class="['bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', errorFields.includes('email') ? 'border-red-500' : '']" 
           :placeholder="emailPlaceholder" 
           v-model="email"
         >
@@ -50,7 +53,7 @@
         <input 
           type="text" 
           id="name" 
-          class="bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+          :class="['bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', errorFields.includes('name') ? 'border-red-500' : '']" 
           :placeholder="namePlaceholder" 
           v-model="name"
         >
@@ -76,7 +79,7 @@
           <input 
             id="datepickerId" 
             type="text" 
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+            :class="['bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', errorFields.includes('birthDate') ? 'border-red-500' : '']" 
             placeholder="Select your Birthday date!" 
             v-model="birthday"
           >
@@ -119,12 +122,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const props = defineProps({
   data: {
     type: Object,
     required: true
+  },
+  errorFields: {
+    type: Array,
+    default: () => []
   }
 });
 
@@ -147,20 +154,6 @@ const instagramPlaceholder = 'Instagram Username';
 const pinterestPlaceholder = 'Pinterest Username';
 const tiktokPlaceholder = 'TikTok Username';
 
-onMounted(() => {
-  if (process.client) {
-    import('flowbite-datepicker/Datepicker').then((Datepicker) => {
-      const datepickerEl = document.getElementById('datepickerId');
-      if (datepickerEl) {
-        new Datepicker.default(datepickerEl, {
-          autohide: true,
-          format: 'yyyy-mm-dd'
-        });
-      }
-    });
-  }
-});
-
 // Functions to link social media accounts
 const linkInstagram = () => {
   // Logic to link Instagram account
@@ -173,6 +166,30 @@ const linkPinterest = () => {
 const linkTikTok = () => {
   // Logic to link TikTok account
 };
+
+const datepicker = ref(null);
+
+onMounted(() => {
+  if (process.client) {
+    import('flowbite-datepicker/Datepicker').then((Datepicker) => {
+      const datepickerEl = document.getElementById('datepickerId');
+      if (datepickerEl) {
+        datepicker.value = new Datepicker.default(datepickerEl, {
+          autohide: true,
+          format: 'yyyy-mm-dd'
+        });
+        
+        datepickerEl.addEventListener('changeDate', (event) => {
+          birthday.value = event.target.value;
+        });
+      }
+    });
+  }
+});
+
+watch(props.errorFields, (newErrors) => {
+  // Handle any side effects of error field changes here, if necessary
+});
 
 // Define expose to expose functions to parent component
 defineExpose({
