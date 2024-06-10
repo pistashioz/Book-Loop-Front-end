@@ -55,8 +55,9 @@ const deleteRoles = async() => {
   try{
     console.log(role.value)
     const response = await removeRole(props.personId, role.value)
+    console.log(response)
     if (response) {
-            emit('update-successful');
+            emit('update-successful', { personId: props.personId, role: role.value });
             emit('close-modal')
         }     
     } catch (error) {

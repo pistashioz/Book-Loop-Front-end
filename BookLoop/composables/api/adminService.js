@@ -119,20 +119,19 @@ export const getRoles = async () => {
 }
 
 export const removeRole = async (personId, role) => {
-  try{
-    console.log(personId, role)
-    const {data, error} = await $api.delete(`/persons/${personId}/roles`, {role})
-    if (error) {
-      console.error('Error deleting role:', error);
-      return context.res.status(error.response.status).json(error.response.data);
-    }
-    console.log(data.message)
-    return data.message
-  }
-  catch (error) {
+  try {
+    console.log(personId, role);
+    const { data } = await $api.delete(`/persons/${personId}/roles`, {
+      data: { role }
+    });
+    console.log(data.message);
+    return data.message;
+  } catch (error) {
+    console.error('Error deleting role:', error);
     throw error;
   }
-}
+};
+
 
 export const addRole = async (personId, role) => {
   try {
