@@ -18,6 +18,11 @@
         <template v-else-if="queryType === 'privacy'">
           <PrivacySettings ref="privacySettingsRef" :data="data" />
         </template>
+
+        
+        <template v-else-if="queryType === 'security'">
+          <Security />
+        </template>
       </Container>
     </div>
   </div>
@@ -51,6 +56,7 @@ const profileDetailsRef = ref(null);
 const accountSettingsRef = ref(null);
 const notificationsSettingsRef = ref(null);
 const privacySettingsRef = ref(null);
+const securitySettingsRef = ref(null);
 
 // Message for displaying error/success messages
 const message = ref({ text: '', isSuccess: true });
@@ -66,8 +72,12 @@ let currentPath;
 // Function to fetch data based on the query parameter
 const fetchData = async (type) => {
   currentPath = route.fullPath;
+  console.log('Current path:', currentPath);
   loading.value = true;
   try {
+    if (route.query.type === 'security') {
+      return
+    }
     data.value = await fetchUserData(currentPath);
     console.log('Fetched data:', data.value);
   } catch (error) {
