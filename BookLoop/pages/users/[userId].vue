@@ -1,7 +1,7 @@
 <template>
-    <div>
-<h2>My profile</h2>
-    </div>
+  <div class="flex justify-center flex-col">
+    <ProfileContainer />
+  </div>
 </template>
 
 <script setup>
@@ -11,5 +11,5 @@ definePageMeta({
 </script>
 
 <style scoped>
-
+/* Add any required styles here */
 </style>
