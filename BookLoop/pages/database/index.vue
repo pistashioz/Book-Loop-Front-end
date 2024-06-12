@@ -718,7 +718,7 @@ const handleUpdate = async (context) => {
 
 const changePage = (page) => {
   currentPage.value = page;
-  
+
 };
 
 const toggleDropdown = async (id) => {
@@ -999,7 +999,7 @@ const fetchPersons = async () => {
         const role = filterPersons.value !== 'all' ? filterPersons.value : '';
         console.log('role: ', role);
         
-        const personData = await getPersons(role, personCurrentPage.value);
+        const personData = await getPersons(role, personCurrentPage.value, 10);
         console.log('Fetched Person Data in fetchPersons:', personData);
         
         if (personData.success) {
@@ -1071,8 +1071,8 @@ const onFilterChange = async (event) => {
 };
 
   onMounted(async () => {
-    changePage('users')
     await fetchUsers();
+    changePage('users')
     await fetchPersons()
     await fetchPublishers()
     await fetchGenres()

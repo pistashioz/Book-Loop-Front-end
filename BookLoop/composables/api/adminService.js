@@ -52,14 +52,15 @@ export async function toggleSuspension(userId, suspension) {
 
   // person functions
 
-export const getPersons = async (role, currentPage) => {
+export const getPersons = async (role, currentPage, limit) => {
   try {
     console.log('get person role: ', role)
     console.log('get current page: ', currentPage)
       const response = await $api.get(`/persons`, {
         params: {
           role: role,
-          page: currentPage
+          page: currentPage,
+          limit: limit
         }
       });
       console.log('respose get persons: ', response)
@@ -69,6 +70,7 @@ export const getPersons = async (role, currentPage) => {
       throw error;
   }
 };
+
 
 export const removePerson = async (personId) => {
   try {

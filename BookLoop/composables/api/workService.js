@@ -1,15 +1,28 @@
 // composables/api/workService.js
 const { $api } = useNuxtApp();
 
-export async function fetchWorks() {
+export async function fetchWorks(currentPage, arrGenres, arrAuthors, language, minRating, maxRating) {
+  const genres = arrGenres.length > 0 ? arrGenres.join(', ') : null;
+  const authors = arrAuthors.length > 0 ? arrAuthors.join(', ') : null;
+  console.log(genres, authors)
   try {
-    const response = await $api.get('/works');
-    console.log('response works', response)
+    const response = await $api.get('/works', {
+      params: {
+        page: currentPage,
+        genres,
+        authors,
+        language,
+        minRating,
+        maxRating
+      }
+    });
+    console.log('response works', response);
     return response.data;
   } catch (error) {
     throw error;
   }
 }
+
 
 export async function fetchWorkById(workId) {
   try {
@@ -70,6 +83,17 @@ export async function addLiteraryReview(workId, reviewData) {
     throw error;
   }
 }
+
+export async function removeWork(workId){
+  try{
+    const response = await $api.delete(`/works/${workId}`)
+    return response
+  }
+  catch(error){
+    throw error;
+  }
+}
+
 
 export async function addWork(workData) {
   try {
@@ -143,3 +167,13 @@ export async function likeReview(workId, literaryReviewId){
       throw error; 
     }
   }
+
+  export async function fetchFilteredGenres(){
+    try{
+      const response = await $api.get('/genres')
+      return response.data
+    } catch (error){
+      throw error; 
+    }
+  }
+

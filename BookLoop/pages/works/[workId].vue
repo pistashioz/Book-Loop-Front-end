@@ -21,7 +21,7 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <WorkDetails v-else-if="work" :work="work" />
+  <WorkDetails v-else-if="work" :work="work" /> 
   <div v-else>Work not found</div>
 </template>
 
