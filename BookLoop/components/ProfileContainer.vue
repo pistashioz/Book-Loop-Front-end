@@ -13,7 +13,23 @@
           <div id="user-n-reviews">
             <h1 class="text-base font-bold dark:text-white">{{ profile.username }}</h1>
             <div id="purchase-reviews" class="flex gap-x-2">
-              <span aria-label="Rating: 5 out of 5">⭐⭐⭐⭐⭐</span>
+              <span class="flex">
+                <template v-for="n in starRating.fullStars" :key="'full-' + n">
+                  <svg class="w-6 h-6 text-accent-starsYellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"/>
+                  </svg>
+                </template>
+                <template v-if="starRating.halfStars">
+                  <svg class="w-6 h-6 text-accent-starsYellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M13 4.024v-.005c0-.053.002-.353-.217-.632a1.013 1.013 0 0 0-1.176-.315c-.192.076-.315.193-.35.225-.052.05-.094.1-.122.134a4.358 4.358 0 0 0-.31.457c-.207.343-.484.84-.773 1.375a168.719 168.719 0 0 0-1.606 3.074h-.002l-4.599.367c-1.775.14-2.495 2.339-1.143 3.488L6.17 15.14l-1.06 4.406c-.412 1.72 1.472 3.078 2.992 2.157l3.94-2.388c.592-.359.958-.996.958-1.692v-13.6Zm-2.002 0v.025-.025Z" clip-rule="evenodd"/>
+                  </svg>
+                </template>
+                <template v-for="n in starRating.emptyStars" :key="'empty-' + n">
+                  <svg class="w-6 h-6 text-gray-300 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
+                  </svg>
+                </template>
+              </span>
               <span>{{ profile.sellerReviewCount }} reviews</span>
             </div>
           </div>
@@ -24,11 +40,13 @@
         <section id="second-wrapper" class="flex justify-between items-end">
           <div id="about" class="flex flex-col items-start">
             <h2 class="text-xs font-satoshi-medium text-gray-700 dark:text-white uppercase mb-1 ml-1">About</h2>
+            <!-- Conditionally Render Address Element -->
             <address id="location" class="flex items-end gap-x-2">
               <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M11.906 1.994a8.002 8.002 0 0 1 8.09 8.421 7.996 7.996 0 0 1-1.297 3.957.996.996 0 0 1-.133.204l-.108.129c-.178.243-.37.477-.573.699l-5.112 6.224a1 1 0 0 1-1.545 0L5.982 15.26l-.002-.002a18.146 18.146 0 0 1-.309-.38l-.133-.163a.999.999 0 0 1-.13-.202 7.995 7.995 0 0 1 6.498-12.518ZM15 9.997a3 3 0 1 1-5.999 0 3 3 0 0 1 5.999 0Z" clip-rule="evenodd"/>
               </svg>
-              <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">Vila do Conde, Portugal</p>
+              <p v-if="profile.postalCodeDetails" class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ profile.postalCodeDetails.location }}, {{ profile.postalCodeDetails.country }}</p>
+              <p v-else class="text-xs font-satoshi-medium text-gray-900 dark:text-white">This user has no location set</p>
             </address>
             <div id="following" class="flex items-end gap-x-2 mt-2">
               <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -66,7 +84,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 
 const props = defineProps({
   data: {
@@ -82,6 +100,15 @@ watch(() => props.data, (newVal) => {
 }, { immediate: true });
 
 const deliverByHand = computed(() => profile.value.deliverByHand);
+
+// Compute the number of stars based on the rating
+const starRating = computed(() => {
+  const rating = parseFloat(profile.value.sellerAverageRating);
+  const fullStars = Math.floor(rating);
+  const halfStars = rating % 1 >= 0.5 ? 1 : 0;
+  const emptyStars = 5 - fullStars - halfStars;
+  return { fullStars, halfStars, emptyStars };
+});
 
 onMounted(() => {
   console.log(profile.value.deliverByHand);
