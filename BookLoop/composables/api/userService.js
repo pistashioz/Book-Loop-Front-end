@@ -68,6 +68,15 @@ export function useUserService() {
     }
   };
 
+  const getUserProfile = async (userId) => {
+    try {
+      const response = await $api.get(`users/${userId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return {
     fetchUserData,
     updateUserData,
@@ -75,6 +84,7 @@ export function useUserService() {
     addFavoriteGenre,
     removeFavoriteGenre,
     addFavoriteAuthor,
-    removeFavoriteAuthor
+    removeFavoriteAuthor,
+    getUserProfile
   };
 }
