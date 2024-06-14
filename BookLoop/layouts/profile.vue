@@ -1,7 +1,7 @@
 <template>
-  <div class="h-svh">
+  <div class="flex flex-col h-screen">
     <Navbar class="w-full" /> 
-    <NuxtPage class="relative flex w-full justify-center top-5 space-x-12" />
+    <NuxtPage class="flex flex-col w-full justify-start h-full overflow-hidden" />
   </div>
 </template>
 

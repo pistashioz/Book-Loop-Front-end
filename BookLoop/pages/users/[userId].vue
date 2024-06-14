@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center flex-col">
+  <div class="flex flex-col h-screen  mb-8 ">
     <ProfileContainer />
   </div>
 </template>
