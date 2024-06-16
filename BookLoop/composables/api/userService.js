@@ -77,6 +77,24 @@ export function useUserService() {
     }
   };
 
+  const followUser = async (targetUserId) => {
+    try {
+      const response = await $api.post('/users/me/follow', { targetUserId });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const unfollowUser = async (followedUserId) => {
+    try {
+      const response = await $api.delete(`/users/me/following/${followedUserId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return {
     fetchUserData,
     updateUserData,
@@ -85,6 +103,8 @@ export function useUserService() {
     removeFavoriteGenre,
     addFavoriteAuthor,
     removeFavoriteAuthor,
-    getUserProfile
+    getUserProfile,
+    followUser,
+    unfollowUser
   };
 }
