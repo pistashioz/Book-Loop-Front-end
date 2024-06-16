@@ -23,6 +23,6 @@ export function useWishlistService() {
 
   return {
     addListingToWishlist,
-    removeListingFromWishlist
+    removeListingFromWishlist,
   };
 }

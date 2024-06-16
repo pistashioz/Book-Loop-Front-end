@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen  mb-8 ">
+  <div class="flex flex-col h-screen mb-8">
     <ProfileContainer :data="data" v-if="!loading" />
     <div v-else>Loading...</div>
   </div>
@@ -7,7 +7,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useUserService } from '~/composables/api/userService';
 
 definePageMeta({
@@ -15,7 +15,6 @@ definePageMeta({
 });
 
 const route = useRoute();
-const router = useRouter();
 const { getUserProfile } = useUserService();
 
 const data = ref(null);
