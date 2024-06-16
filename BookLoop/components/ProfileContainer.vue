@@ -50,7 +50,7 @@
             </address>
             <div id="following" class="flex items-end gap-x-2 mt-2">
               <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 1 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 1 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 1 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 1 1 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd"/>
               </svg>
               <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ profile.followersCount }} followers, following {{ profile.followingCount }}</p>
             </div>
@@ -90,12 +90,12 @@
       <div id="content-holder" class="flex flex-col flex-grow border rounded-2xl w-full p-4 overflow-auto mb-4" @scroll="onScroll">
         <p class="text-xs px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">This user has {{ profile.listings.count }} books for sale!</p>
         <div id="listing-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative laptop:h-80 sm:h-64 laptop:w-full sm:w-52" @click="navigateToListing(listing.listingId)">
+          <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative laptop:h-80 sm:h-64 laptop:w-full sm:w-52" @click="navigateToListing(listing.listingId)" @mouseenter="showTooltip($event, listing.listingTitle)" @mouseleave="hideTooltip">
             <div :style="{ backgroundImage: `url(${listing.ListingImages[0]?.imageUrl || ''})` }" class="bg-cover bg-center w-full h-5/6 relative">
               <p class="absolute top-2 left-2 text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.BookEdition.title }}</p>
               <div class="absolute bottom-2 right-2 flex items-center gap-x-1 border rounded-full w-fit h-fit py-1 px-2.5 bg-gray-50">
-                <button @mouseenter="toggleLikeIcon(listing.listingId, true)" @mouseleave="toggleLikeIcon(listing.listingId, false)">
-                  <svg v-if="hovered[listing.listingId]" class="w-[14px] h-[14px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                <button @mouseenter="toggleLikeIcon(listing.listingId, true)" @mouseleave="toggleLikeIcon(listing.listingId, false)" @click.stop="listing.isLiked ? unlikeListing(listing.listingId) : likeListing(listing.listingId)">
+                  <svg v-if="listing.isLiked || hovered[listing.listingId]" class="w-[14px] h-[14px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                     <path d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z"/>
                   </svg>
                   <svg v-else class="w-[14px] h-[14px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -113,6 +113,7 @@
           </div>
         </div>
       </div>
+      <div id="tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"></div>
     </section>
   </div>
 </template>
@@ -120,6 +121,11 @@
 <script setup>
 import { ref, watch, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserService } from '~/composables/api/userService';
+import { useWishlistService } from '~/composables/api/wishlistService';
+
+const { followUser: followUserService, unfollowUser: unfollowUserService } = useUserService();
+const { addListingToWishlist, removeListingFromWishlist } = useWishlistService();
 
 const props = defineProps({
   data: {
@@ -139,7 +145,6 @@ watch(() => props.data, (newVal) => {
 
 const deliverByHand = computed(() => profile.value.deliverByHand);
 
-// Compute the number of stars based on the rating
 const starRating = computed(() => {
   const rating = parseFloat(profile.value.sellerAverageRating);
   const fullStars = Math.floor(rating);
@@ -166,27 +171,56 @@ const toggleLikeIcon = (listingId, isHovered) => {
   hovered.value = { ...hovered.value, [listingId]: isHovered };
 };
 
-const followUser = async () => {
+const follow = async () => {
   try {
-    await axios.post('/api/follow', { followedUserId: profile.value.userId });
+    await followUserService(profile.value.userId);
     profile.value.isFollowing = true;
     profile.value.followersCount += 1;
   } catch (error) {
-    console.error('Failed to follow user:', error);
+    console.error('Error following user:', error);
   }
 };
 
-const unfollowUser = async () => {
+const unfollow = async () => {
   try {
-    await axios.post('/api/unfollow', { followedUserId: profile.value.userId });
+    await unfollowUserService(profile.value.userId);
     profile.value.isFollowing = false;
-    profile.value.followersCount -= 1;
+    if (profile.value.followersCount > 0) {
+      profile.value.followersCount -= 1;
+    }
   } catch (error) {
-    console.error('Failed to unfollow user:', error);
+    console.error('Error unfollowing user:', error);
   }
 };
 
-// Infinite scroll logic
+const likeListing = async (listingId) => {
+  try {
+    await addListingToWishlist(listingId);
+    const listing = profile.value.listings.rows.find((item) => item.listingId === listingId);
+    if (listing) {
+      listing.isLiked = true;
+      listing.likesCount += 1;
+    }
+  } catch (error) {
+    console.error('Error liking listing:', error);
+  }
+};
+
+const unlikeListing = async (listingId) => {
+  try {
+    await removeListingFromWishlist(listingId);
+    const listing = profile.value.listings.rows.find((item) => item.listingId === listingId);
+    if (listing) {
+      listing.isLiked = false;
+      if (listing.likesCount > 0) {
+        listing.likesCount -= 1;
+      }
+    }
+  } catch (error) {
+    console.error('Error unliking listing:', error);
+  }
+};
+
 const onScroll = async (event) => {
   const element = event.target;
   if (element.scrollHeight - element.scrollTop === element.clientHeight) {
@@ -196,13 +230,25 @@ const onScroll = async (event) => {
 
 const loadMoreListings = async () => {
   if (currentPage.value * listingsPerPage >= profile.value.listings.count) return;
-  
-  // Fetch the next page of listings (adjust this part to fit your actual fetching logic)
+
   const response = await fetch(`/api/listings?page=${currentPage.value + 1}`);
   const newData = await response.json();
-  
+
   profile.value.listings.rows.push(...newData.rows);
   currentPage.value += 1;
+};
+
+const showTooltip = (event, listingTitle) => {
+  const tooltip = document.getElementById('tooltip');
+  tooltip.textContent = listingTitle;
+  tooltip.style.left = `${event.clientX + 10}px`;
+  tooltip.style.top = `${event.clientY + 10}px`;
+  tooltip.classList.remove('invisible', 'opacity-0');
+};
+
+const hideTooltip = () => {
+  const tooltip = document.getElementById('tooltip');
+  tooltip.classList.add('invisible', 'opacity-0');
 };
 </script>
 
