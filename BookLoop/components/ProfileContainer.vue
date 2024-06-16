@@ -52,7 +52,8 @@
               <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 1 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 1 1 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd"/>
               </svg>
-              <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ profile.followersCount }} followers, following {{ profile.followingCount }}</p>
+              <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white cursor-pointer" @click="showFollowersModal">{{ profile.followersCount }} followers</p>, 
+              <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white cursor-pointer" @click="showFollowingModal">following {{ profile.followingCount }}</p>
             </div>
           </div>
           <div class="flex flex-col items-end gap-x-2 gap-y-2">
@@ -90,7 +91,7 @@
       <div id="content-holder" class="flex flex-col flex-grow border rounded-2xl w-full p-4 overflow-auto mb-4" @scroll="onScroll">
         <p class="text-xs px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">This user has {{ profile.listings.count }} books for sale!</p>
         <div id="listing-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative laptop:h-80 sm:h-64 laptop:w-full sm:w-52" @click="navigateToListing(listing.listingId)" @mouseenter="showTooltip($event, listing.listingTitle)" @mouseleave="hideTooltip">
+          <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative laptop:h-80 sm:h-64 laptop:w-full sm:w-52 cursor-pointer" @click="navigateToListing(listing.listingId)" @mouseenter="delayedShowTooltip($event, listing.listingTitle)" @mouseleave="hideTooltip">
             <div :style="{ backgroundImage: `url(${listing.ListingImages[0]?.imageUrl || ''})` }" class="bg-cover bg-center w-full h-5/6 relative">
               <p class="absolute top-2 left-2 text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.BookEdition.title }}</p>
               <div class="absolute bottom-2 right-2 flex items-center gap-x-1 border rounded-full w-fit h-fit py-1 px-2.5 bg-gray-50">
@@ -113,18 +114,67 @@
           </div>
         </div>
       </div>
-      <div id="tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"></div>
+      <div id="tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 transition-opacity duration-300"></div>
     </section>
+
+    <!-- Followers Modal -->
+    <div id="followers-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
+      <div class="relative w-full h-full max-w-md p-4 md:h-auto mx-auto mt-10">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Followers</h3>
+            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" @click="hideFollowersModal">
+              <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <div class="p-4 space-y-2">
+            <div v-for="follower in followers" :key="follower.MainUser.userId" class="flex items-center space-x-3">
+              <img :src="follower.MainUser.profileImage" class="w-10 h-10 rounded-full">
+              <span>{{ follower.MainUser.username }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Following Modal -->
+    <div id="following-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
+      <div class="relative w-full h-full max-w-md p-4 md:h-auto mx-auto mt-10">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Following</h3>
+            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" @click="hideFollowingModal">
+              <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <div class="p-4 space-y-2">
+            <div v-for="user in following" :key="user.FollowedUser.userId" class="flex items-center space-x-3">
+              <img :src="user.FollowedUser.profileImage" class="w-10 h-10 rounded-full">
+              <span>{{ user.FollowedUser.username }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 transition-opacity duration-300"></div>
   </div>
 </template>
 
 <script setup>
 import { ref, watch, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { Modal } from 'flowbite';
 import { useUserService } from '~/composables/api/userService';
 import { useWishlistService } from '~/composables/api/wishlistService';
 
-const { followUser: followUserService, unfollowUser: unfollowUserService } = useUserService();
+const { followUser: followUserService, unfollowUser: unfollowUserService, getFollowers, getFollowing } = useUserService();
 const { addListingToWishlist, removeListingFromWishlist } = useWishlistService();
 
 const props = defineProps({
@@ -138,6 +188,10 @@ const profile = ref(props.data);
 const currentPage = ref(1);
 const listingsPerPage = 8;
 const hovered = ref({});
+const tooltipTimeout = ref(null);
+
+const followers = ref([]);
+const following = ref([]);
 
 watch(() => props.data, (newVal) => {
   profile.value = newVal;
@@ -238,17 +292,71 @@ const loadMoreListings = async () => {
   currentPage.value += 1;
 };
 
-const showTooltip = (event, listingTitle) => {
+const delayedShowTooltip = (event, listingTitle) => {
+  // Clear any existing timeouts
+  clearTimeout(tooltipTimeout.value);
+  
+  // Get the tooltip element
   const tooltip = document.getElementById('tooltip');
+  
+  // Set the tooltip content and position it near the mouse
   tooltip.textContent = listingTitle;
   tooltip.style.left = `${event.clientX + 10}px`;
   tooltip.style.top = `${event.clientY + 10}px`;
-  tooltip.classList.remove('invisible', 'opacity-0');
+  
+  // Show the tooltip with a delay
+  tooltipTimeout.value = setTimeout(() => {
+    tooltip.classList.remove('invisible', 'opacity-0');
+  }, 500); // 0.5-second delay
 };
 
+// Function to hide the tooltip
 const hideTooltip = () => {
+  clearTimeout(tooltipTimeout.value);
   const tooltip = document.getElementById('tooltip');
   tooltip.classList.add('invisible', 'opacity-0');
+};
+
+// Function to update tooltip position on mouse move
+const updateTooltipPosition = (event) => {
+  const tooltip = document.getElementById('tooltip');
+  tooltip.style.left = `${event.clientX + 10}px`;
+  tooltip.style.top = `${event.clientY + 10}px`;
+};
+
+// Add event listeners to update tooltip position on mouse move
+document.addEventListener('mousemove', updateTooltipPosition);
+
+const showFollowersModal = async () => {
+  try {
+    const response = await getFollowers(profile.value.userId);
+    followers.value = response.data;
+    const modal = new Modal(document.getElementById('followers-modal'));
+    modal.show();
+  } catch (error) {
+    console.error('Error fetching followers:', error);
+  }
+};
+
+const hideFollowersModal = () => {
+  const modal = Modal.getInstance(document.getElementById('followers-modal'));
+  modal.hide();
+};
+
+const showFollowingModal = async () => {
+  try {
+    const response = await getFollowing(profile.value.userId);
+    following.value = response.data;
+    const modal = new Modal(document.getElementById('following-modal'));
+    modal.show();
+  } catch (error) {
+    console.error('Error fetching following:', error);
+  }
+};
+
+const hideFollowingModal = () => {
+  const modal = Modal.getInstance(document.getElementById('following-modal'));
+  modal.hide();
 };
 </script>
 
@@ -277,5 +385,9 @@ const hideTooltip = () => {
 
 #main-container {
   height: 100%;
+}
+
+.tooltip {
+  transition: opacity 0.3s ease;
 }
 </style>
