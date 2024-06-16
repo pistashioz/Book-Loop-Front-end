@@ -104,20 +104,18 @@ export function useUserService() {
     }
   };
 
-  // Get followers of a user
-  const getFollowers = async (userId) => {
+  const getFollowers = async (userId, page = 1, limit = 10) => {
     try {
-      const response = await $api.get(`/users/${userId}/followers`);
+      const response = await $api.get(`users/${userId}/followers`, { params: { page, limit } });
       return response.data;
     } catch (error) {
       throw error;
     }
   };
 
-  // Get users that the user is following
-  const getFollowing = async (userId) => {
+  const getFollowing = async (userId, page = 1, limit = 10) => {
     try {
-      const response = await $api.get(`/users/${userId}/following`);
+      const response = await $api.get(`users/${userId}/following`, { params: { page, limit } });
       return response.data;
     } catch (error) {
       throw error;

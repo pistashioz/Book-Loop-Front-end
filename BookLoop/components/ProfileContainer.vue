@@ -54,8 +54,8 @@
                 <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 1 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 1 1 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd"/>
               </svg>
               <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white cursor-pointer">
-                <span  @click="showFollowersModal" class="cursor-pointer underline-on-hover">{{ profile.followersCount }}</span> followers, following 
-                <span  @click="showFollowingModal" class="cursor-pointer underline-on-hover">{{ profile.followingCount }}</span>
+                <span  @click="showFollowersModal" class="cursor-pointer">{{ profile.followersCount }} followers</span>, 
+                <span  @click="showFollowingModal" class="cursor-pointer">following {{ profile.followingCount }}</span>
               </p>
             </div>
           </div>
@@ -94,7 +94,7 @@
       <div id="content-holder" class="flex flex-col flex-grow border rounded-2xl w-full p-4 overflow-auto mb-4" @scroll="onScroll">
         <p class="text-xs px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">This user has {{ profile.listings.count }} books for sale!</p>
         <div id="listing-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative laptop:h-80 sm:h-64 laptop:w-full sm:w-52 cursor-pointer" @click="navigateToListing(listing.listingId)" @mouseenter="delayedShowTooltip($event, listing.listingTitle)" @mouseleave="hideTooltip">
+          <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative desktop:h-96 laptop:h-80 sm:h-64 laptop:w-full sm:w-52 cursor-pointer" @click="navigateToListing(listing.listingId)" @mouseenter="delayedShowTooltip($event, listing.listingTitle)" @mouseleave="hideTooltip">
             <div :style="{ backgroundImage: `url(${listing.ListingImages[0]?.imageUrl || ''})` }" class="bg-cover bg-center w-full h-5/6 relative">
               <p class="absolute top-2 left-2 text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.BookEdition.title }}</p>
               <div class="absolute bottom-2 right-2 flex items-center gap-x-1 border rounded-full w-fit h-fit py-1 px-2.5 bg-gray-50">
@@ -121,59 +121,58 @@
     </section>
 
 <!-- Followers Modal -->
-<div v-if="followPrivacy" id="followers-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
-  <div class="relative w-full h-full max-w-md p-4 md:h-auto mx-auto mt-10">
-    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-      <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white uppercase">Followers</h3>
-        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" @click="hideFollowersModal">
-          <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-          <span class="sr-only">Close modal</span>
-        </button>
-      </div>
-      <div class="p-4 space-y-2">
-        <div v-for="follower in followers" :key="follower.MainUser.userId" class="flex items-center justify-between">
-          <div class="image-n-username flex gap-x-8 items-center">
-            <img :src="follower.MainUser.profileImage || '/default-profile.png'" class="w-12 h-12 rounded-full" alt="Profile Image">
-            <span class="font-satoshi-medium">{{ follower.MainUser.username }}</span>
+<div id="followers-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
+    <div class="relative w-full h-full max-w-md p-4 md:h-auto mx-auto mt-10">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white uppercase">Followers</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" @click="hideFollowersModal">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 space-y-2 overflow-auto max-h-96" @scroll="onFollowersScroll">
+          <div v-for="follower in followers" :key="follower.MainUser.userId" class="flex items-center justify-between">
+            <div class="image-n-username flex gap-x-8 items-center">
+              <img :src="follower.MainUser.profileImage || '/default-profile.png'" class="w-12 h-12 rounded-full" alt="Profile Image">
+              <span class="font-satoshi-medium">{{ follower.MainUser.username }}</span>
+            </div>
+            <button v-if="!follower.isCurrentUser && !follower.isFollowing" @click="followUser(follower.MainUser.userId)" type="button" class="py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Follow</button>
+            <button v-if="!follower.isCurrentUser && follower.isFollowing" @click="unfollowUser(follower.MainUser.userId)" type="button" class="ml-auto py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Unfollow</button>
           </div>
-
-          <button v-if="!profile.isCurrentUser && !profile.isFollowing" @click="follow" type="button" class="py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Follow</button>
-          <button v-if="!profile.isCurrentUser && profile.isFollowing" @click="unfollow" type="button" class="ml-auto py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Unfollow</button>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-
-    <!-- Following Modal -->
-    <div id="following-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
-      <div class="relative w-full h-full max-w-md p-4 md:h-auto mx-auto mt-10">
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-          <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white uppercase">Following</h3>
-            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" @click="hideFollowingModal">
-              <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-              <span class="sr-only">Close modal</span>
-            </button>
-          </div>
-          <div class="p-4 space-y-2">
-            <div v-for="user in following" :key="user.FollowedUser.userId" class="flex items-center space-x-8">
+  <!-- Following Modal -->
+  <div id="following-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
+    <div class="relative w-full h-full max-w-md p-4 md:h-auto mx-auto mt-10">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white uppercase">Following</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" @click="hideFollowingModal">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 space-y-2 overflow-auto max-h-96" @scroll="onFollowingScroll">
+          <div v-for="user in following" :key="user.FollowedUser.userId" class="flex items-center justify-between">
+            <div class="image-n-username flex gap-x-8 items-center">
               <img :src="user.FollowedUser.profileImage || '/default-profile.png'" class="w-12 h-12 rounded-full" alt="Profile Image">
               <span class="font-satoshi-medium">{{ user.FollowedUser.username }}</span>
             </div>
+            <button v-if="!profile.isCurrentUser && !user.isFollowing" @click="followUser(user.FollowedUser.userId)" type="button" class="py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Follow</button>
+            <button v-if="!profile.isCurrentUser && user.isFollowing" @click="unfollowUser(user.FollowedUser.userId)" type="button" class="ml-auto py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Unfollow</button>
           </div>
         </div>
       </div>
     </div>
-
-
-  </div>
+  </div> </div>
 </template>
 
 <script setup>
@@ -201,7 +200,11 @@ const tooltipTimeout = ref(null);
 
 const followers = ref([]);
 const following = ref([]);
-const followPrivacy = ref(true);
+
+const followersPage = ref(1);
+const followingPage = ref(1);
+const followersLoading = ref(false);
+const followingLoading = ref(false);
 
 watch(() => props.data, (newVal) => {
   profile.value = newVal;
@@ -251,6 +254,30 @@ const unfollow = async () => {
     profile.value.isFollowing = false;
     if (profile.value.followersCount > 0) {
       profile.value.followersCount -= 1;
+    }
+  } catch (error) {
+    console.error('Error unfollowing user:', error);
+  }
+};
+
+const followUser = async (userId) => {
+  try {
+    await followUserService(userId);
+    const user = followers.value.find((u) => u.MainUser.userId === userId) || following.value.find((u) => u.FollowedUser.userId === userId);
+    if (user) {
+      user.isFollowing = true;
+    }
+  } catch (error) {
+    console.error('Error following user:', error);
+  }
+};
+
+const unfollowUser = async (userId) => {
+  try {
+    await unfollowUserService(userId);
+    const user = followers.value.find((u) => u.MainUser.userId === userId) || following.value.find((u) => u.FollowedUser.userId === userId);
+    if (user) {
+      user.isFollowing = false;
     }
   } catch (error) {
     console.error('Error unfollowing user:', error);
@@ -342,20 +369,14 @@ let followersModal = null;
 let followingModal = null;
 
 const showFollowersModal = async () => {
-  if (!this.followPrivacy) {
-  try {
-    const response = await getFollowers(profile.value.userId);
-    followers.value = response.followers;
-    followPrivacy.value = response.privacy
-    console.log('Followers:', response); // Log followers data
-    if (!followersModal) {
-      followersModal = new Modal(document.getElementById('followers-modal'));
-    }
-    followersModal.show();
-  } catch (error) {
-    console.error('Error fetching followers:', error);
+  followersPage.value = 1;
+  followers.value = [];
+  await loadFollowers();
+  if (!followersModal) {
+    followersModal = new Modal(document.getElementById('followers-modal'));
   }
-};}
+  followersModal.show();
+};
 
 const hideFollowersModal = () => {
   if (followersModal) {
@@ -364,22 +385,62 @@ const hideFollowersModal = () => {
 };
 
 const showFollowingModal = async () => {
-  try {
-    const response = await getFollowing(profile.value.userId);
-    following.value = response.data;
-    console.log('Following:', following.value); // Log following data
-    if (!followingModal) {
-      followingModal = new Modal(document.getElementById('following-modal'));
-    }
-    followingModal.show();
-  } catch (error) {
-    console.error('Error fetching following:', error);
+  followingPage.value = 1;
+  following.value = [];
+  await loadFollowing();
+  if (!followingModal) {
+    followingModal = new Modal(document.getElementById('following-modal'));
   }
+  followingModal.show();
 };
 
 const hideFollowingModal = () => {
   if (followingModal) {
     followingModal.hide();
+  }
+};
+
+const loadFollowers = async () => {
+  if (followersLoading.value) return;
+  followersLoading.value = true;
+  try {
+    const response = await getFollowers(profile.value.userId, followersPage.value);
+    console.log(response);
+    followers.value.push(...response.rows);
+    console.log(followers)
+    followersPage.value++;
+  } catch (error) {
+    console.error('Error fetching followers:', error);
+  } finally {
+    followersLoading.value = false;
+  }
+};
+
+const loadFollowing = async () => {
+  if (followingLoading.value) return;
+  followingLoading.value = true;
+  try {
+    const response = await getFollowing(profile.value.userId, followingPage.value);
+    following.value.push(...response.rows);
+    followingPage.value++;
+  } catch (error) {
+    console.error('Error fetching following:', error);
+  } finally {
+    followingLoading.value = false;
+  }
+};
+
+const onFollowersScroll = async (event) => {
+  const element = event.target;
+  if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+    await loadFollowers();
+  }
+};
+
+const onFollowingScroll = async (event) => {
+  const element = event.target;
+  if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+    await loadFollowing();
   }
 };
 </script>
@@ -413,9 +474,5 @@ const hideFollowingModal = () => {
 
 .tooltip {
   transition: opacity 0.3s ease;
-}
-
-.underline-on-hover:hover {
-  text-decoration: underline;
 }
 </style>
