@@ -75,9 +75,16 @@ export function useUserService() {
   };
 
   // Get user profile
-  const getUserProfile = async (userId) => {
+  const getUserProfile = async (userId, tab) => {
     try {
-      const response = await $api.get(`users/${userId}`);
+      let path;
+      if (!tab) {
+        path = `users/${userId}`
+      } else {
+        console.log(tab)
+        path = `users/${userId}?tab=${tab.tab}`
+      }
+      const response = await $api.get(path);
       return response.data;
     } catch (error) {
       throw error;

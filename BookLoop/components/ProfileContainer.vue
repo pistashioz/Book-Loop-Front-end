@@ -78,47 +78,100 @@
       </div>
     </section>
 
-    <!-- Listings Section -->
-    <section id="main-container" class="flex flex-col w-full laptop:w-7/12 items-start flex-grow overflow-hidden space-y-4">
+<!-- Listings Section -->
+<section id="main-container" class="flex flex-col w-full laptop:w-7/12 items-start flex-grow overflow-hidden space-y-4">
       <ul class="flex flex-wrap w-full text-sm font-medium text-center text-gray-500 dark:text-gray-400">
         <li class="me-2">
-          <a href="#" aria-current="page" class="inline-block px-4 py-2.5 text-blue-600 bg-gray-100 rounded-3xl active dark:bg-gray-800 dark:text-blue-500">Listings</a>
+          <a
+            href="#"
+            :class="{'text-blue-600 bg-gray-100 dark:bg-gray-800 dark:text-blue-500': activeTab === 'listings'}"
+            class="inline-block px-4 py-2.5 rounded-3xl hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+            @click.prevent="setTab('listings')"
+          >Listings</a>
         </li>
         <li class="me-2">
-          <a href="#" class="inline-block px-4 py-2.5 rounded-3xl hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Purchase Reviews</a>
+          <a
+            href="#"
+            :class="{'text-blue-600 bg-gray-100 dark:bg-gray-800 dark:text-blue-500': activeTab === 'feedback'}"
+            class="inline-block px-4 py-2.5 rounded-3xl hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+            @click.prevent="setTab('feedback')"
+          >Purchase Reviews</a>
         </li>
         <li class="me-2">
-          <a href="#" class="inline-block px-4 py-2.5 rounded-3xl hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Literary Reviews</a>
+          <a
+            href="#"
+            :class="{'text-blue-600 bg-gray-100 dark:bg-gray-800 dark:text-blue-500': activeTab === 'literaryReviews'}"
+            class="inline-block px-4 py-2.5 rounded-3xl hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+            @click.prevent="setTab('literaryReviews')"
+          >Literary Reviews</a>
         </li>
       </ul>
       <div id="content-holder" class="flex flex-col flex-grow border rounded-2xl w-full p-4 overflow-auto mb-4" @scroll="onScroll">
-        <p class="text-xs px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">This user has {{ profile.listings.count }} books for sale!</p>
-        <div id="listing-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative desktop:h-96 laptop:h-80 sm:h-64 laptop:w-full sm:w-52 cursor-pointer" @click="navigateToListing(listing.listingId)" @mouseenter="delayedShowTooltip($event, listing.listingTitle)" @mouseleave="hideTooltip">
-            <div :style="{ backgroundImage: `url(${listing.ListingImages[0]?.imageUrl || ''})` }" class="bg-cover bg-center w-full h-5/6 relative">
-              <p class="absolute top-2 left-2 text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.BookEdition.title }}</p>
-              <div class="absolute bottom-2 right-2 flex items-center gap-x-1 border rounded-full w-fit h-fit py-1 px-2.5 bg-gray-50">
-                <button @mouseenter="toggleLikeIcon(listing.listingId, true)" @mouseleave="toggleLikeIcon(listing.listingId, false)" @click.stop="listing.isLiked ? unlikeListing(listing.listingId) : likeListing(listing.listingId)">
-                  <svg v-if="listing.isLiked || hovered[listing.listingId]" class="w-[14px] h-[14px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z"/>
-                  </svg>
-                  <svg v-else class="w-[14px] h-[14px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
-                  </svg>
-                </button>
-                <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.likesCount }}</p>
+        <div v-if="activeTab === 'listings'"> <!--v-if="activeTab === 'listings'">-->
+          <p class="text-xs px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">This user has {{ profile.listings.count }} books for sale!</p>
+          <div id="listing-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative desktop:h-96 laptop:h-80 sm:h-64 laptop:w-full sm:w-52 cursor-pointer" @click="navigateToListing(listing.listingId)" @mouseenter="delayedShowTooltip($event, listing.listingTitle)" @mouseleave="hideTooltip">
+              <div :style="{ backgroundImage: `url(${listing.ListingImages[0]?.imageUrl || ''})` }" class="bg-cover bg-center w-full h-5/6 relative">
+                <p class="absolute top-2 left-2 text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.BookEdition.title }}</p>
+                <div class="absolute bottom-2 right-2 flex items-center gap-x-1 border rounded-full w-fit h-fit py-1 px-2.5 bg-gray-50">
+                  <button @mouseenter="toggleLikeIcon(listing.listingId, true)" @mouseleave="toggleLikeIcon(listing.listingId, false)" @click.stop="listing.isLiked ? unlikeListing(listing.listingId) : likeListing(listing.listingId)">
+                    <svg v-if="listing.isLiked || hovered[listing.listingId]" class="w-[14px] h-[14px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z"/>
+                    </svg>
+                    <svg v-else class="w-[14px] h-[14px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                    </svg>
+                  </button>
+                  <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.likesCount }}</p>
+                </div>
+              </div>
+              <div id="listing-details" class="mt-2 flex flex-col items-start">
+                <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.listingCondition }}</p>
+                <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.price }} €</p>
+                <a :href="`/works/${listing.BookEdition.PrimaryWork?.workId}/editions/${listing.BookEdition.UUID}`" class="text-xs font-satoshi-medium text-gray-900 dark:text-white" @click.stop>Check the book</a>
               </div>
             </div>
-            <div id="listing-details" class="mt-2 flex flex-col items-start">
-              <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.listingCondition }}</p>
-              <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.price }} €</p>
-              <a :href="`/works/${listing.BookEdition.PrimaryWork?.workId}/editions/${listing.BookEdition.UUID}`" class="text-xs font-satoshi-medium text-gray-900 dark:text-white" @click.stop>Check the book</a>
+          </div>
+        </div>
+        <div v-if="activeTab === 'feedback'">
+          <p class="text-xs px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">Purchase Reviews</p>
+          <div class="space-y-4">
+            <div v-for="review in feedback" :key="review.id" class="bg-gray-100 border border-gray-200 rounded-lg p-4 dark:bg-gray-800 dark:border-gray-600">
+              <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ review.sellerReview }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Rating: {{ review.sellerRating }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Review Date: {{ new Date(review.reviewDate).toLocaleDateString() }}</p>
+            </div>
+          </div>
+        </div>
+        <div v-if="activeTab === 'literaryReviews'">
+          <p class="text-xs px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">This user has shared {{ literaryReviews.count || 0 }} literary opinions</p>
+          <div class="space-y-4">
+            <div v-for="review in literaryReviews.rows" :key="review.id" class=" space-y-2 bg-gray-100 border border-gray-200 rounded-lg p-4 dark:bg-gray-800 dark:border-gray-600">
+              <div class="review-header-wrapper flex w-full justify-between">
+                <p class="text-xs text-gray-500 dark:text-gray-400">Rating: {{ review.literaryRating }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Review Date: {{ new Date(review.creationDate).toLocaleDateString() }}</p>
+              </div>
+              <div id="book-n-review" class="flex justify-between items-start gap-x-4">
+                <div class="reviewd-book-wrapper h-fit mt-1.5" >
+                <img :src="`${review.bookEdition.coverImage}`" alt="Book Cover Image" class="w-36">
+                <a :href="`/works/${review.bookEdition?.workId}/editions/${review.bookEdition.UUID}`" class="text-xs hover:underline hover:underline-offset-3 font-satoshi-medium text-gray-900 dark:text-white" @click.stop>Check the book</a>
+                </div>
+                <div class="another-wrapper w-fit justify-self-end">
+                  <h6 class="font-cabinet-grotesk">
+                  {{  review.bookEdition.title }}
+                </h6>
+                <p class="text-xs text-justify font-satoshi-medium text-gray-900 dark:text-white">{{ review.literaryReview }}</p>
+                </div>
+             
+              </div>
+              
             </div>
           </div>
         </div>
       </div>
       <div id="tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 transition-opacity duration-300"></div>
     </section>
+
 
 <!-- Followers Modal -->
 <div id="followers-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
@@ -177,13 +230,16 @@
 
 <script setup>
 import { ref, watch, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { Modal } from 'flowbite';
 import { useUserService } from '~/composables/api/userService';
 import { useWishlistService } from '~/composables/api/wishlistService';
 
-const { followUser: followUserService, unfollowUser: unfollowUserService, getFollowers, getFollowing } = useUserService();
 const { addListingToWishlist, removeListingFromWishlist } = useWishlistService();
+
+
+const { followUser: followUserService, unfollowUser: unfollowUserService, getFollowers, getFollowing, getUserProfile } = useUserService();
+
 
 const props = defineProps({
   data: {
@@ -200,15 +256,68 @@ const tooltipTimeout = ref(null);
 
 const followers = ref([]);
 const following = ref([]);
+const feedback = ref([]);
+const literaryReviews = ref([]);
+const activeTab = ref('listings');
 
 const followersPage = ref(1);
 const followingPage = ref(1);
 const followersLoading = ref(false);
 const followingLoading = ref(false);
 
+const router = useRouter();
+const route = useRoute();
+
 watch(() => props.data, (newVal) => {
   profile.value = newVal;
 }, { immediate: true });
+
+
+
+/* watch(route, () => {
+  let tab = route.query.tab || 'listings';
+  console.log(activeTab);
+  console.log(activeTab.value);
+  setActiveTab(tab);
+  // loadTabData(tab);
+}, { immediate: true }); */
+
+const setActiveTab = (tab) => {
+  console.log('activeTab');
+  activeTab.value = tab;
+  console.log(activeTab.value);
+};
+
+const loadTabData = async (tab) => {
+  if (tab === 'listings') {
+    // Listings data is already loaded with profile data
+    return;
+  }
+  const userId = route.params.userId;
+  try {
+    const response = await getUserProfile(userId, route.query);
+    console.log(response)
+    if (tab === 'feedback') {
+      feedback.value = response.feedback.rows;
+    } else if (tab === 'literaryReviews') {
+      literaryReviews.value = response.literaryReviews;
+    }
+  } catch (error) {
+    console.error(`Error loading data for tab ${tab}:`, error);
+  }
+};
+
+watch(() => route.query, () => {
+  let tab = route.query.tab || 'listings';
+  setActiveTab(tab);
+  loadTabData(tab);
+}, {immediate: true});
+
+const setTab = (tab) => {
+  router.push({ query: { ...route.query, tab } });
+};
+
+
 
 const deliverByHand = computed(() => profile.value.deliverByHand);
 
@@ -223,8 +332,6 @@ const starRating = computed(() => {
 onMounted(() => {
   console.log(profile.value.deliverByHand);
 });
-
-const router = useRouter();
 
 const navigateToListing = (listingId) => {
   router.push(`/listings/${listingId}`);
