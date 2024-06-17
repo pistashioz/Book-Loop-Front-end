@@ -33,16 +33,17 @@
             :src="work.primaryEdition.coverImage"
           />
         </div>
+
       </div>
     </div>
-    <SubmitReviewForm :workId="work.workId" @review-submitted="handleReviewSubmitted" />
-    <LiteraryReviews :reviews="work.LiteraryReviews" v-if="work.LiteraryReviews && work.LiteraryReviews.length > 0" :work="work" />
+    <LiteraryReviews :reviews="work.LiteraryReviews" v-if="work.LiteraryReviews && work.LiteraryReviews.reviews.length > 0" :work="work" />
     <Editions :editions="work.otherEditions" v-if="work.otherEditions && work.otherEditions.length > 0" :work="work" />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+//import SubmitReviewForm from './SubmitReview.vue'
 import LiteraryReviews from './LiteraryReviews.vue';
 import Editions from './Editions.vue';
 
@@ -54,12 +55,7 @@ const props = defineProps({
 });
 console.log('work', props.work)
 console.log('work reviews', props.work.LiteraryReviews)
-const handleReviewSubmitted = (newReview) => {
-  if (!props.work.reviews) {
-    props.work.reviews = [];
-  }
-  props.work.reviews.push(newReview);
-};
+
 </script>
 
 <style scoped>

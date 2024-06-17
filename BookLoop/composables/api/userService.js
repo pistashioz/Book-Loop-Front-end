@@ -1,5 +1,6 @@
 const { $api } = useNuxtApp();
 
+
 export async function findAll(currentPage) {
   try {
     const response = await $api.get('/users', {

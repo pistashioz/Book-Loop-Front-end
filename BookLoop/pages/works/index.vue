@@ -114,6 +114,52 @@
     
   </div>
   <div class="relative">
+    <details class="group [&_summary::-webkit-details-marker]:hidden">
+      <summary
+        class="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600"
+      >
+        <span class="text-sm font-medium"> Language </span>
+
+        <span class="transition group-open:-rotate-180">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-4 w-4"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </span>
+      </summary>
+
+      <div class="z-50 group-open:absolute group-open:start-0 group-open:top-auto group-open:mt-2">
+        <div class="w-64 rounded border border-gray-200 bg-white">
+          <header class="flex items-center justify-between p-4">
+            <button type="button" class="text-sm text-gray-900 underline underline-offset-4" @click = "selectedLanguage = null">
+              Reset
+            </button>
+          </header>
+
+          <ul class="space-y-1 border-t border-gray-200 p-4">
+            <li v-for="language in languageToFilter" :key="language">
+              <label class="inline-flex items-center gap-2">
+                <input 
+                  type="radio" 
+                  class="size-5 rounded border-gray-300"
+                  v-model="selectedLanguage"
+                  :value="language"
+                />
+                <span class="text-sm font-medium text-gray-700">{{ language }}</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </details>
+  </div>
+  <div class="relative">
     <div class="relative">
     <details class="group [&_summary::-webkit-details-marker]:hidden">
       <summary
@@ -138,7 +184,7 @@
       <div class="z-50 group-open:absolute group-open:start-0 group-open:top-auto group-open:mt-2">
         <div class="w-96 rounded border border-gray-200 bg-white">
           <header class="flex items-center justify-between p-4">
-            <button type="button" class="text-sm text-gray-900 underline underline-offset-4">
+            <button type="button" class="text-sm text-gray-900 underline underline-offset-4" @click="resetRatings()">
               Reset
             </button>
           </header>
@@ -238,13 +284,18 @@ const selectedGenres = ref([])
 const selectedAuthors = ref([])
 const languageToFilter = ['English', 'Dutch (Flemish)', 'Dutch (Netherlands)', 'French', 'German', 'Hungarian', 'Italian', 'Lithuanian', 'Polish', 'Portuguese (Brazil)', 'Portuguese (Portugal)', 'Spanish (Castilian)', 'Spanish (Latin American)', 'Swedish']
 const selectedLanguage = ref(null)
-/*
-const minRating = ref(0)
-const maxRating = ref(5)*/
+
+const minRating = ref(null)
+const maxRating = ref(null)
 const openAddWork = () => {
   console.log(showModal.value)
   showModal.value = true;
 }
+
+const resetRatings = () => {
+      minRating.value = '';
+      maxRating.value = '';
+    };
 
 const prevPage = async () => {
   if (currentPage.value > 1) {
@@ -274,6 +325,7 @@ if (currentPage.value < totalPages.value) {
 const fetchWorksData = async () => {
   console.log(selectedGenres.value, selectedAuthors.value)
   console.log('selected language',selectedLanguage.value)
+  console.log(selectedLanguage.value)
   const fetchedWorksResponse = await fetchWorks(currentPage.value, selectedGenres.value, selectedAuthors.value, selectedLanguage.value, minRating.value, maxRating.value);
   console.log('Fetched work response: ', fetchedWorksResponse)
   if (fetchedWorksResponse) {
@@ -299,7 +351,7 @@ const searchWorksByFilter = debounce(async () => {
   await fetchWorksData();
 }, 2000);
 
-watch([selectedGenres, selectedAuthors, selectedLanguage], searchWorksByFilter);
+watch([selectedGenres, selectedAuthors, selectedLanguage, minRating, maxRating], searchWorksByFilter);
 
 onMounted(async () => {
   try {

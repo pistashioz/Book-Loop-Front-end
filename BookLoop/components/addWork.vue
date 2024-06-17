@@ -172,7 +172,7 @@ const submitForm = async () => {
     console.log('Form Data:', workData);
     const response = await addWork(workData);
     console.log('API Response:', response);
-    emit('close-modal');
+    props.$emit('close-modal');
   } catch (error) {
     console.error('Error:', error);
   }

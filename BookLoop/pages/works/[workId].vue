@@ -52,7 +52,7 @@ onMounted(async () => {
       try {
         const reviewsData = await fetchLiteraryReviews(workId)
         if (reviewsData.success && reviewsData.reviews.length > 0){
-          work.value.LiteraryReviews = reviewsData.reviews
+          work.value.LiteraryReviews = reviewsData
         }
         else{
           console.error('Error fetching reviews', reviewsData.error);

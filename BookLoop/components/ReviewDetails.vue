@@ -158,7 +158,9 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   return date.toLocaleDateString('en-US', options);
-};/*
+};
+
+/*
 console.log('work', props.work)
 console.log('work reviews', props.work.LiteraryReviews)
 const handleReviewSubmitted = (newReview) => {
