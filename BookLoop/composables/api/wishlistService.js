@@ -1,3 +1,4 @@
+// composables/api/wishlistService.js
 import { useNuxtApp } from '#app';
 
 export function useWishlistService() {

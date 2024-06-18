@@ -139,7 +139,8 @@ export async function getReview(workId, literaryReviewId){
     }
   } */
 
-  import { useNuxtApp } from '#app';
+// composables/api/workService.js
+import { useNuxtApp } from '#app';
 
 export function useWorkService() {
   const { $api } = useNuxtApp();
@@ -147,7 +148,6 @@ export function useWorkService() {
   const likeReview = async (workId, literaryReviewId) => {
     try {
       const response = await $api.post(`works/${workId}/reviews/${literaryReviewId}/likes`);
-      console.log(response)
       return response.data;
     } catch (error) {
       throw error;
@@ -163,8 +163,20 @@ export function useWorkService() {
     }
   };
 
+  const getReviewComments = async (workId, literaryReviewId, page = 1, limit = 10) => {
+    try {
+      const response = await $api.get(`works/${workId}/reviews/${literaryReviewId}/comments`, {
+        params: { page, limit }
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return {
     likeReview,
     unlikeReview,
+    getReviewComments,
   };
 }

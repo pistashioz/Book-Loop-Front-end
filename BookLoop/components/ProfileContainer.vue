@@ -128,7 +128,7 @@
               <div id="listing-details" class="mt-2 flex flex-col items-start">
                 <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.listingCondition }}</p>
                 <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.price }} €</p>
-                <a :href="`/works/${listing.BookEdition.PrimaryWork?.workId}/editions/${listing.BookEdition.UUID}`" class="text-xs font-satoshi-medium text-gray-900 dark:text-white" @click.stop>Check the book</a>
+                <a :href="`/works/${listing.BookEdition.PrimaryWork?.workId}/editions/${listing.BookEdition.UUID}`" class="hover:underline text-xs font-satoshi-medium text-gray-900 dark:text-white" @click.stop>Check the book</a>
               </div>
             </div>
           </div>
@@ -144,71 +144,99 @@
           </div>
         </div>
         <div v-if="activeTab === 'literaryReviews'">
-          <p class="text-sm px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">This user has shared {{ literaryReviews.count || 0 }} literary opinions</p>
-          <div class="space-y-4">
-            <div v-for="review in literaryReviews.rows" :key="review.id" class=" space-y-2 bg-gray-100 border border-gray-200 rounded-lg p-4 dark:bg-gray-800 dark:border-gray-600">
-              <div class="review-header-wrapper flex w-full justify-between">
-                <p class="text-xs flex items-center text-gray-500 dark:text-gray-400"> 
-                  <template v-for="n in getStars(review.literaryRating).fullStars" :key="'full-' + n">
-                    <svg class="w-4 h-4 text-accent-starsYellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"/>
-                    </svg>
-                  </template>
-                  <template v-if="getStars(review.literaryRating).halfStars">
-                    <svg class="w-4 h-4 text-accent-starsYellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                      <path fill-rule="evenodd" d="M13 4.024v-.005c0-.053.002-.353-.217-.632a1.013 1.013 0 0 0-1.176-.315c-.192.076-.315.193-.35.225-.052.05-.094.1-.122.134a4.358 4.358 0 0 0-.31.457c-.207.343-.484.84-.773 1.375a168.719 168.719 0 0 0-1.606 3.074h-.002l-4.599.367c-1.775.14-2.495 2.339-1.143 3.488L6.17 15.14l-1.06 4.406c-.412 1.72 1.472 3.078 2.992 2.157l3.94-2.388c.592-.359.958-.996.958-1.692v-13.6Zm-2.002 0v.025-.025Z" clip-rule="evenodd"/>
-                    </svg>
-                  </template>
-                  <template v-for="n in getStars(review.literaryRating).emptyStars" :key="'empty-' + n">
-                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
-                    </svg>
-                  </template>
-                  <p class="ml-2">{{ review.literaryRating }} literary rating</p></p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">Review Date: {{ new Date(review.creationDate).toLocaleDateString() }}</p>
+    <p class="text-sm px-4 py-2.5 border w-fit mb-3 rounded-full font-satoshi-medium text-gray-900 dark:text-white">
+      This user has shared {{ literaryReviews.count || 0 }} literary opinions
+    </p>
+      <div v-for="review in literaryReviews.rows" :key="review.literaryReviewId" class="space-y-2 bg-gray-100 border border-gray-200 rounded-lg p-4 dark:bg-gray-800 dark:border-gray-600 transition-transform" >
+        <div class="review-header-wrapper flex w-full justify-between">
+          <p class="text-xs flex items-center text-gray-500 dark:text-gray-400">
+            <template v-for="n in getStars(review.literaryRating).fullStars" :key="'full-' + n">
+              <svg class="w-4 h-4 text-accent-starsYellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"/>
+              </svg>
+            </template>
+            <template v-if="getStars(review.literaryRating).halfStars">
+              <svg class="w-4 h-4 text-accent-starsYellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M13 4.024v-.005c0-.053.002-.353-.217-.632a1.013 1.013 0 0 0-1.176-.315c-.192.076-.315.193-.35.225-.052.05-.094.1-.122.134a4.358 4.358 0 0 0-.31.457c-.207.343-.484.84-.773 1.375a168.719 168.719 0 0 0-1.606 3.074h-.002l-4.599.367c-1.775.14-2.495 2.339-1.143 3.488L6.17 15.14l-1.06 4.406c-.412 1.72 1.472 3.078 2.992 2.157l3.94-2.388c.592-.359.958-.996.958-1.692v-13.6Zm-2.002 0v.025-.025Z" clip-rule="evenodd"/>
+              </svg>
+            </template>
+            <template v-for="n in getStars(review.literaryRating).emptyStars" :key="'empty-' + n">
+              <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
+              </svg>
+            </template>
+            <p class="ml-2">{{ review.literaryRating }} literary rating</p>
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Review Date: {{ new Date(review.creationDate).toLocaleDateString() }}</p>
+        </div>
+        <div id="book-n-review" class="flex justify-between items-start gap-x-4">
+          <div class="reviewd-book-wrapper h-fit mt-1.5 flex flex-col">
+            <img :src="`${review.bookEdition.coverImage}`" alt="Book Cover Image" class="w-36">
+            <div class="likes-n-comments flex flex-row w-full justify-end items-center mt-1.5">
+              <div id="review-likes" class="flex items-center gap-x-1 mr-3">
+                <p class="font-satoshi font-bold text-sm mt-1">
+                  {{ review.likeCount }}
+                </p>
+                <button
+                  @mouseenter="toggleLikeIconReview(review.literaryReviewId, true)"
+                  @mouseleave="toggleLikeIconReview(review.literaryReviewId, false)"
+                  @click.stop="handleLikeUnlike(review.bookEdition.workId, review.literaryReviewId, review.isLiked)"
+                  :disabled="!profile.isUser"
+                >
+                  <svg v-if="review.isLiked || hovered[review.literaryReviewId]" class="w-6 h-6 text-gray-800 dark:text-white cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M15.03 9.684h3.965c.322 0 .64.08.925.232.286.153.532.374.717.645a2.109 2.109 0 0 1 .242 1.883l-2.36 7.201c-.288.814-.48 1.355-1.884 1.355-2.072 0-4.276-.677-6.157-1.256-.472-.145-.924-.284-1.348-.404h-.115V9.478a25.485 25.485 0 0 0 4.238-5.514 1.8 1.8 0 0 1 .901-.83 1.74 1.74 0 0 1 1.21-.048c.396.13.736.397.96.757.225.36.32.788.269 1.211l-1.562 4.63ZM4.177 10H7v8a2 2 0 1 1-4 0v-6.823C3 10.527 3.527 10 4.176 10Z" clip-rule="evenodd"/>
+                  </svg>
+                  <svg v-else class="w-6 h-6 text-gray-800 dark:text-white cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475"/>
+                  </svg>
+                </button>
+              </div>
+              <div id="review-comments" class="flex items-center gap-x-1 mt-1">
+                <p class="font-satoshi font-bold text-sm">
+                  {{ review.commentCount }}
+                </p>
+                <button
+                  @mouseenter="toggleCommentIconReview(review.literaryReviewId, true)"
+                  @mouseleave="toggleCommentIconReview(review.literaryReviewId, false)"
+                  @click.stop="handleToggleComments(review.bookEdition.workId, review.literaryReviewId)"
+                  :disabled="review.commentCount === 0"
+                >
+                  <svg v-if="commentHovered[review.literaryReviewId] || review.showComments" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M3.559 4.544c.355-.35.834-.544 1.33-.544H19.11c.496 0 .975.194 1.33.544.356.35.559.829.559 1.331v9.25c0 .502-.203.981-.559 1.331-.355.35-.834.544-1.33.544H15.5l-2.7 3.6a1 1 0 0 1-1.6 0L8.5 17H4.889c-.496 0-.975-.194-1.33-.544A1.868 1.868 0 0 1 3 15.125v-9.25c0-.502.203-.981.559-1.331ZM7.556 7.5a1 1 0 1 0 0 2h8a1 1 0 0 0 0-2h-8Zm0 3.5a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2H7.556Z" clip-rule="evenodd"/>
+                  </svg>
+                  <svg v-else class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.556 8.5h8m-8 3.5H12m7.111-7H4.89a.896.896 0 0 0-.629.256.868.868 0 0 0-.26.619v9.25c0 .232.094.455.26.619A.896.896 0 0 0 4.89 16H9l3 4 3-4h4.111a.896.896 0 0 0 .629-.256.868.868 0 0 0 .26-.619v-9.25a.868.868 0 0 0-.26-.619.896.896 0 0 0-.63-.256Z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="another-wrapper w-fit flex flex-col">
+            <span class="flex items-center">
+              <h6 class="font-cabinet-grotesk mr-1 hover:underline">
+                <NuxtLink :to="`/works/${review.bookEdition.workId}/editions/${review.bookEdition.UUID}`">{{ review.bookEdition.title }}</NuxtLink>
+              </h6>
+              <p class="text-sm text-justify font-satoshi-medium text-gray-900 dark:text-white mr-2">
+                by <span v-for="author in review.bookEdition.author" class="hover:underline cursor-pointer font-satoshi italic">
+                  <a :href="`/persons/${author.personId}`">{{ author.personName }}</a>
+                </span>
+              </p>
+            </span>
+            <p class="text-xs text-justify font-satoshi-medium text-gray-900 dark:text-white">{{ review.literaryReview }}</p>
+            <transition name="accordion">
+              <div v-if="review.showComments" id="accordion-body-{{ review.literaryReviewId }}" class="comments-section mt-4">
+                <p class="text-sm font-satoshi-medium text-gray-900 dark:text-white">Comments:</p>
+                <div v-for="comment in review.comments" :key="comment.commentId" class="comment bg-gray-50 border border-gray-200 rounded-lg p-2 dark:bg-gray-900 dark:border-gray-700 mt-2">
+                  <p class="text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ comment.comment }}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-x-1">By 
+                    <NuxtLink :to="`/users/${comment.user.userId}`" class="block hover:underline"> {{ comment.user.username }}</NuxtLink>
+                     on {{ new Date(comment.createdAt).toLocaleDateString() }}</p>
                 </div>
-                <div id="book-n-review" class="flex justify-between items-start gap-x-4">
-                  <div class="reviewd-book-wrapper h-fit mt-1.5 flex flex-col " >
-                    <img :src="`${review.bookEdition.coverImage}`" alt="Book Cover Image" class="w-36">
-                    <div class="likes-n-comments flex flex-row  w-full justify-end  items-center mt-1.5">
-                      <div id="review-likes" class="flex items-center gap-x-1 mr-3">
-                        <p class=" font-satoshi font-bold text-sm mt-1">
-                          {{ review.likeCount }}
-                        </p>
-                        <button  @mouseenter="toggleLikeIconReview(review.literaryReviewId, true)" @mouseleave="toggleLikeIconReview(review.literaryReviewId, false)"  @click.stop="review.isLiked ? unlikeLiteraryReview(review.bookEdition.workId, review.literaryReviewId) : likeLiteraryReview(review.bookEdition.workId, review.literaryReviewId)">
-                          <svg  v-if="review.isLiked || hovered[review.literaryReviewId]" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd" d="M15.03 9.684h3.965c.322 0 .64.08.925.232.286.153.532.374.717.645a2.109 2.109 0 0 1 .242 1.883l-2.36 7.201c-.288.814-.48 1.355-1.884 1.355-2.072 0-4.276-.677-6.157-1.256-.472-.145-.924-.284-1.348-.404h-.115V9.478a25.485 25.485 0 0 0 4.238-5.514 1.8 1.8 0 0 1 .901-.83 1.74 1.74 0 0 1 1.21-.048c.396.13.736.397.96.757.225.36.32.788.269 1.211l-1.562 4.63ZM4.177 10H7v8a2 2 0 1 1-4 0v-6.823C3 10.527 3.527 10 4.176 10Z" clip-rule="evenodd"/>
-                          </svg>
-                          <svg v-else  class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475"/>
-                          </svg>              
-                        </button>                    
-                      </div>
-                      <div id="review-comments" class="flex items-center gap-x-1 mt-1">
-                        <p class=" font-satoshi font-bold text-sm">
-                          {{ review.commentCount }}
-                        </p>
-                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.556 8.5h8m-8 3.5H12m7.111-7H4.89a.896.896 0 0 0-.629.256.868.868 0 0 0-.26.619v9.25c0 .232.094.455.26.619A.896.896 0 0 0 4.89 16H9l3 4 3-4h4.111a.896.896 0 0 0 .629-.256.868.868 0 0 0 .26-.619v-9.25a.868.868 0 0 0-.26-.619.896.896 0 0 0-.63-.256Z"/>
-                        </svg>
-                      </div>
-                      <div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="another-wrapper w-fit flex flex-col">
-                    <span class="flex items-center  ">
-                      <h6 class="font-cabinet-grotesk mr-1 hover:underline">
-                        <NuxtLink :to="`/works/${review.bookEdition.workId}/editions/${review.bookEdition.UUID}`">{{  review.bookEdition.title }}</NuxtLink>
-                      </h6>
-                      <p class="text-sm text-justify font-satoshi-medium text-gray-900 dark:text-white mr-2"> by <span v-for="author in review.bookEdition.author" class="hover:underline cursor-pointer font-satoshi italic "> 
-                        <a :href="`/persons/${author.personId}`">{{ author.personName }}</a></span> </p>
-                      </span>
-                      <p class="text-xs text-justify font-satoshi-medium text-gray-900 dark:text-white">{{ review.literaryReview }}</p>
+              </div>
+            </transition>
                     </div>
                     
-                  </div>
-                  
+              
                 </div>
               </div>
             </div>
@@ -218,7 +246,7 @@
         
         
         <!-- Followers Modal -->
-        <div id="followers-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
+        <div v-if="profile.totalFollowers > 0" id="followers-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
           <div class="relative w-full h-full max-w-md p-4 md:h-auto mx-auto mt-10">
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
               <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
@@ -236,8 +264,8 @@
                     <img :src="follower.MainUser.profileImage || '/default-profile.png'" class="w-12 h-12 rounded-full" alt="Profile Image">
                     <span class="font-satoshi-medium">{{ follower.MainUser.username }}</span>
                   </div>
-                  <button v-if="!follower.isCurrentUser && !follower.isFollowing" @click="followUser(follower.MainUser.userId)" type="button" class="py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Follow</button>
-                  <button v-if="!follower.isCurrentUser && follower.isFollowing" @click="unfollowUser(follower.MainUser.userId)" type="button" class="ml-auto py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Unfollow</button>
+                  <button v-if="!follower.isCurrentUser && !follower.isFollowing && profile.isUser" @click="followUser(follower.MainUser.userId)" type="button" class="py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Follow</button>
+                  <button v-if="!follower.isCurrentUser && follower.isFollowing && profile.isUser" @click="unfollowUser(follower.MainUser.userId)" type="button" class="ml-auto py-2.5 px-4 w-fit h-fit text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Unfollow</button>
                 </div>
               </div>
             </div>
@@ -245,7 +273,7 @@
         </div>
         
         <!-- Following Modal -->
-        <div id="following-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
+        <div v-if="profile.totalFollowing > 0"  id="following-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden w-full h-full overflow-y-auto overflow-x-hidden">
           <div class="relative w-full h-full max-w-md p-4 md:h-auto mx-auto mt-10">
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
               <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
@@ -271,21 +299,17 @@
           </div>
         </div> </div>
       </template>
-      
       <script setup>
       import { ref, watch, onMounted, computed } from 'vue';
       import { useRouter, useRoute } from 'vue-router';
-      import { Modal } from 'flowbite';
       import { useUserService } from '~/composables/api/userService';
       import { useWishlistService } from '~/composables/api/wishlistService';
       import { useWorkService } from '~/composables/api/workService';
+      import { Accordion } from 'flowbite';
       
       const { addListingToWishlist, removeListingFromWishlist } = useWishlistService();
-      const { likeReview, unlikeReview } = useWorkService();
-      
-      
+      const { likeReview, unlikeReview, getReviewComments } = useWorkService();
       const { followUser: followUserService, unfollowUser: unfollowUserService, getFollowers, getFollowing, getUserProfile } = useUserService();
-      
       
       const props = defineProps({
         data: {
@@ -298,6 +322,7 @@
       const currentPage = ref(1);
       const listingsPerPage = 8;
       const hovered = ref({});
+      const commentHovered = ref({});
       const tooltipTimeout = ref(null);
       
       const followers = ref([]);
@@ -318,29 +343,21 @@
         profile.value = newVal;
       }, { immediate: true });
       
-      
-      
       const setActiveTab = (tab) => {
-        console.log('activeTab');
         activeTab.value = tab;
-        console.log(activeTab.value);
       };
       
       const loadTabData = async (tab) => {
         if (tab === 'listings') {
-          // Listings data is already loaded with profile data
           return;
         }
         const userId = route.params.userId;
         try {
           const response = await getUserProfile(userId, route.query);
-          console.log(response)
           if (tab === 'feedback') {
             feedback.value = response.feedback.rows;
           } else if (tab === 'literaryReviews') {
-            console.log()
             literaryReviews.value = response.literaryReviews;
-            console.log(literaryReviews)
           }
         } catch (error) {
           console.error(`Error loading data for tab ${tab}:`, error);
@@ -351,7 +368,7 @@
         let tab = route.query.tab || 'listings';
         setActiveTab(tab);
         loadTabData(tab);
-      }, {immediate: true});
+      }, { immediate: true });
       
       const setTab = (tab) => {
         router.push({ query: { ...route.query, tab } });
@@ -359,6 +376,10 @@
       
       const toggleLikeIconReview = (reviewId, isHovered) => {
         hovered.value = { ...hovered.value, [reviewId]: isHovered };
+      };
+      
+      const toggleCommentIconReview = (reviewId, isHovered) => {
+        commentHovered.value = { ...commentHovered.value, [reviewId]: isHovered };
       };
       
       const deliverByHand = computed(() => profile.value.deliverByHand);
@@ -378,11 +399,27 @@
         return { fullStars, halfStars, emptyStars };
       };
       
+      const handleLikeUnlike = async (workId, literaryReviewId, isLiked) => {
+        if (!profile.value.isUser) {
+          console.warn('User is not logged in.');
+          return;
+        }
+      
+        try {
+          if (isLiked) {
+            await unlikeLiteraryReview(workId, literaryReviewId);
+          } else {
+            await likeLiteraryReview(workId, literaryReviewId);
+          }
+        } catch (error) {
+          console.error('Error handling like/unlike:', error);
+        }
+      };
+      
       const likeLiteraryReview = async (workId, literaryReviewId) => {
         try {
           await likeReview(workId, literaryReviewId);
           const review = literaryReviews.value.rows.find((literaryReview) => literaryReview.literaryReviewId === literaryReviewId);
-          console.log(review)
           if (review) {
             review.isLiked = true;
             review.likeCount += 1;
@@ -406,11 +443,22 @@
           console.error('Error unliking listing:', error);
         }
       };
-
       
-      onMounted(() => {
-        console.log(profile.value.deliverByHand);
-      });
+      const handleToggleComments = async (workId, literaryReviewId) => {
+        const review = literaryReviews.value.rows.find((r) => r.literaryReviewId === literaryReviewId);
+        if (!review) return;
+      
+        review.showComments = !review.showComments;
+      
+        if (review.showComments && review.commentCount > 0 && !review.comments) {
+          try {
+            const response = await getReviewComments(workId, literaryReviewId);
+            review.comments = response.comments;
+          } catch (error) {
+            console.error('Error fetching comments:', error);
+          }
+        }
+      };
       
       const navigateToListing = (listingId) => {
         router.push(`/listings/${listingId}`);
@@ -471,6 +519,10 @@
       };
       
       const likeListing = async (listingId) => {
+        if (!profile.value.isUser) {
+          console.warn('User is not logged in.');
+          return;
+        }
         try {
           await addListingToWishlist(listingId);
           const listing = profile.value.listings.rows.find((item) => item.listingId === listingId);
@@ -484,6 +536,10 @@
       };
       
       const unlikeListing = async (listingId) => {
+        if (!profile.value.isUser) {
+          console.warn('User is not logged in.');
+          return;
+        }
         try {
           await removeListingFromWishlist(listingId);
           const listing = profile.value.listings.rows.find((item) => item.listingId === listingId);
