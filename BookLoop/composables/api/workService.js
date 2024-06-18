@@ -115,7 +115,7 @@ export async function getReview(workId, literaryReviewId){
   }
 }
 
-export async function likeReview(workId, literaryReviewId){
+/* export async function likeReview(workId, literaryReviewId){
     try {
       const response = await fetch(`/works/${workId}/reviews/${literaryReviewId}`, {
         method: 'POST',
@@ -137,4 +137,34 @@ export async function likeReview(workId, literaryReviewId){
       console.error('Error liking review:', error);
       // Handle error, show error message to user
     }
-  }
+  } */
+
+  import { useNuxtApp } from '#app';
+
+export function useWorkService() {
+  const { $api } = useNuxtApp();
+
+  const likeReview = async (workId, literaryReviewId) => {
+    try {
+      const response = await $api.post(`works/${workId}/reviews/${literaryReviewId}/likes`);
+      console.log(response)
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const unlikeReview = async (workId, literaryReviewId) => {
+    try {
+      const response = await $api.delete(`works/${workId}/reviews/${literaryReviewId}/likes`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  return {
+    likeReview,
+    unlikeReview,
+  };
+}

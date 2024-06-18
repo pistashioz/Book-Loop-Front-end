@@ -85,6 +85,7 @@ export function useUserService() {
         path = `users/${userId}?tab=${tab.tab}`
       }
       const response = await $api.get(path);
+      console.log(response.data)
       return response.data;
     } catch (error) {
       throw error;
