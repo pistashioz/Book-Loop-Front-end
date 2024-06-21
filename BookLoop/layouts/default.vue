@@ -3,8 +3,6 @@
     <Navbar class="laptop:w-7/12" /> 
     <NuxtPage class="flex flex-col w-full justify-start  overflow-hidden" />
   </div>
-
-  Teste
   </template>
   
 <script>
