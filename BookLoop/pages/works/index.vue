@@ -232,7 +232,7 @@
           <p  class="text-black/50 group-hover:text-white group-hover:smooth-hover text-center">Add New Work</p>
         </div>
       </button>
-            <WorkCard v-for="w in works" :key="w.workId" :work="w" :coverImage="w.coverImage" />
+      <WorkCard v-for="w in works" :key="w.workId" :work="w" :coverImage="w.coverImage" />
             
           </div>
         </div>
@@ -270,6 +270,7 @@ import SideBar from '~/components/SideBar.vue';
 import { ref, onMounted } from 'vue';
 import { fetchWorks, fetchFilteredGenres } from '~/composables/api/workService';  // fetchAuthorByWorkId~
 import {getPersons} from '~/composables/api/adminService'
+
 import WorkCard from '~/components/WorkCard.vue';
 import AddWork from '~/components/addWork.vue';
 const isLoading = ref(true);

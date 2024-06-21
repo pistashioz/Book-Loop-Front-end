@@ -21,9 +21,7 @@
               </button>
             </div>
           </div>
-          <div class="mt-8 max-w-md">
-            <h3 class="text-lg font-bold text-gray-800" v-if="work.totalReviews">{{ work.totalReviews }} Reviews</h3>
-          </div>
+   
         </div>
         <div class="w-full lg:sticky top-0 sm:flex gap-2">
           <img 
@@ -43,7 +41,6 @@
 
 <script setup>
 import { ref } from 'vue';
-//import SubmitReviewForm from './SubmitReview.vue'
 import LiteraryReviews from './LiteraryReviews.vue';
 import Editions from './Editions.vue';
 

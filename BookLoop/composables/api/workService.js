@@ -19,7 +19,7 @@ export async function fetchWorks(currentPage, arrGenres, arrAuthors, language, m
     console.log('response works', response);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error retrieving works:', error);
   }
 }
 
@@ -30,7 +30,7 @@ export async function fetchWorkById(workId) {
     console.log('response works id', response)
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error retrieving work:', error);
   }
 }
 
@@ -39,7 +39,7 @@ export async function fetchEditionsByWorkId(workId) {
     const response = await $api.get(`/works/${workId}/editions`);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error retrieving editions:', error);
   }
 }
 
@@ -58,7 +58,20 @@ export async function fetchLiteraryReviews(workId) {
     const response = await $api.get(`/works/${workId}/reviews`);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error retrieving literary reviews:', error);
+  }
+}
+
+export async function fetchLiteraryReviewsPagination(workId, currentPage) {
+  try {
+    const response = await $api.get(`/works/${workId}/reviews`, {
+      params: {
+        page: currentPage,
+      }
+    });
+      return response.data;
+  } catch (error) {
+    console.error('Error retrieving literary reviews:', error);
   }
 }
 
@@ -67,7 +80,7 @@ export async function fetchBookGenres(workId) {
     const response = await $api.get(`/genres/${workId}`);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error retrieving book genres:', error);
   }
 }
 
@@ -80,7 +93,7 @@ export async function addLiteraryReview(workId, reviewData) {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error posting literaryReview:', error);
   }
 }
 
@@ -90,7 +103,7 @@ export async function removeWork(workId){
     return response
   }
   catch(error){
-    throw error;
+    console.error('Error removing work:', error);
   }
 }
 
@@ -100,7 +113,7 @@ export async function addWork(workData) {
     const response = await $api.post('/works', workData, {});
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error uploading work:', error);
   }
 }
 
@@ -126,12 +139,13 @@ export async function getReviewsComments(workId, literaryReviewId) {
   }
 }
 
+
 export async function getReview(workId, literaryReviewId){
   try {
     const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}`);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error getting reviews:', error);
   }
 }
 
@@ -147,7 +161,6 @@ export async function likeReview(workId, literaryReviewId, reviewInfo){
       return response
     } catch (error) {
       console.error('Error liking review:', error);
-      // Handle error, show error message to user
     }
   }
 
@@ -160,16 +173,24 @@ export async function likeReview(workId, literaryReviewId, reviewInfo){
       });
       return response.data;
     } catch (error) {
-      throw error;
+      console.error('Error adding review:', error);
     }
   }
 
+  export async function getComments(workId, literaryReviewId){
+    try{
+      const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}/comments`)
+      return response.data
+    }catch (error) {
+      console.error('Error retrieving comments:', error);
+    }
+  }
   export async function findGenres(){
     try{
       const response = await $api.get('/genres?simple=true&page=1&limit=10');
       return response.data;
     } catch (error){
-      throw error; 
+      console.error('Error retrieving genres:', error);
     }
   }
 
@@ -178,7 +199,7 @@ export async function likeReview(workId, literaryReviewId, reviewInfo){
       const response = await $api.get('/genres')
       return response.data
     } catch (error){
-      throw error; 
+      console.error('Error retrieving filtered genres:', error);
     }
   }
 
