@@ -1,5 +1,5 @@
 <template>
-    Landing Page
+    Welcome to Book Loop!
 </template>
 
 <script setup>
