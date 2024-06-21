@@ -163,7 +163,7 @@
                                             <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                         </svg>
                                     </button>       
-                                        <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[user.userId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                       <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[user.userId]}" class="dropdown-content z-10 bg-white  divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                                                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                                                             <li>
                                                                 <button v-if="user.isActiveStatus === 'to be deleted'" class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="removeUser(user.userId)">Delete</button>

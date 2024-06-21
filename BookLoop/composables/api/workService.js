@@ -126,7 +126,7 @@ export async function addEdition(workId, editionData) {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error adding edition:', error);
   }
 }
 
@@ -135,10 +135,23 @@ export async function getReviewsComments(workId, literaryReviewId) {
     const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}/comments`);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error retrieving comments:', error);
   }
 }
 
+export async function addComment(workId, literaryReviewId, commentData){
+  try{
+    const response = await $api.post(`/works/${workId}/reviews/${literaryReviewId}/comments`, commentData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }) 
+    console.log(response)
+    return response.data
+  }catch (error) {
+    console.error('Error uploading comment:', error);
+  }
+}
 
 export async function getReview(workId, literaryReviewId){
   try {
@@ -174,6 +187,15 @@ export async function likeReview(workId, literaryReviewId, reviewInfo){
       return response.data;
     } catch (error) {
       console.error('Error adding review:', error);
+    }
+  }
+  export async function removeReview(workId, literaryReviewId){
+    try{
+      const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}`)
+      return response
+    }
+    catch(error){
+      console.error('Error removing review:', error);
     }
   }
 

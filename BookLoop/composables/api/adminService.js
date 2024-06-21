@@ -37,7 +37,8 @@ export async function toggleSuspension(userId, suspension) {
       console.log('response for get users for deletion: ', response)
       return response.data;
     } catch (error) {
-      throw error;
+      console.error('Error getting users for deletion:', error);
+      return context.res.status(500).json({ message: 'Error getting users for deletion' });
     }
   }
   export async function getSuspendedUsers(){
@@ -45,7 +46,8 @@ export async function toggleSuspension(userId, suspension) {
       const response = await $api.get(`/users/suspended-users`);
       return response.data;
     } catch (error) {
-      throw error;
+      console.error('Error suspending user:', error);
+      return context.res.status(500).json({ message: 'Error suspending user' });
     }
   }
 
@@ -106,7 +108,8 @@ export const createPerson = async (roles,personName) => {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error creating person:', error);
+    return { status: 500, json: { message: 'Error creating person' } };
   }
 }
 
@@ -144,7 +147,8 @@ export const addRole = async (personId, role) => {
     });
   return response.data;
   } catch (error) {
-  throw error;
+    console.error('Error adding role:', error);
+    return { status: 500, json: { message: 'Error adding role' } };
   }
 }
 
@@ -178,7 +182,8 @@ export const createPublisher = async(publisherName) => {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error creating publisher:', error);
+    return { status: 500, json: { message: 'Error creating publisher' } };
   }
 }
 
@@ -240,7 +245,8 @@ export const createGenre = async(genreName) => {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error creating genre:', error);
+    return { status: 500, json: { message: 'Error creating genre' } };
   }
 }
 

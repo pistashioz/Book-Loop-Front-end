@@ -97,17 +97,7 @@
 
         </div>
 
-        <div class="mt-4 min-w-0 flex-1 space-y-4 sm:mt-0">
-          <div id="dropdownDots" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
-                    <li>
-                        <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditPublisher(publisher.publisherId)">Edit</button>
-                    </li>
-                    <li>
-                        <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deletePublisher(publisher.publisherId)">Delete</button>
-                    </li>
-                </ul>
-            </div>  
+        <div class="px-5 py-5 border-b border-gray-200 bg-white text-sm"> 
           <p class="text-base font-normal text-gray-500 dark:text-gray-400" id="literaryReview" v-if = "!readMoreActivated">{{ review.literaryReview.slice(0, 400) }}</p>
           <button id="toggle-btn" class="mt-4 text-blue-500 focus:outline-none" v-if = "!readMoreActivated && review.literaryReview.length > 400" @click = "activateReadMore">Read More</button>
           <p class="text-base font-normal text-gray-500 dark:text-gray-400" id="literaryReview" v-if = "readMoreActivated">{{ review.literaryReview}}</p>
@@ -163,28 +153,40 @@
           </div>
           
         </div>
-        
+        <div class="px-5 py-5  bg-white text-sm"   @click="toggleDropdown(review.literaryReviewId)" >
+
+          <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+              <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                  <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+              </svg>
+          </button> 
+          <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[review.literaryReviewId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                    <li>
+                        <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</button>
+                    </li>
+                    <li>
+                        <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deleteReview(review.literaryReviewId)">Delete</button>
+                    </li>
+                </ul>
+            </div> 
+
+        </div>
       </div>
-      <!--
-  Heads up! 👋
-
-  Plugins:
-    - @tailwindcss/forms
--->
-
-<div v-if="isCommentFormActivated=false">
+<div v-if="isFormVisible(review.literaryReviewId)">
   <label for="AddComment" class="sr-only">Add Comment</label>
 
   <div class="overflow-hidden">
     <textarea
-      id="OrderNotes"
+      id="addComment"
+      v-model="commentText"
       class="w-full h-10 resize-none border-x-0 border-t-0 border-gray-200 px-0 align-top sm:text-sm"
       rows="4"
       placeholder="Add a comment"
     ></textarea>
 
     <div class="flex items-center justify-end gap-2 py-3">
-      <button
+      <button @click ="commentText = ''"
         type="button"
         class="rounded bg-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-600"
       >
@@ -192,6 +194,7 @@
       </button>
 
       <button
+      @click="submitComment(review.literaryReviewId)"
         type="button"
         class="rounded bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
       >
@@ -311,11 +314,12 @@
 <script setup>
 
 import { ref } from 'vue';
-import {getReviewsComments, likeReview, getComments, fetchLiteraryReviewsPagination} from '~/composables/api/workService'; 
+import {getReviewsComments, likeReview, getComments, fetchLiteraryReviewsPagination, addComment, removeReview} from '~/composables/api/workService'; 
 import { useUserStore } from '~/composables/stores/user';
 import AddReview from '~/components/AddReview.vue';
 const showModal = ref(false);
 const currentPage = ref(null)
+const isShowDropdown = reactive({})
 const liked = ref(false)
 const readMoreActivated = ref(false)
 const showRepliesActivated = ref(false)
@@ -325,7 +329,12 @@ const reviewsArr = ref([])
 const ratingCounts  = ref(0)
 const comments  = ref([])
 const replyVisibility = ref({});
-const isCommentFormActivated = ref(false)
+const commentText = ref('')
+const activeCommentForm = ref(0)
+const formVisibility = ref({})
+const userStore = useUserStore();
+  const userId = userStore.userId;
+
 const props = defineProps({
   review: {
     type: Object,
@@ -341,10 +350,14 @@ const props = defineProps({
 const handleReviewAdded  = (review) => {
   console.log('review added: ', review)
   props.work.LiteraryReviews.reviews.push(review.review);
+  reviewsArr.value.push(review.review)
   console.log('update',props.work.LiteraryReviews.reviews)
   props.work.LiteraryReviews.totalReviews++;
 }
 
+const toggleDropdown = async (literaryReviewId) => {
+    isShowDropdown[literaryReviewId] = !isShowDropdown[literaryReviewId];
+}
 const activateReadMore = () => {
   readMoreActivated.value = true;
 }
@@ -352,9 +365,46 @@ const deactivateReadMore = () => {
   readMoreActivated.value = false;
 }
 
-const toggleCommentForm = (literaryReviewId) => {
-  isCommentFormActivated.value = true
+
+const submitComment = async (literaryReviewId) =>{
+  try{
+    const commentData = {
+          comment: commentText.value,
+          userId: userId,
+        };
+    const response  = await addComment(props.work.workId, literaryReviewId, commentData)
+    console.log(response)
+    if (response){
+      comments.value.push(response.data)
+      toggleCommentForm(literaryReviewId)
+    }
+  } catch(error){
+    console.error('error submiting comment', error.response?.data?.message || error.message) 
+  }
 }
+
+const deleteReview = async(literaryReviewId) => {
+  try {
+    const response = await removeReview(props.work.workId, literaryReviewId)
+    if (response) {
+      reviewsArr.value = reviewsArr.value.filter(review => review.literaryReviewId !== literaryReviewId);
+      props.work.LiteraryReviews.reviews = props.work.LiteraryReviews.reviews.filter(review => review.literaryReviewId !== literaryReviewId);
+    }
+  } catch (error) {
+    console.error('error removing review:', error.response?.data?.message || error.message) 
+  }
+}
+
+
+const toggleCommentForm = (literaryReviewId) => {
+  console.log(formVisibility.value)
+  formVisibility.value[literaryReviewId] = !formVisibility.value[literaryReviewId]
+
+}
+const isFormVisible = (literaryReviewId) => {
+  return !!formVisibility.value[literaryReviewId];
+}
+
 const toggleReplies = (reviewId) => {
   replyVisibility.value[reviewId] = !replyVisibility.value[reviewId];
   fetchComments(reviewId)
@@ -464,6 +514,7 @@ const fetchComments = async(literaryReviewId) => {
 onMounted(async ()=> {
   console.log(props.work.LiteraryReviews.reviews, currentPage.value)
   ratingCounts.value  = countReviewsByRating()
+  
 try{
   console.log(props.work.workId)
     const reviewData = await fetchLiteraryReviewsPagination(props.work.workId, currentPage.value)

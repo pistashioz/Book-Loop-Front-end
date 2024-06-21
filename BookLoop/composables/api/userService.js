@@ -11,6 +11,7 @@ export async function findAll(currentPage) {
     console.log('response users', response);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error('Error fetching users:', error);
+    return { status: 500, json: { message: 'Error fetching users' } };
   }
 }
