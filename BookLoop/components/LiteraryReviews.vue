@@ -12,7 +12,7 @@
             </svg>
         </div>
         <p class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">({{ averageReviews() }})</p>
-        <p class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"> {{work.LiteraryReviews.totalReviews}} Reviews </p>
+        <p class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"> {{reviewsArr.length}} Reviews </p>
       </div>
     </div>
 
@@ -103,17 +103,17 @@
           <p class="text-base font-normal text-gray-500 dark:text-gray-400" id="literaryReview" v-if = "readMoreActivated">{{ review.literaryReview}}</p>
           <button id="hide-btn" class="mt-4 text-blue-500 focus:outline-none"  v-if = "readMoreActivated" @click = "deactivateReadMore">Hide</button>
           <div class="flex items-center gap-4">
-            <div class="flex items-center cursor-pointer" @click="likeFunction(review.literaryReviewId)" :class="{ 'liked': liked }" :disabled="liked">
+            <div class="flex items-center cursor-pointer"  @click="toggleLike(review)">
               <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M15.03 9.684h3.965c.322 0 .64.08.925.232.286.153.532.374.717.645a2.109 2.109 0 0 1 .242 1.883l-2.36 7.201c-.288.814-.48 1.355-1.884 1.355-2.072 0-4.276-.677-6.157-1.256-.472-.145-.924-.284-1.348-.404h-.115V9.478a25.485 25.485 0 0 0 4.238-5.514 1.8 1.8 0 0 1 .901-.83 1.74 1.74 0 0 1 1.21-.048c.396.13.736.397.96.757.225.36.32.788.269 1.211l-1.562 4.63ZM4.177 10H7v8a2 2 0 1 1-4 0v-6.823C3 10.527 3.527 10 4.176 10Z" clip-rule="evenodd"/>
               </svg>
               <span
                 class="ms-2"
-                :class="{ 'text-blue-500': liked, 'text-gray-500': !liked }"
-              >
-                {{ liked ? 'Liked' : 'Like' }}
+                :class="{ 'text-blue-500': likedReviews.has(review.literaryReviewId), 'text-gray-500': !likedReviews.has(review.literaryReviewId) }"
+            >
+              {{ likedReviews.has(review.literaryReviewId) ? 'Liked' : 'Like' }}
               </span>
-              <label class="ms-2 text-sm text-gray-400 dark:text-gray-300"> {{review.likeCount}}  likes </label>
+              <label class="ms-2 text-sm text-gray-400 dark:text-gray-300"> {{review.totalLikes}}  likes </label>
             </div>
             <div class="flex items-center">
               <svg class="text-gray-500 dark:text-white mr-1.5 w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
@@ -163,15 +163,21 @@
           <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[review.literaryReviewId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                     <li>
-                        <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</button>
+                        <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" v-if="userId === review.user.userId"  @click="showEditReviewModal = true">Edit</button>
                     </li>
                     <li>
                         <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deleteReview(review.literaryReviewId)">Delete</button>
                     </li>
                 </ul>
-            </div> 
 
+            </div> 
+            <EditReview v-show="showEditReviewModal" v-if="showEditReviewModal"
+                          :literaryReview = "review"
+                          :workId="work.workId"
+                          @close-edit-review-modal = "closeEditReviewModal"
+                          @review-updated="handleReviewUpdated"/>
         </div>
+        
       </div>
 <div v-if="isFormVisible(review.literaryReviewId)">
   <label for="AddComment" class="sr-only">Add Comment</label>
@@ -211,50 +217,51 @@
                 <p class="text-sm text-gray-600 dark:text-gray-400"><time pubdate datetime="2022-02-12"
                         title="Data">{{ formatDate(comment.createdAt) }}</time></p>
             </div>
-            <button id="dropdownComment2Button" data-dropdown-toggle="dropdownComment2"
-                class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-40 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                type="button">
-                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
-                    <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
-                </svg>
-                <span class="sr-only">Comment settings</span>
-            </button>
-            <!-- Dropdown menu -->
-            <div id="dropdownComment2"
-                class="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
-                <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdownMenuIconHorizontalButton">
-                    <li>
-                        <a href="#"
-                            class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Remove</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Report</a>
-                    </li>
-                </ul>
-            </div>
+            <div   @click="toggleDropdownComments(comment.commentId)"  >
+
+              <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                  <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                      <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                  </svg>
+              </button> 
+              <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isCommentsShowDropdown[comment.commentId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                        <li>
+                            <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" v-if="userId === comment.user.userId" @click="showEditCommentModal = true">Edit</button>
+                        </li>
+
+                        <li>
+                            <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deleteComment(comment.commentId, review.literaryReviewId)">Delete</button>
+                        </li>
+                    </ul>
+                </div> 
+                <EditComment v-show="showEditCommentModal" v-if="showEditCommentModal"
+                          :literaryReview = "review"
+                          :comment = "comment"
+                          :workId="work.workId"
+                          @close-edit-comment-modal = "closeEditCommentModal"
+                          @comment-updated="handleCommentUpdated"/>
+              </div>
+
+            
         </footer>
         <p class="text-gray-500 dark:text-gray-400">{{comment.comment}}</p>
         <div class="flex items-center mt-4 space-x-4">
-          <div class="flex items-center cursor-pointer" @click="likeFunction(comment.commentId)" :class="{ 'liked': liked }" :disabled="liked">
+          <div class="flex items-center cursor-pointer" @click="toggleCommentLike(review.literaryReviewId, comment)">
               <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M15.03 9.684h3.965c.322 0 .64.08.925.232.286.153.532.374.717.645a2.109 2.109 0 0 1 .242 1.883l-2.36 7.201c-.288.814-.48 1.355-1.884 1.355-2.072 0-4.276-.677-6.157-1.256-.472-.145-.924-.284-1.348-.404h-.115V9.478a25.485 25.485 0 0 0 4.238-5.514 1.8 1.8 0 0 1 .901-.83 1.74 1.74 0 0 1 1.21-.048c.396.13.736.397.96.757.225.36.32.788.269 1.211l-1.562 4.63ZM4.177 10H7v8a2 2 0 1 1-4 0v-6.823C3 10.527 3.527 10 4.176 10Z" clip-rule="evenodd"/>
               </svg>
               <span
                 class="ms-2"
-                :class="{ 'text-blue-500': liked, 'text-gray-500': !liked }"
-              >
-                {{ liked ? 'Liked' : 'Like' }}
+                :class="{ 'text-blue-500': likedComments.has(comment.commentId), 'text-gray-500': !likedComments.has(comment.commentId) }"
+            >
+              {{ likedComments.has(comment.commentId) ? 'Liked' : 'Like' }}
               </span>
-              <label class="ms-2 text-sm text-gray-400 dark:text-gray-300"> {{comment.likeCount}}  likes </label>
+              <label class="ms-2 text-sm text-gray-400 dark:text-gray-300"> {{comment.totalLikes}}  likes </label>
             </div>
         </div>
     </article>
+    
     </div>
 
     <div class="mt-6 text-center">
@@ -309,32 +316,38 @@
         @review-added="handleReviewAdded"/>
 
 
+
 </template>
 
 <script setup>
 
 import { ref } from 'vue';
-import {getReviewsComments, likeReview, getComments, fetchLiteraryReviewsPagination, addComment, removeReview} from '~/composables/api/workService'; 
+import {getReviewsComments, likeReview, likeComment, removeLikeComment, getComments, fetchLiteraryReviewsPagination, addComment, removeReview, removeComment, removeLikeReview} from '~/composables/api/workService'; 
 import { useUserStore } from '~/composables/stores/user';
 import AddReview from '~/components/AddReview.vue';
+import EditReview from '~/components/EditReview.vue'
+import EditComment from '~/components/EditComment.vue'
+const showEditReviewModal = ref(false);
 const showModal = ref(false);
 const currentPage = ref(null)
 const isShowDropdown = reactive({})
+const showEditCommentModal = ref(false)
+const isCommentsShowDropdown = reactive({})
 const liked = ref(false)
 const readMoreActivated = ref(false)
-const showRepliesActivated = ref(false)
 const openReplies = ref(false)
 const totalPages = ref(0)
 const reviewsArr = ref([])
 const ratingCounts  = ref(0)
 const comments  = ref([])
 const replyVisibility = ref({});
-const commentText = ref('')
+const commentText = ref('');
 const activeCommentForm = ref(0)
-const formVisibility = ref({})
+const formVisibility = ref({});
 const userStore = useUserStore();
-  const userId = userStore.userId;
-
+const userId = userStore.userId;
+const likedReviews = ref(new Set());
+const likedComments = ref(new Set());
 const props = defineProps({
   review: {
     type: Object,
@@ -348,15 +361,51 @@ const props = defineProps({
 
 
 const handleReviewAdded  = (review) => {
+
   console.log('review added: ', review)
-  props.work.LiteraryReviews.reviews.push(review.review);
   reviewsArr.value.push(review.review)
+  console.log('reviewsArr:',reviewsArr.value)
+  props.work.LiteraryReviews.reviews.push(review.review);
   console.log('update',props.work.LiteraryReviews.reviews)
   props.work.LiteraryReviews.totalReviews++;
 }
+const handleReviewUpdated = (review) =>  {
+  if (Array.isArray(reviewsArr.value)) {
+    const reviewIndex = reviewsArr.value.findIndex(existingReview => existingReview.literaryReviewId === review.literaryReviewId);
+    console.log(reviewIndex)
+    if (reviewIndex !== -1) {
+      reviewsArr.value[reviewIndex].literaryRating = review.literaryRating;
+      reviewsArr.value[reviewIndex].literaryReview = review.literaryReview;
+      console.log(reviewsArr.value)
+      console.log('Review value after update:', reviewsArr.value);
+    } else {
+      console.warn('Review with ID', review.literaryReviewId, 'not found in reviews array.');
+    }
+  } else {
+    console.warn('reviewsArr.value is not an array. Consider using an appropriate data structure.');
+  }
+}
+const handleCommentUpdated = (comment) => {
 
+  if (Array.isArray(comments.value)) {
+    const commentIndex = comments.value.findIndex(existingComment => existingComment.commentId === comment.commentId);
+    console.log(commentIndex)
+    if (commentIndex !== -1) {
+      comments.value[commentIndex].comment = comment.comment;
+      console.log(comments.value)
+      console.log('comments value after update:', comments.value);
+    } else {
+      console.warn('Comment with ID', comment.commentId, 'not found in comments array.');
+    }
+  } else {
+    console.warn('comments.value is not an array. Consider using an appropriate data structure.');
+  }
+}
 const toggleDropdown = async (literaryReviewId) => {
     isShowDropdown[literaryReviewId] = !isShowDropdown[literaryReviewId];
+}
+const toggleDropdownComments = async(commentId) => {
+  isCommentsShowDropdown[commentId] =!isCommentsShowDropdown[commentId]
 }
 const activateReadMore = () => {
   readMoreActivated.value = true;
@@ -395,6 +444,21 @@ const deleteReview = async(literaryReviewId) => {
   }
 }
 
+const deleteComment = async(commentId, literaryReviewId) => {
+  try {
+    const response = await removeComment(props.work.workId, literaryReviewId, commentId)
+    if (response) {
+      comments.value = comments.value.filter(comment => comment.commentId !== commentId);
+      const review = reviewsArr.value.find(review => review.literaryReviewId === literaryReviewId);
+      if (review && review.commentCount > 0) {
+        console.log(review.commentCount)
+        review.commentCount--;
+      }
+    }
+  } catch (error) {
+    console.error('error removing review:', error.response?.data?.message || error.message) 
+  }
+}
 
 const toggleCommentForm = (literaryReviewId) => {
   console.log(formVisibility.value)
@@ -409,9 +473,16 @@ const toggleReplies = (reviewId) => {
   replyVisibility.value[reviewId] = !replyVisibility.value[reviewId];
   fetchComments(reviewId)
 }
-  const closeModal = () => {
-    showModal.value = false;
-    };
+const closeModal = () => {
+  showModal.value = false;
+  };
+const closeEditReviewModal = () => {
+  console.log(showEditReviewModal.value)
+  showEditReviewModal.value = false;
+}
+const closeEditCommentModal = () => {
+  showEditCommentModal.value = false;
+}
 const isRepliesVisible = (reviewId) => {
   return !!replyVisibility.value[reviewId];
 };
@@ -477,27 +548,99 @@ if (currentPage.value < totalPages.value) {
 }
 };
 
-const likeFunction = async (literaryReviewId) => {
+const toggleLike = async (review) => {
   try {
-    console.log(literaryReviewId)
+    if (likedReviews.value.has(review.literaryReviewId)) {
+      await removeLike(review);
+    } else {
+      await likeFunction(review);
+    }
+  } catch (error) {
+    console.error('Error toggling like:', error);
+  }
+};
+
+
+
+const likeFunction = async (review) => {
+  try {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString();
-    const userStore = useUserStore();
-    const userId = userStore.userId;
-    console.log('user id',userId)
-
     const dataLikeReview = {
       likeDate: formattedDate,
       userId: userId,
-      literaryReviewId: literaryReviewId,
+      literaryReviewId: review.literaryReviewId,
+    };
+    const response = await likeReview(props.work.workId, review.literaryReviewId, dataLikeReview);
+    if (response) {
+      console.log('review like:', review)
+      review.totalLikes++;
+      console.log(review.totalLikes)
+      likedReviews.value.add(review.literaryReviewId);
     }
-    const response = await likeReview(props.work.workId, literaryReviewId, dataLikeReview);
-    //liked.value = true
+    console.log('response like function',response)
   } catch (error) {
     console.error('Error liking review:', error);
   }
 };
 
+const removeLike = async (review) => {
+  try {
+    const response = await removeLikeReview(props.work.workId, review.literaryReviewId, userId);
+    if (response) {
+      review.totalLikes--;
+      likedReviews.value.delete(review.literaryReviewId);
+    }
+  } catch (error) {
+    console.error('Error removing like from review:', error);
+  }
+};
+
+const toggleCommentLike = async (literaryReviewId, comment) => {
+  console.log('comment toggle comment like:', comment)
+  console.log(literaryReviewId)
+  try{
+    if (likedComments.value.has(comment.commentId)){
+      await removeCommentLike(literaryReviewId, comment)
+    } else {
+      await likeCommentFunction(literaryReviewId, comment)
+    }
+  }catch (error) {
+    console.error('Error toggling like:', error);
+  }
+}
+
+const likeCommentFunction = async (literaryReviewId, comment) => {
+  try {
+    console.log('comment', comment)
+    const response = await likeComment(props.work.workId, literaryReviewId, comment.commentId, userId);
+    if (response) {
+      console.log('comment like:', comment)
+      comment.totalLikes++;
+      console.log(comment.totalLikes)
+      likedComments.value.add(comment.commentId);
+    }
+    console.log('response like function',response)
+  } catch (error) {
+    console.error('Error liking comment:', error);
+  }
+}
+
+const removeCommentLike = async (literaryReviewId, comment) => {
+  try {
+    const response = await removeLikeComment(props.work.workId, literaryReviewId, comment.commentId, userId);
+    if (response) {
+      const commentToUpdate = comments.value.find(c => c.commentId === comment.commentId);
+      if (commentToUpdate) {
+        commentToUpdate.totalLikes--;
+        likedComments.value.delete(comment.commentId);
+        console.log(likedComments.value)
+      }
+    }
+  } catch (error) {
+    console.error('Error removing comment like:', error);
+  }
+};
 const fetchComments = async(literaryReviewId) => {
   try {
     console.log(literaryReviewId)

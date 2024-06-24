@@ -177,6 +177,16 @@ export async function likeReview(workId, literaryReviewId, reviewInfo){
     }
   }
 
+  export async function removeLikeReview(workId, literaryReviewId, userId){
+    try {
+      const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}/likes`, {
+      userId});
+      console.log(response)
+      return response
+    } catch (error) {
+      console.error('Error removing like from review:', error);
+    }
+  }
   export async function addReview(workId){
     try {
       const response = await $api.post(`/works/${workId}/reviews`, reviewData, {
@@ -199,6 +209,17 @@ export async function likeReview(workId, literaryReviewId, reviewInfo){
     }
   }
 
+  export async function updateReview(workId, literaryReviewId, reviewData){
+    try{
+      const response = await $api.patch(`/works/${workId}/reviews/${literaryReviewId}`, reviewData)
+      console.log('response:', response)
+      console.log('response data:', response.data)
+      return response.data
+    }
+    catch(err){
+      err.value = err.response?.data?.message || 'Error updating review';
+    }
+  }
   export async function getComments(workId, literaryReviewId){
     try{
       const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}/comments`)
@@ -225,3 +246,49 @@ export async function likeReview(workId, literaryReviewId, reviewInfo){
     }
   }
 
+export async function removeComment(workId, literaryReviewId, commentId){
+  try{
+    const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}/comments/${commentId}`)
+    return response
+  }
+  catch(error){
+    console.error('Error removing comment:', error);
+  }
+}
+
+export async function updateComment(workId, literaryReviewId, commentId, commentData){
+  try{
+    const response = await $api.patch(`/works/${workId}/reviews/${literaryReviewId}/comments/${commentId}`, commentData)
+    console.log('response:', response)
+    console.log('response data:', response.data)
+    return response.data
+  }
+  catch(err){
+    err.value = err.response?.data?.message || 'Error updating review';
+  }
+}
+
+export async function likeComment(workId, literaryReviewId, commentId, userId){
+  try {
+    const response = await $api.post(`/works/${workId}/reviews/${literaryReviewId}/comments/${commentId}/likes`, {
+      userId});
+    console.log(response)
+    return response
+  } catch (error) {
+    console.error('Error liking review:', error);
+  }
+}
+
+export async function removeLikeComment(workId, literaryReviewId, commentId, userId) {
+  console.log(workId, commentId, literaryReviewId, userId)
+  try {
+    const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}/comments/${commentId}/likes`, {
+      userId: userId
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error('Error removing like from comment:', error);
+    throw error; 
+  }
+}
