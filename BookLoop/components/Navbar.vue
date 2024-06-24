@@ -1,19 +1,23 @@
+<!-- BookLoop/components/Navbar.vue -->
+
 <template>
   <div>
     <header>
-      <nav class="flex justify-between  py-10 items-center bg-white">
+      <nav class="flex justify-between py-10 items-center bg-white">
         <h1 class="text-xl text-gray-800 font-bold">
           <NuxtLink to="/">Book Loop</NuxtLink>
         </h1>
-        <div class="flex flex-grow justify-center items-center roun">
+        <div class="flex flex-grow justify-center items-center">
           <div class="flex w-full max-w-md">
-            <button id="dropdown-button" @click="toggleDropdown" class="flex-shrink-0 z-10 rounded-s-3xl inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">
+            <button id="dropdown-button" @click="toggleDropdown('categories')" class="flex-shrink-0 z-10 rounded-s-3xl inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">
               All categories 
               <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
               </svg>
             </button>
-            <div v-if="isDropdownOpen" id="dropdown" class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <div v-if="isDropdownOpen('categories')" id="dropdown" class="absolute 
+            z-10 bg-white divide-y divide-gray-100 
+            rounded-lg shadow w-44 dark:bg-gray-700 top-20 mt-4">
               <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                 <li>
                   <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Listings</button>
@@ -27,7 +31,7 @@
               </ul>
             </div>
             <div class="relative w-full">
-              <input type="search" id="search-dropdown" class="block border border-l-0 border-gray-300 rounded-r-3xl p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50  focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search listings, book editions, members..." required />
+              <input type="search" id="search-dropdown" class="block border border-l-0 border-gray-300 rounded-r-3xl p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search listings, book editions, members..." required />
               <button type="submit" class="absolute top-0 end-0 p-2.5 w-[42px] text-sm font-medium h-full text-white bg-blue-700 rounded-e-3xl border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -58,16 +62,22 @@
               </svg>
             </li>
             <li id="avatar" class="relative p-1 flex items-center">
-              <button id="avatarButton" type="button" @click="toggleDropdown" class="flex w-10 h-10 rounded-full cursor-pointer overflow-hidden bg-gray-100 dark:bg-gray-900">
-                <svg class="w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                </svg>
+              <button id="avatarButton" type="button" @click="toggleDropdown('avatar')" class="flex w-10 h-10 rounded-full cursor-pointer overflow-hidden bg-gray-100 dark:bg-gray-900">
+                <template v-if="profileImage">
+                  <img :src="profileImage" alt="Profile Image" class="w-full h-full object-cover" />
+                </template>
+                <template v-else>
+                  <svg class="w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                  </svg>
+                </template>
               </button>
               <!-- Dropdown menu -->
-              <div v-if="isDropdownOpen" id="userDropdown" class="absolute right-0 z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900 dark:divide-gray-600">
+              <div v-if="isDropdownOpen('avatar')" id="userDropdown" class="absolute z-10 
+              left-0 top-12 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900 dark:divide-gray-600">
                 <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                  <div>{{ userProfile.username }}</div>
-                  <div class="font-medium truncate">{{ userProfile.email }}</div>
+                  <div>{{ username }}</div>
+                  <div class="font-medium truncate">{{ email }}</div>
                 </div>
                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-satoshi-medium" aria-labelledby="avatarButton">
                   <li>
@@ -105,34 +115,28 @@ import { useNuxtApp } from '#app';
 
 // Initialize user store
 const userStore = useUserStore();
-const { userId, isAdmin } = storeToRefs(userStore);
+const { userId, isAdmin, username, email, profileImage } = storeToRefs(userStore);
 
 const router = useRouter();
 const { $api } = useNuxtApp();
 
 // State for dropdown menu visibility
-const isDropdownOpen = ref(false);
-const userProfile = ref({ username: '', email: '' });
+const dropdownState = ref({
+  categories: false,
+  avatar: false
+});
 
 // Computed property to ensure userId is correctly referenced
 const userIdValue = computed(() => userId.value);
 
-// Fetch user profile details
-const fetchUserAccount = async () => {
-  try {
-    const response = await $api.get('/users/me/settings?type=account');
-    console.log(`the user id is ${userIdValue.value}`);
-    userProfile.value = response.data;
-    console.log('User profile:', userProfile.value);
-  } catch (err) {
-    console.error('Failed to fetch user profile:', err);
-  }
+// Toggle dropdown visibility
+const toggleDropdown = (dropdown) => {
+  dropdownState.value[dropdown] = !dropdownState.value[dropdown];
 };
 
-// Toggle dropdown visibility
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-  fetchUserAccount();
+// Check if a specific dropdown is open
+const isDropdownOpen = (dropdown) => {
+  return dropdownState.value[dropdown];
 };
 
 // Logout function to handle user logout and redirect to the landing page

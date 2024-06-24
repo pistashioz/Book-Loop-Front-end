@@ -171,6 +171,18 @@
         <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
       </label>
     </div>
+
+    <!-- Third container for "Deliver By Hand" -->
+<div class="third-container flex justify-between items-center mb-4 p-2.5">
+  <!-- Heading -->
+  <h6 class="text-base font-bold dark:text-white ml-2">Deliver by hand</h6>
+  <!-- Toggle switch -->
+  <label class="inline-flex items-center cursor-pointer">
+    <input type="checkbox" class="sr-only peer" v-model="deliverByHand">
+    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+  </label>
+</div>
+
   </div>
   
   <!-- Container for holding the defaultLanguage -->
@@ -189,6 +201,11 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+
+import { useUserStore } from '~/composables/stores/user';
+import { useRouter } from 'vue-router';
+import { useNuxtApp } from '#app';
+
 
 // Define props
 const props = defineProps({
@@ -219,14 +236,35 @@ watch(() => props.addressError, (newError) => {
   }
 });
 
-// Handle file input change
-const handleFileChange = (event) => {
+
+const config = useRuntimeConfig();
+const sasUrl = ref(config.public.sasurl);
+
+
+// Initialize the user store
+const userStore = useUserStore();
+const userId = ref(userStore.userId);
+
+/* // Handle file input change
+const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
-    // Handle the file upload logic here
-    console.log('Selected file:', file);
+    try {
+      const blobServiceClient = new BlobServiceClient(sasUrl.value);
+      const containerClient = blobServiceClient.getContainerClient('profile-images');
+      const blobName = `${userId.value}/${file.name}`;
+      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+      await blockBlobClient.uploadBrowserData(file);
+      profileImage.value = blockBlobClient.url;
+
+      // Update the user's profile image URL in the backend
+       await updateUserProfileImage(blockBlobClient.url);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
   }
-};
+}; */
 
 // Extract data from props
 const profileImage = ref(props.data.profileImage);
@@ -236,7 +274,23 @@ const streetName = ref(props.data.address.streetName || '');
 const streetNumber = ref(props.data.address.streetNumber || '');
 const locality = ref(props.data.address.locality || '');
 const showCity = ref(props.data.showCity || false);
+const deliverByHand = ref(props.data.deliverByHand || false); 
 const defaultLanguage = ref(props.data.defaultLanguage || 'EN');
+
+const selectedFile = ref(null);
+
+const handleFileChange = async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Create URL for the selected file
+    const url = URL.createObjectURL(file);
+
+    profileImage.value = url;
+    selectedFile.value = file;
+  }
+};
+
+
 
 // Determine initial selected country based on props
 const countries = ref([
@@ -326,9 +380,22 @@ defineExpose({
   streetNumber,
   locality,
   showCity,
+  deliverByHand, 
   defaultLanguage,
-  selectedCountry
+  selectedCountry,
+  selectedFile
 });
+
+const updateUserProfileImage = async (url) => {
+  try {
+    await $api.put('/users/me/settings?type=profile', {
+      profileImage: url
+    });
+    console.log('Profile image updated successfully.');
+  } catch (error) {
+    console.error('Error updating profile image:', error);
+  }
+};
 </script>
 
 <style scoped>

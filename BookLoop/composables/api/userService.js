@@ -14,16 +14,16 @@ export function useUserService() {
     }
   };
 
-  // Helper function to update user data at a given path
-  const updateUserData = async (path, data) => {
+  const updateUserData = async (path, data, config = {}) => {
     try {
-      const response = await $api.patch(path, data);
+      const response = await $api.patch(path, data, config);
       return response; // Return full response to handle status in the front-end
     } catch (error) {
       throw error;
     }
   };
-
+  
+  
   // Update user address
   const updateUserAddress = async (data) => {
     try {

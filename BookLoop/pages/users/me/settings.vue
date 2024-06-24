@@ -76,7 +76,7 @@ const fetchData = async (type) => {
   loading.value = true;
   try {
     if (route.query.type === 'security') {
-      return
+      return;
     }
     data.value = await fetchUserData(currentPath);
     console.log('Fetched data:', data.value);
@@ -114,22 +114,25 @@ const displayMessage = (msg, isSuccess) => {
   }, 5000);
 };
 
-// Function to handle profile update
 const updateProfile = async () => {
   let profileUpdateData = {};
   let addressUpdateData = {};
   let shouldUpdateAddress = false;
 
   if (queryType.value === 'profile' && profileDetailsRef.value) {
+    profileUpdateData = new FormData();
+
     addressError.value = '';
     errorFields.value = [];
 
-    profileUpdateData = {
-      profileImage: profileDetailsRef.value.profileImage,
-      about: profileDetailsRef.value.aboutYou,
-      showCity: profileDetailsRef.value.showCity,
-      defaultLanguage: profileDetailsRef.value.defaultLanguage,
-    };
+    profileUpdateData.append('about', profileDetailsRef.value.aboutYou);
+    profileUpdateData.append('showCity', profileDetailsRef.value.showCity);
+    profileUpdateData.append('defaultLanguage', profileDetailsRef.value.defaultLanguage);
+    profileUpdateData.append('deliverByHand', profileDetailsRef.value.deliverByHand); // Add this line
+
+    if (profileDetailsRef.value.selectedFile) {
+      profileUpdateData.append('profilePicture', profileDetailsRef.value.selectedFile); // Append the file
+    }
 
     const { zipCode, streetName, streetNumber, locality, selectedCountry } = profileDetailsRef.value;
     const country = selectedCountry.name !== 'Select Country' ? selectedCountry.name : undefined;
@@ -170,6 +173,7 @@ const updateProfile = async () => {
 
   try {
     // Update profile data
+    console.log('Profile update data:', profileUpdateData);
     const response = await updateUserData(currentPath, profileUpdateData);
 
     // Update address data if required
@@ -196,6 +200,7 @@ const updateProfile = async () => {
     }
   }
 };
+
 
 // Function to parse error messages
 const parseErrorMessages = (errorData) => {

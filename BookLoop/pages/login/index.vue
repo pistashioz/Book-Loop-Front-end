@@ -1,3 +1,5 @@
+<!-- BookLoop/pages/login/index.vue -->
+
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md p-8 space-y-3 rounded-xl bg-white shadow-md">
@@ -44,8 +46,6 @@ const { $api } = useNuxtApp();
 const router = useRouter();
 // User store to manage user state
 const userStore = useUserStore();
-// Runtime configuration to access API base URL
-const config = useRuntimeConfig();
 
 // Reactive variables for form inputs and error message
 const usernameOrEmail = ref('');

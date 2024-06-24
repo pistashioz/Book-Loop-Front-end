@@ -2,7 +2,19 @@
   <div class="flex flex-col items-center space-y-4 h-full overflow-hidden">
     <!-- Profile Section -->
     <section id="profile-section" class="flex w-full laptop:w-7/12 border rounded-lg p-4 items-start gap-x-8">
-      <div id="avatar" class="relative w-36 h-36 overflow-hidden flex items-end bg-gray-100 rounded-full dark:bg-gray-600"></div>
+      <!-- Avatar Icon or Profile Image -->
+<!-- Avatar Icon or Profile Image -->
+<div id="avatar" class="relative w-36 h-36 overflow-hidden flex items-end bg-gray-100 rounded-full dark:bg-gray-600">
+  <template v-if="profile.profileImage">
+    <img :src="profile.profileImage" alt="Profile Image" class="w-full h-full object-cover" />
+  </template>
+  <template v-else>
+    <svg class="w-36 h-36 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+    </svg>
+  </template>
+</div>
+
       <div id="right-wrapper" class="flex h-36 flex-col flex-grow gap-y-2">
         <header id="first-wrapper" class="flex justify-between items-start">
           <div id="user-n-reviews" class="w-9/12">
@@ -694,20 +706,33 @@
       gap: 2rem;
     }
     
-    #avatar {
-      width: 9rem;
-      height: 9rem;
-      overflow: hidden;
-      flex: none;
-      background-color: #e2e8f0;
-      border-radius: 50%;
-    }
-    
-    #avatar.reviews {
-      width: 2rem;
-      height: 2rem;
-    }
-    
+
+#avatar {
+  width: 9rem;
+  height: 9rem;
+  overflow: hidden;
+  flex: none;
+  background-color: #e2e8f0;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#avatar svg {
+  width: 9rem;
+  height: 9rem;
+  transform: translateY(10%);
+  /* Adjust the translateY value as needed to better fit the SVG within the circle */
+}
+
+/* Ensuring the avatar in reviews section is smaller */
+#avatar.reviews {
+  width: 2rem;
+  height: 2rem;
+}
+
+
     #right-wrapper {
       flex-grow: 1;
       display: flex;
