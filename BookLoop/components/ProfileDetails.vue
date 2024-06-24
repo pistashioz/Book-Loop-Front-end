@@ -385,16 +385,6 @@ defineExpose({
   clearProfileImage
 });
 
-const updateUserProfileImage = async (url) => {
-  try {
-    await $api.put('/users/me/settings?type=profile', {
-      profileImage: url
-    });
-    console.log('Profile image updated successfully.');
-  } catch (error) {
-    console.error('Error updating profile image:', error);
-  }
-};
 </script>
 
 <style scoped>

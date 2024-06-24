@@ -34,6 +34,15 @@ export function useUserService() {
     };
   
   
+    const requestPasswordReset = async () => {
+      try {
+        const response = await $api.post('/users/request-password-reset');
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+
   // Update user address
   const updateUserAddress = async (data) => {
     try {
@@ -153,6 +162,7 @@ export function useUserService() {
     followUser,
     unfollowUser,
     getFollowers,
-    getFollowing
+    getFollowing,
+    requestPasswordReset
   };
 }

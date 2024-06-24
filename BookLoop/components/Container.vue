@@ -16,9 +16,9 @@
         </transition>
        </div>
 
-      <!-- Update Profile button -->
+      <!-- Update Profile/Reset Password button -->
       <div v-if="showUpdateButton" class="flex justify-end">
-        <button type="button" @click="updateProfile" class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+        <button type="button" @click="handleClick" class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
           {{ updateButtonText }}
         </button>
       </div>
@@ -37,7 +37,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update-profile']);
+const emit = defineEmits(['update-profile', 'reset-password']);
 const route = useRoute();
 
 const showUpdateButton = computed(() => {
@@ -45,11 +45,18 @@ const showUpdateButton = computed(() => {
 });
 
 const updateButtonText = computed(() => {
+  if (route.path === '/reset-password') {
+    return 'Reset Password';
+  }
   return route.query.type === 'security' ? 'Update Password' : 'Update Profile';
 });
 
-const updateProfile = () => {
-  emit('update-profile');
+const handleClick = () => {
+  if (route.path === '/reset-password') {
+    emit('reset-password');
+  } else {
+    emit('update-profile');
+  }
 };
 </script>
 

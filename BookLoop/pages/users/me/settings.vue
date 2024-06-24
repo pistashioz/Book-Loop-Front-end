@@ -189,7 +189,7 @@ const updateProfile = async () => {
       privacy: privacySettingsRef.value.getFlattenedData()
     };
   } else if (queryType.value === 'security' && securitySettingsRef.value) {
-    const { newPassword, confirmPassword } = securitySettingsRef.value;
+    const { currentPassword, newPassword, confirmPassword } = securitySettingsRef.value;
 
     // Ensure the passwords match before sending the update request
     if (newPassword !== confirmPassword) {
@@ -198,11 +198,12 @@ const updateProfile = async () => {
     }
 
     profileUpdateData = {
-      currentPassword: securitySettingsRef.value.currentPassword,
+      currentPassword,
       newPassword,
       confirmPassword
     };
-  }
+}
+
 
   try {
     // Update profile data
