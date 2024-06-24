@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <h1>Book Loop</h1>
-    </div>
+    Welcome to Book Loop!
 </template>
 
 <script setup>
+import 'flowbite';
+import 'flowbite/dist/flowbite.min.css';
 
 </script>
 
