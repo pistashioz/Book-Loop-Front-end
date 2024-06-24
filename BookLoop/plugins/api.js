@@ -8,13 +8,13 @@ export default defineNuxtPlugin(nuxtApp => {
     baseURL: nuxtApp.$config.public.apiBaseUrl,
     withCredentials: true,
   });
-  
+
   api.interceptors.response.use(
     response => response,
     async error => {
       const originalRequest = error.config;
       const userStore = useUserStore();
-      
+
       if (error.response?.status === 401 && error.response.data?.refresh && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
@@ -27,23 +27,22 @@ export default defineNuxtPlugin(nuxtApp => {
           return Promise.reject(err);
         }
       }
-      
+
       if (error.response?.status === 403 && error.response.data?.redirectTo) {
         console.log("Redirecting to login page...");
         try {
-          await userStore.logout(); // Tenta fazer logout
+          await userStore.logout(); // Try to logout
         } catch (logoutError) {
           console.error('Logout failed:', logoutError);
         }
         userStore.clearUser();
         await router.push(error.response.data.redirectTo);
       }
-      
+
       return Promise.reject(error);
     }
   );
-  
-  
+
   return {
     provide: {
       api,

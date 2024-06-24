@@ -47,6 +47,9 @@ const router = useRouter();
 // User store to manage user state
 const userStore = useUserStore();
 
+
+
+
 // Reactive variables for form inputs and error message
 const usernameOrEmail = ref('');
 const password = ref('');

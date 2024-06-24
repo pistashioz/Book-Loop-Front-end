@@ -8,7 +8,7 @@
         </template>
 
         <template v-else-if="queryType === 'account'">
-          <AccountSettings ref="accountSettingsRef" :data="data" :errorFields="errorFields" />
+          <AccountSettings ref="accountSettingsRef" :data="data" :errorFields="errorFields" @display-message="displayMessage" />
         </template>
 
         <template v-else-if="queryType === 'notifications'">
@@ -19,7 +19,6 @@
           <PrivacySettings ref="privacySettingsRef" :data="data" />
         </template>
 
-        
         <template v-else-if="queryType === 'security'">
           <Security />
         </template>
@@ -100,6 +99,19 @@ watch(
     fetchData(queryType.value); // Fetch data based on the new query parameter
   },
   { immediate: true } // Fetch data immediately on component mount
+);
+
+// Watch for changes in the route path
+watch(
+  () => route.path,
+  async (newPath) => {
+    if (newPath === '/login') {
+      await router.push(newPath); // Redirect to login if the path changes to login
+    } else {
+      fetchData(queryType.value); // Fetch data based on the new route path
+    }
+  },
+  { immediate: true }
 );
 
 // Fetch initial data
@@ -201,7 +213,6 @@ const updateProfile = async () => {
   }
 };
 
-
 // Function to parse error messages
 const parseErrorMessages = (errorData) => {
   let messages = [];
@@ -211,3 +222,13 @@ const parseErrorMessages = (errorData) => {
   return messages.join('<br>');
 };
 </script>
+
+<style scoped>
+/* Transition for message */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+</style>

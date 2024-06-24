@@ -37,7 +37,7 @@ export function useAuthorService() {
       const response = await $api.get('/persons', {
         params: { page, limit, role: 'author', startsWith: letter }
       });
-      console.log(response.data);
+
       return response.data;
     } catch (error) {
       throw error;

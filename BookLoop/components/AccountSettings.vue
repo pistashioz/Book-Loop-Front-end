@@ -5,13 +5,10 @@
     <div class="secondary-container flex justify-between items-center mb-4">
       <h6 class="text-base font-bold dark:text-white">Username</h6>
       <div class="relative w-7/12">
-
         <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-          
           <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
           </svg>
-
         </div>
         <input 
           type="text" 
@@ -36,11 +33,27 @@
         <input 
           type="text" 
           id="email" 
-          :class="['bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', errorFields.includes('email') ? 'border-red-500' : '']" 
+          :class="['bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', isVerified ? 'border-green-500' : 'border-red-500']" 
           :placeholder="emailPlaceholder" 
           v-model="email"
+          @input="handleEmailChange"
         >
+        <div class="absolute inset-y-2 end-0 flex items-center pe-2">
+          <svg v-if="isVerified" class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+          </svg>
+          <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+          </svg>
+        </div>
       </div>
+    </div>
+
+    <!-- Button to resend verification email -->
+    <div v-if="!isVerified" class="flex justify-end mt-2">
+      <button @click="resendVerificationEmail" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+        Resend Verification Email
+      </button>
     </div>
   </div>
 
@@ -123,6 +136,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
+import { useUserService } from '~/composables/api/userService';
 
 const props = defineProps({
   data: {
@@ -138,34 +152,21 @@ const props = defineProps({
 // Extract data from props
 const username = ref(props.data.username);
 const email = ref(props.data.email);
+const isVerified = ref(props.data.isVerified);
 const name = ref(props.data.name);
 const birthday = ref(props.data.birthdayDate);
 const holidayMode = ref(props.data.holidayMode);
-const instagram = ref(props.data.instagram);
-const pinterest = ref(props.data.pinterest);
-const tiktok = ref(props.data.tiktok);
 
 // Placeholder texts
 const usernamePlaceholder = 'Username';
 const emailPlaceholder = 'Email';
 const namePlaceholder = 'Enter your first and last name';
 const birthdayPlaceholder = 'MM/DD/YYYY';
-const instagramPlaceholder = 'Instagram Username';
-const pinterestPlaceholder = 'Pinterest Username';
-const tiktokPlaceholder = 'TikTok Username';
 
-// Functions to link social media accounts
-const linkInstagram = () => {
-  // Logic to link Instagram account
-};
-
-const linkPinterest = () => {
-  // Logic to link Pinterest account
-};
-
-const linkTikTok = () => {
-  // Logic to link TikTok account
-};
+// Functions to handle social media linking
+const linkInstagram = () => {};
+const linkPinterest = () => {};
+const linkTikTok = () => {};
 
 const datepicker = ref(null);
 
@@ -178,7 +179,7 @@ onMounted(() => {
           autohide: true,
           format: 'yyyy-mm-dd'
         });
-        
+
         datepickerEl.addEventListener('changeDate', (event) => {
           birthday.value = event.target.value;
         });
@@ -187,9 +188,7 @@ onMounted(() => {
   }
 });
 
-watch(props.errorFields, (newErrors) => {
-  // Handle any side effects of error field changes here, if necessary
-});
+watch(props.errorFields, (newErrors) => {});
 
 // Define expose to expose functions to parent component
 defineExpose({
@@ -199,11 +198,32 @@ defineExpose({
   birthday,
   holidayMode
 });
+
+// Composable for user service
+const { resendVerificationEmailApi } = useUserService();
+
+const handleEmailChange = () => {
+  isVerified.value = false; // Mark email as unverified on change
+};
+
+const resendVerificationEmail = async () => {
+  try {
+    await resendVerificationEmailApi(email.value);
+    alert('Verification email resent successfully.');
+  } catch (error) {
+    alert('Failed to resend verification email.');
+  }
+};
 </script>
+
 
 <style scoped>
 .border-red-500 {
   border-color: #f56565 !important;
+}
+
+.border-green-500 {
+  border-color: #48bb78 !important;
 }
 
 input#name,
@@ -218,3 +238,4 @@ input#name:focus {
   box-shadow: none;
 }
 </style>
+ 

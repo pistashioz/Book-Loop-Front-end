@@ -237,34 +237,13 @@ watch(() => props.addressError, (newError) => {
 });
 
 
-const config = useRuntimeConfig();
-const sasUrl = ref(config.public.sasurl);
+/* const config = useRuntimeConfig();
+const sasUrl = ref(config.public.sasurl); */
 
 
 // Initialize the user store
 const userStore = useUserStore();
 const userId = ref(userStore.userId);
-
-/* // Handle file input change
-const handleFileChange = async (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    try {
-      const blobServiceClient = new BlobServiceClient(sasUrl.value);
-      const containerClient = blobServiceClient.getContainerClient('profile-images');
-      const blobName = `${userId.value}/${file.name}`;
-      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-      await blockBlobClient.uploadBrowserData(file);
-      profileImage.value = blockBlobClient.url;
-
-      // Update the user's profile image URL in the backend
-       await updateUserProfileImage(blockBlobClient.url);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-  }
-}; */
 
 // Extract data from props
 const profileImage = ref(props.data.profileImage);

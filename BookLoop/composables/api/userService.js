@@ -22,6 +22,16 @@ export function useUserService() {
       throw error;
     }
   };
+
+    // Function to resend verification email
+    const resendVerificationEmailApi = async (email) => {
+      try {
+        const response = await $api.post('/users/resend-verification-email', { email });
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
+    };
   
   
   // Update user address
@@ -133,6 +143,7 @@ export function useUserService() {
   return {
     fetchUserData,
     updateUserData,
+    resendVerificationEmailApi,
     updateUserAddress,
     addFavoriteGenre,
     removeFavoriteGenre,
