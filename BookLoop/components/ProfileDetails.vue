@@ -4,8 +4,11 @@
     <!-- Secondary container for profile image -->
     <div class="secondary-container flex justify-between items-center mb-4">
       <!-- Heading -->
-      <h6 class="text-base font-bold dark:text-white">Your photo</h6>
-      
+       <span>
+        <h6 class="text-base font-bold dark:text-white">Your photo</h6>
+
+       </span>
+
       <!-- Avatar and file input button -->
       <div class="flex items-center space-x-4">
         <!-- Avatar Icon or Profile Image -->
@@ -18,11 +21,16 @@
           </svg>
         </div>
         
+        
         <!-- File input button -->
         <label for="file-input" class="py-2.5 px-5 me-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer">
           Choose photo
         </label>
         <input id="file-input" type="file" class="hidden" @change="handleFileChange" />
+
+
+      
+
       </div>
     </div>
     
@@ -34,6 +42,14 @@
       <!-- About you textarea -->
       <textarea id="about-you" rows="4" class="block p-2.5 w-full h-56 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" :placeholder="aboutPlaceholder" v-model="aboutYou"></textarea>
     </div>
+    <div class="secondary-container flex mb-4 justify-end w-full">
+
+                           <!-- Clear image button -->
+                           <button v-if="profileImage" @click="clearProfileImage" class="w-fit py-0.5 px-2 text-[10px] font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+          Clear photo
+        </button>
+    </div>
+
   </div>
   
   <!-- New container for "My Location" -->
@@ -253,7 +269,7 @@ const streetName = ref(props.data.address.streetName || '');
 const streetNumber = ref(props.data.address.streetNumber || '');
 const locality = ref(props.data.address.locality || '');
 const showCity = ref(props.data.showCity || false);
-const deliverByHand = ref(props.data.deliverByHand || false); 
+const deliverByHand = ref(props.data.deliverByHand || false);
 const defaultLanguage = ref(props.data.defaultLanguage || 'EN');
 
 const selectedFile = ref(null);
@@ -263,13 +279,16 @@ const handleFileChange = async (event) => {
   if (file) {
     // Create URL for the selected file
     const url = URL.createObjectURL(file);
-
     profileImage.value = url;
     selectedFile.value = file;
   }
 };
 
-
+const clearProfileImage = () => {
+  profileImage.value = null;
+  selectedFile.value = null;
+  // Add additional code to handle the backend request to clear the profile image
+};
 
 // Determine initial selected country based on props
 const countries = ref([
@@ -362,7 +381,8 @@ defineExpose({
   deliverByHand, 
   defaultLanguage,
   selectedCountry,
-  selectedFile
+  selectedFile,
+  clearProfileImage
 });
 
 const updateUserProfileImage = async (url) => {

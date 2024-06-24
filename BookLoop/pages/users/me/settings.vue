@@ -20,7 +20,7 @@
         </template>
 
         <template v-else-if="queryType === 'security'">
-          <Security />
+          <Security ref="securityRef" @display-message="displayMessage" />
         </template>
       </Container>
     </div>
@@ -31,6 +31,7 @@
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserService } from '~/composables/api/userService';
+import { useUserStore } from '~/composables/stores/user';
 
 definePageMeta({
   layout: 'settings'
@@ -105,7 +106,7 @@ watch(
 watch(
   () => route.path,
   async (newPath) => {
-    if (newPath === '/login') {
+    if (newPath === '/login' || newPath === '/') {
       await router.push(newPath); // Redirect to login if the path changes to login
     } else {
       fetchData(queryType.value); // Fetch data based on the new route path
@@ -120,11 +121,15 @@ fetchData(queryType.value);
 const displayMessage = (msg, isSuccess) => {
   message.value.text = msg;
   message.value.isSuccess = isSuccess;
-  setTimeout(() => {
-    message.value.text = '';
-    clearErrorFields(); // Clear error fields after timeout
-  }, 5000);
+  if (route.query.type !== 'security') {
+    setTimeout(() => {
+      message.value.text = '';
+      clearErrorFields(); // Clear error fields after timeout
+    }, 5000);
+  }
 };
+
+const userStore = useUserStore();
 
 const updateProfile = async () => {
   let profileUpdateData = {};
@@ -144,6 +149,8 @@ const updateProfile = async () => {
 
     if (profileDetailsRef.value.selectedFile) {
       profileUpdateData.append('profilePicture', profileDetailsRef.value.selectedFile); // Append the file
+    } else {
+      profileUpdateData.append('profilePicture', null);
     }
 
     const { zipCode, streetName, streetNumber, locality, selectedCountry } = profileDetailsRef.value;
@@ -181,6 +188,20 @@ const updateProfile = async () => {
     profileUpdateData = {
       privacy: privacySettingsRef.value.getFlattenedData()
     };
+  } else if (queryType.value === 'security' && securitySettingsRef.value) {
+    const { newPassword, confirmPassword } = securitySettingsRef.value;
+
+    // Ensure the passwords match before sending the update request
+    if (newPassword !== confirmPassword) {
+      displayMessage('Passwords do not match.', false);
+      return;
+    }
+
+    profileUpdateData = {
+      currentPassword: securitySettingsRef.value.currentPassword,
+      newPassword,
+      confirmPassword
+    };
   }
 
   try {
@@ -196,6 +217,9 @@ const updateProfile = async () => {
     if (response.status !== 200) {
       throw response.data;
     }
+
+    // Update the user store with the new profile image
+    userStore.updateProfileImage(profileDetailsRef.value.profileImage);
 
     // Display success message
     displayMessage(response.data.message, true);
@@ -213,6 +237,7 @@ const updateProfile = async () => {
   }
 };
 
+
 // Function to parse error messages
 const parseErrorMessages = (errorData) => {
   let messages = [];
@@ -222,6 +247,7 @@ const parseErrorMessages = (errorData) => {
   return messages.join('<br>');
 };
 </script>
+
 
 <style scoped>
 /* Transition for message */

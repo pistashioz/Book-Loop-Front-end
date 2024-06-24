@@ -107,7 +107,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useUserStore } from '~/composables/stores/user';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
@@ -144,7 +144,13 @@ async function logout() {
   await userStore.logout();
   router.push('/');
 }
+
+// Watch for changes in the user profile image
+watch(profileImage, (newProfileImage) => {
+  console.log("Profile image changed:", newProfileImage);
+});
 </script>
+
 
 <style scoped>
 /* Additional styles if necessary */

@@ -1,5 +1,3 @@
-// BookLoop/composables/stores/user.js
-
 import { defineStore } from 'pinia';
 import { useNuxtApp } from '#app';
 
@@ -33,6 +31,9 @@ export const useUserStore = defineStore('user', {
         console.error('Logout failed:', err.response?.data?.message || 'Unknown error');
       }
     },
+    updateProfileImage(newProfileImage) {
+      this.profileImage = newProfileImage;
+    }
   },
   persist: {
     storage: persistedState.localStorage, 
