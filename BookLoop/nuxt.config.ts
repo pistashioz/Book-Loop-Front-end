@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   plugins: [
     '~/plugins/flowbite.js',
     '~/plugins/darkMode.js',
+    { src: '~/plugins/draggable', mode: 'client' }
   ],
   ssr: false,
   css: [
@@ -29,4 +30,21 @@ export default defineNuxtConfig({
     }
   },
   components: true,
-});
+  hooks: {
+    'pages:extend' (pages) {
+      // Adiciona a rota personalizada para 'new'
+      pages.push({
+        name: 'new-listing',
+        path: '/listings/new',
+        file: '~/pages/listings/new/index.vue'
+      })
+
+      // Garante que a rota dinâmica ainda funcione
+      pages.push({
+        name: 'listing-id',
+        path: '/listings/:listingId',
+        file: '~/pages/listings/[listingId].vue'
+      })
+    }
+  }
+})

@@ -1,9 +1,8 @@
 <template>
-  <Container :message="message">
-    <div class="secondary-container flex flex-col gap-y-4">
+  <Container :message="message" @reset-password="resetPassword">
+    <div v-if="tokenValid" class="secondary-container flex flex-col gap-y-4">
       <div class="description-container space-y-2">
         <h6 class="text-base font-bold dark:text-white">To create a secure password:</h6>
-        <!-- Password requirements list -->
         <ul class="max-w-md space-y-1 font-satoshi-medium text-sm text-gray-500 list-inside dark:text-gray-400">
           <li class="flex items-center">
             <svg :class="isLengthValid ? 'w-3 h-3 me-2 text-green-500 dark:text-green-400 flex-shrink-0' : 'w-3 h-3 me-2 text-gray-500 dark:text-gray-400 flex-shrink-0'" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -63,16 +62,15 @@
           </svg>
         </button>
       </div>
-
-
     </div>
   </Container>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
+
+const { $api } = useNuxtApp();
 
 definePageMeta({
   layout: 'settings'
@@ -85,6 +83,7 @@ const confirmPassword = ref('');
 const showNewPassword = ref(false);
 const showConfirmPassword = ref(false);
 const message = ref({ text: '', isSuccess: true });
+const tokenValid = ref(false);
 
 // Password requirement validations
 const isLengthValid = computed(() => newPassword.value.length >= 8);
@@ -131,7 +130,7 @@ const resetPassword = async () => {
 
   try {
     const token = route.query.token;
-    const response = await axios.post('/api/reset-password', { token, newPassword: newPassword.value });
+    const response = await $api.post('/users/reset-password', { token, newPassword: newPassword.value });
     message.value = { text: 'Password reset successfully. You can now log in with your new password.', isSuccess: true };
     setTimeout(() => {
       router.push('/login');
@@ -140,6 +139,24 @@ const resetPassword = async () => {
     message.value = { text: 'Failed to reset password. Please try again.', isSuccess: false };
   }
 };
+
+onMounted(async () => {
+  const token = route.query.token;
+  if (!token) {
+    router.push('/error'); // Redirect to an error page or another appropriate page
+    return;
+  }
+
+  try {
+    const response = await $api.post('/users/validate-reset-token', { token });
+    tokenValid.value = response.data.valid;
+    if (!tokenValid.value) {
+      router.push('/error'); // Redirect to an error page or another appropriate page
+    }
+  } catch (err) {
+    router.push('/error'); // Redirect to an error page or another appropriate page
+  }
+});
 </script>
 
 <style scoped>
