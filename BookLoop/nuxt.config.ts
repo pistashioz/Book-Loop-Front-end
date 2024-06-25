@@ -1,4 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
@@ -8,9 +7,14 @@ export default defineNuxtConfig({
   ],
   plugins: [
     '~/plugins/flowbite.js',
+    '~/plugins/darkMode.js',
+    { src: '~/plugins/draggable', mode: 'client' }
   ],
-  ssr: true,
-  css: ['flowbite/dist/flowbite.min.css', ],
+  ssr: false,
+  css: [
+    'flowbite/dist/flowbite.min.css',
+    '~/assets/css/input.css'
+  ],
   app: {
     head: {
       title: 'Book Loop',
@@ -28,10 +32,25 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3360/',
+      sasurl: process.env.SAS_URL
     }
   },
+  components: true,
+  hooks: {
+    'pages:extend'(pages) {
+      // Adiciona a rota personalizada para 'new'
+      pages.push({
+        name: 'new-listing',
+        path: '/listings/new',
+        file: '~/pages/listings/new/index.vue'
+      })
 
-
-  
-  components: true, // Enable auto-import of components
+      // Garante que a rota dinâmica ainda funcione
+      pages.push({
+        name: 'listing-id',
+        path: '/listings/:listingId',
+        file: '~/pages/listings/[listingId].vue'
+      })
+    }
+  }
 });

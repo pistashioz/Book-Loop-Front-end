@@ -1,29 +1,23 @@
 <template>
-  <div>
-    <Navbar />  
+  <div class="flex flex-col h-screen items-center">
+    <Navbar class="laptop:w-7/12" /> 
     <SideBar v-if="isAdmin" />
-    <Nuxt /> 
+    <NuxtPage class="flex flex-col mb-8 w-full justify-start overflow-hidden" />
+    <!-- <NuxtPage class="flex flex-col mb-8 w-full justify-start overflow-hidden" /> -->
   </div>
-  <div>
-    <slot />
-  </div>
-  </template>
-<script>
-/* import Navbar from '../components/Navbar.vue'; 
+</template>
 
-export default {
-  components: {
-    Navbar
-  }
-}; */
+<script setup>
 import { useUserStore } from '~/composables/stores/user';
 import { storeToRefs } from 'pinia'; 
 import { useRouter } from 'vue-router';
 
+// Importing the user store and router
 const userStore = useUserStore();
-const { userId, isAdmin } = storeToRefs(userStore); 
+const { isAdmin } = storeToRefs(userStore); 
 const router = useRouter();
 
+// Function to handle user logout
 async function logout() {
   await userStore.logout();
   // Redirect to the landing page after logout

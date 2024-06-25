@@ -1,3 +1,5 @@
+<!-- BookLoop/pages/login/index.vue -->
+
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md p-8 space-y-3 rounded-xl bg-white shadow-md">
@@ -38,15 +40,17 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '~/composables/stores/user';
-import api from '~/plugins/api';
 
 const { $api } = useNuxtApp();
 // Router for navigation
 const router = useRouter();
 // User store to manage user state
 const userStore = useUserStore();
-// Runtime configuration to access API base URL
-const config = useRuntimeConfig();
+
+
+definePageMeta({
+  layout: 'login'
+});
 
 // Reactive variables for form inputs and error message
 const usernameOrEmail = ref('');
@@ -72,7 +76,7 @@ async function login() {
       console.log(data.user);
    
       // Redirect to the specific page after login
-      router.push('/works');
+      router.push('/');
     }
   } catch (err) {
     // Catch any other errors and set the error message

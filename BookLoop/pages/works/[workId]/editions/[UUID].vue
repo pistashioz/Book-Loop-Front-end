@@ -1,13 +1,17 @@
 <template>
     <div>
-<h2>Account page</h2>
+<h1>TESTE EDITION</h1>
     </div>
 </template>
 
 <script setup>
 
+definePageMeta({
+  layout: 'edition'
+});
+
 </script>
 
-<style scoped>
+<style  scoped>
 
 </style>

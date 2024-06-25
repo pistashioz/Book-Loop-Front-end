@@ -774,8 +774,11 @@
   </template>
   
   <script setup>
-  import SideBar from '~/components/SideBar.vue';
-  import {findAll} from '~/composables/api/userService';
+  
+
+  import { useUserService } from '~/composables/api/userService';
+  const { findAll } = useUserService();
+
   import editPersonModal from '~/components/UpdatePerson.vue'
   import editPublisherModal from '~/components/UpdatePublisher.vue'
   import AddPersonModal from '~/components/AddPerson.vue'

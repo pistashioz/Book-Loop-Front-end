@@ -378,9 +378,7 @@ onMounted(async () => {
   }
 });
 
-definePageMeta({
-  layout: 'works'
-});
+
 </script>
 
 <style>

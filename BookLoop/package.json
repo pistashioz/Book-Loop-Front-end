@@ -10,15 +10,18 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.23.0",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@nuxtjs/dotenv": "^1.4.2",
     "@pinia/nuxt": "^0.5.1",
     "axios": "^1.7.2",
     "flowbite": "^2.3.0",
+    "flowbite-datepicker": "^1.2.6",
     "nuxt": "^3.11.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.27",
+    "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.3.2"
   },
   "devDependencies": {

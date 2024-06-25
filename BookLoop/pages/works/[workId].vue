@@ -1,5 +1,5 @@
 <template>
-   <NuxtPage />
+  <NuxtPage />
   <div class="text-center" v-if="isLoading">
     <div role="status">
       <svg
@@ -29,11 +29,8 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import {
-  fetchWorks,
   fetchWorkById,
-  fetchEditionsByWorkId,
   fetchLiteraryReviews,
-  fetchBookGenres,
 } from '~/composables/api/workService';
 import WorkDetails from '~/components/WorkDetails.vue';
 
@@ -48,18 +45,16 @@ onMounted(async () => {
     const workData = await fetchWorkById(workId);
     if (workData.success) {
       work.value = workData.data;
-      console.log('work valuee', work.value)
+      console.log('work value', work.value);
       try {
-        const reviewsData = await fetchLiteraryReviews(workId)
-        if (reviewsData.success && reviewsData.reviews.length > 0){
-          work.value.LiteraryReviews = reviewsData
-        }
-        else{
+        const reviewsData = await fetchLiteraryReviews(workId);
+        if (reviewsData.success && reviewsData.reviews.length > 0) {
+          work.value.LiteraryReviews = reviewsData;
+        } else {
           console.error('Error fetching reviews', reviewsData.error);
         }
-      }
-      catch(error) {
-        console.log('Error fetching data', error)
+      } catch (error) {
+        console.log('Error fetching data', error);
       }
     } else {
       console.error('Error fetching work data:', workData.error);

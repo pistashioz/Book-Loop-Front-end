@@ -1,62 +1,51 @@
-// plugins/axios.js
 import axios from 'axios';
 import { useUserStore } from '~/composables/stores/user';
 import { useRouter } from '#imports';
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(nuxtApp => {
   const router = useRouter();
-  
   const api = axios.create({
     baseURL: nuxtApp.$config.public.apiBaseUrl,
-    withCredentials: true, // Ensure cookies are sent with requests
+    withCredentials: true,
   });
 
-  // Response interceptor to handle token refresh and redirection
   api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
+    response => response,
+    async error => {
       const originalRequest = error.config;
       const userStore = useUserStore();
-      console.log(error.response.data);
-      console.log(error.config);
 
-      // Check for both a 401 Unauthorized response and a custom 'refresh' flag in the response data
-      if (error.response.status === 401 && error.response.data.refresh && !originalRequest._retry) {
-        originalRequest._retry = true; // Mark this request as retried
-
+      if (error.response?.status === 401 && error.response.data?.refresh && !originalRequest._retry) {
+        originalRequest._retry = true;
         try {
-          // Attempt to refresh the tokens by calling the refresh endpoint
-          console.log('Refreshing tokens...');
+          console.log("Refreshing tokens...");
           const { data } = await api.post('/users/me/refresh');
-          // Retry the original request
-          console.log(originalRequest);
           return api(originalRequest);
-
         } catch (err) {
-          // Clear user data if token refresh fails
           userStore.clearUser();
+          await router.push('/login');
           return Promise.reject(err);
         }
       }
 
-      // Check for a 403 Forbidden response with a redirectTo flag
-      if (error.response.status === 403 && error.response.data.redirectTo) {
-        console.log('Redirecting to login page...');
-        // Clear user data and redirect to the login page
-        userStore.logout();
+      if (error.response?.status === 403 && error.response.data?.redirectTo) {
+        console.log("Redirecting to login page...");
+        try {
+          await userStore.logout(); // Try to logout
+        } catch (logoutError) {
+          console.error('Logout failed:', logoutError);
+        }
         userStore.clearUser();
         await router.push(error.response.data.redirectTo);
-        return Promise.reject(error);
       }
 
-      // Handle other errors
       return Promise.reject(error);
     }
   );
 
   return {
     provide: {
-      api: api,
+      api,
     },
   };
 });
