@@ -1,4 +1,75 @@
 <template>
+  <div class="flex flex-col items-center space-y-4 h-full overflow-hidden border mb-10">
+    <!-- Linha 1 -->
+    <div class="w-full border-b border-gray-900 flex flex-col justify-start items-start py-4 flex-1">
+      <!-- Conteúdo da Linha 1 -->
+      <h1 class="text-6xl font-bold font-cabinet ml-4 mt-4">
+        BOOKS
+      </h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ml-4 mt-2 w-full">
+        <div v-for="edition in editions" :key="edition.UUID" class="flex flex-col items-center">
+          <img :src="edition.coverImage" alt="Cover Image" class="w-32 h-48 object-cover mb-2">
+          <p class="text-lg">{{ edition.title }}</p>
+          <p class="text-sm text-gray-600">{{ edition.publisherName }} - {{ edition.publicationDate }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Linha 2 -->
+    <div class="w-full border-b border-gray-900 flex flex-col justify-start items-start py-4 flex-1">
+      <!-- Conteúdo da Linha 2 -->
+      <h1 class="text-6xl font-bold font-cabinet ml-4 mt-4">
+        LISTINGS
+      </h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ml-4 mt-2 w-full">
+        <div v-for="listing in listings" :key="listing.listingId" class="flex flex-col items-center">
+          <img :src="listing.imageUrl" alt="Listing Image" class="w-32 h-48 object-cover mb-2">
+          <p class="text-lg">{{ listing.listingTitle }}</p>
+          <p class="text-sm text-gray-600">{{ listing.seller.username }} - {{ listing.price }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Linha 3 -->
+    <div class="w-full flex flex-col justify-start items-start py-4 flex-1">
+      <!-- Conteúdo da Linha 3 -->
+      <h1 class="text-6xl font-bold font-cabinet ml-4 mt-4">
+        FEED
+      </h1>
+      <!-- Conteúdo do Feed -->
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useApiService } from '~/composables/api/apiService';
+
+const { fetchEditions, fetchListings } = useApiService();
+const editions = ref([]);
+const listings = ref([]);
+
+onMounted(async () => {
+  try {
+    const editionsData = await fetchEditions();
+    const listingsData = await fetchListings();
+    editions.value = editionsData.editions;
+    listings.value = listingsData.listings;
+  } catch (error) {
+    console.error('Failed to fetch data:', error);
+  }
+});
+
+definePageMeta({
+  layout: 'landing'
+});
+</script>
+
+<style scoped>
+/* Adicione qualquer estilo específico aqui, se necessário */
+</style>
+
+
+
+<!-- <template>
   <div class="bg-white">
     <div class="mx-auto max-w-2xl px-4 py-6 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
       <div class="mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
@@ -103,3 +174,4 @@ import 'flowbite/dist/flowbite.min.css';
   height: 600px; /* Smaller height for the right container */
 }
 </style>
+ -->

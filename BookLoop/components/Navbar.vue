@@ -3,9 +3,9 @@
 <template>
   <div>
     <header>
-      <nav class="flex justify-between py-10 items-center bg-white">
-        <h1 class="text-xl text-gray-800 font-bold">
-          <NuxtLink to="/">Book Loop</NuxtLink>
+      <nav class="flex justify-between py-20 items-center bg-white ">
+        <h1 class="text-xl  font-bold">
+          <NuxtLink to="/" class="uppercase text-xl font-cabinet ">Book Loop</NuxtLink>
         </h1>
         <div class="flex flex-grow justify-center items-center">
           <div class="flex w-full max-w-md">

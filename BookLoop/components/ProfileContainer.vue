@@ -3,7 +3,6 @@
     <!-- Profile Section -->
     <section id="profile-section" class="flex w-full laptop:w-7/12 border rounded-lg p-4 items-start gap-x-8">
       <!-- Avatar Icon or Profile Image -->
-      <!-- Avatar Icon or Profile Image -->
       <div id="avatar" class="relative w-36 h-36 overflow-hidden flex items-end bg-gray-100 rounded-full dark:bg-gray-600">
         <template v-if="profile.profileImage">
           <img :src="profile.profileImage" alt="Profile Image" class="w-full h-full object-cover" />
@@ -124,6 +123,7 @@
           <div id="listing-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div v-for="listing in profile.listings.rows" :key="listing.listingId" class="bg-gray-100 border border-gray-200 rounded-lg p-4 relative desktop:h-96 laptop:h-80 sm:h-64 laptop:w-full sm:w-52 cursor-pointer" @click="navigateToListing(listing.listingId)" @mouseenter="delayedShowTooltip($event, listing.listingTitle)" @mouseleave="hideTooltip">
               <div :style="{ backgroundImage: `url(${listing.ListingImages[0]?.imageUrl || ''})` }" class="bg-cover bg-center w-full h-5/6 relative">
+                <img :src="listing.ListingImages[0]?.imageUrl" alt="Profile Image" class="w-full h-full object-cover" />
                 <p class="absolute top-2 left-2 text-xs font-satoshi-medium text-gray-900 dark:text-white">{{ listing.BookEdition.title }}</p>
                 <div class="absolute bottom-2 right-2 flex items-center gap-x-1 border rounded-full w-fit h-fit py-1 px-2.5 bg-gray-50">
                   <button @mouseenter="toggleLikeIcon(listing.listingId, true)" @mouseleave="toggleLikeIcon(listing.listingId, false)" @click.stop="listing.isLiked ? unlikeListing(listing.listingId) : likeListing(listing.listingId)">
@@ -311,16 +311,19 @@
     </div>
   </div> </div>
 </template>
+
 <script setup>
 import { ref, watch, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserService } from '~/composables/api/userService';
 import { useWishlistService } from '~/composables/api/wishlistService';
-import { useWorkService } from '~/composables/api/workService';
-import { Accordion } from 'flowbite';
+import {
+  likeReview,
+  unlikeReview,
+  getReviewsComments
+} from '~/composables/api/workService'; 
 
 const { addListingToWishlist, removeListingFromWishlist } = useWishlistService();
-const { likeReview, unlikeReview, getReviewComments } = useWorkService();
 const { followUser: followUserService, unfollowUser: unfollowUserService, getFollowers, getFollowing, getUserProfile } = useUserService();
 
 const props = defineProps({
@@ -418,10 +421,11 @@ const handleLikeUnlike = async (workId, literaryReviewId, isLiked) => {
   }
   
   try {
+    console.log('isLiked', isLiked)
     if (isLiked) {
-      await unlikeLiteraryReview(workId, literaryReviewId);
+      await unlikeReview(workId, literaryReviewId); 
     } else {
-      await likeLiteraryReview(workId, literaryReviewId);
+      await likeReview(workId, literaryReviewId); 
     }
   } catch (error) {
     console.error('Error handling like/unlike:', error);
@@ -430,7 +434,7 @@ const handleLikeUnlike = async (workId, literaryReviewId, isLiked) => {
 
 const likeLiteraryReview = async (workId, literaryReviewId) => {
   try {
-    await likeReview(workId, literaryReviewId);
+    await likeReview(workId, literaryReviewId); // Corrigir chamada aqui
     const review = literaryReviews.value.rows.find((literaryReview) => literaryReview.literaryReviewId === literaryReviewId);
     if (review) {
       review.isLiked = true;
@@ -443,7 +447,7 @@ const likeLiteraryReview = async (workId, literaryReviewId) => {
 
 const unlikeLiteraryReview = async (workId, literaryReviewId) => {
   try {
-    await unlikeReview(workId, literaryReviewId);
+    await unlikeReview(workId, literaryReviewId); // Corrigir chamada aqui
     const review = literaryReviews.value.rows.find((literaryReview) => literaryReview.literaryReviewId === literaryReviewId);
     if (review) {
       review.isLiked = false;
@@ -464,7 +468,8 @@ const handleToggleComments = async (workId, literaryReviewId) => {
   
   if (review.showComments && review.commentCount > 0 && !review.comments) {
     try {
-      const response = await getReviewComments(workId, literaryReviewId);
+      const response = await getReviewsComments(workId, literaryReviewId);
+      console.log('response comments:', response);
       review.comments = response.comments;
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -589,6 +594,7 @@ const delayedShowTooltip = (event, listingTitle) => {
   
   // Get the tooltip element
   const tooltip = document.getElementById('tooltip');
+
   
   // Set the tooltip content and position it near the mouse
   tooltip.textContent = listingTitle;
@@ -698,6 +704,8 @@ const onFollowingScroll = async (event) => {
   }
 };
 </script>
+
+
 
 <style scoped>
 #profile-section {

@@ -322,7 +322,7 @@
 <script setup>
 
 import { ref } from 'vue';
-import {getReviewsComments, likeReview, likeComment, removeLikeComment, getComments, fetchLiteraryReviewsPagination, addComment, removeReview, removeComment, removeLikeReview} from '~/composables/api/workService'; 
+import {getReviewsComments, likeReview, likeComment, removeLikeComment, getComments, fetchLiteraryReviewsPagination, addComment, removeReview, removeComment} from '~/composables/api/workService'; 
 import { useUserStore } from '~/composables/stores/user';
 import AddReview from '~/components/AddReview.vue';
 import EditReview from '~/components/EditReview.vue'

@@ -129,6 +129,7 @@ export async function addEdition(workId, editionData) {
 }
 
 export async function getReviewsComments(workId, literaryReviewId) {
+  console.log(workId, literaryReviewId);
   try {
     const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}/comments`);
     return response.data;
@@ -136,6 +137,7 @@ export async function getReviewsComments(workId, literaryReviewId) {
     console.error('Error retrieving comments:', error);
   }
 }
+
 
 export async function addComment(workId, literaryReviewId, commentData) {
   try {
@@ -161,6 +163,7 @@ export async function getReview(workId, literaryReviewId) {
 }
 
 export async function likeReview(workId, literaryReviewId) {
+  console.log(workId, literaryReviewId);
   try {
     const response = await $api.post(`/works/${workId}/reviews/${literaryReviewId}/likes`);
     return response.data;
@@ -170,6 +173,7 @@ export async function likeReview(workId, literaryReviewId) {
 }
 
 export async function unlikeReview(workId, literaryReviewId) {
+  console.log(workId, literaryReviewId);
   try {
     const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}/likes`);
     return response.data;
@@ -270,3 +274,5 @@ export async function fetchFilteredGenres() {
     console.error('Error retrieving filtered genres:', error);
   }
 }
+
+

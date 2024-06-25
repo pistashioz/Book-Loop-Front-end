@@ -1,85 +1,127 @@
 <template>
-<aside id="separator-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-   <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+  <aside class="min-w-fit h-fit">
+    <h1 class="font-cabinet-grotesk text-2xl mb-4">{{ headerTitle }}</h1>
+    <div class="overflow-y-auto bg-gray-50 dark:bg-gray-900 border rounded-lg border-gray-200 dark:border-gray-700 p-4">
       <ul class="space-y-2 font-medium">
-         <li>
-               <NuxtLink to="/"><span class="ms-3">Book Loop</span></NuxtLink>
-         </li>
-         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
-                  <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Kanban</span>
-            </a>
-         </li>
-         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Inbox</span>
-               <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
-            </a>
-         </li>
-         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                <svg class="flex-shrink-0 w-5 h-5 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a1 1 0 0 0-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.707 8.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                    </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Tasks</span>
-               <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">7</span>
-            </a>
-         </li>
+        <li v-for="(item, index) in currentMenuItems" :key="index">
+          <NuxtLink
+            :to="item.path"
+            @mouseover="hoverItem(index)"
+            @mouseleave="hoverItem(null)"
+            :class="[
+              'flex items-center p-2 rounded-lg group transition-all',
+              selectedItem === index ? 'text-gray-900 dark:text-white' : '',
+              hoveredItem === index ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white'
+            ]"
+          >
+            <svg
+              :class="[
+                'w-6 h-6',
+                selectedItem === index ? 'text-gray-900 dark:text-white' : '',
+                hoveredItem === index ? 'text-gray-900 dark:text-white' : 'text-gray-300'
+              ]"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              v-html="item.icon"
+            ></svg>
+            <span class="ml-3">{{ item.label }}</span>
+          </NuxtLink>
+        </li>
       </ul>
-      <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               <svg class="flex-shrink-0 w-5 h-5 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-  <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Z" clip-rule="evenodd"/>
-</svg>
-
-               <NuxtLink to="/database"><span class="flex-1 ms-3 whitespace-nowrap">Database</span></NuxtLink>
-            </a>
-         </li>
-         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                <svg class="flex-shrink-0 w-5 h-5 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M8 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1h2a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2Zm6 1h-4v2H9a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2h-1V4Z" clip-rule="evenodd"/>
-                    </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Reports</span>
-            </a>
-         </li>
-         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                <svg class="flex-shrink-0 w-5 h-5 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M4 4a1 1 0 0 1 1-1h1.5a1 1 0 0 1 .979.796L7.939 6H19a1 1 0 0 1 .979 1.204l-1.25 6a1 1 0 0 1-.979.796H9.605l.208 1H17a3 3 0 1 1-2.83 2h-2.34a3 3 0 1 1-4.009-1.76L5.686 5H5a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
-                </svg>
-
-               <span class="flex-1 ms-3 whitespace-nowrap">Listings</span>
-            </a>
-         </li>
-         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                <svg class="flex-shrink-0 w-5 h-5 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M6 2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 1 0 0-2h-2v-2h2a1 1 0 0 0 1-1V4a2 2 0 0 0-2-2h-8v16h5v2H7a1 1 0 1 1 0-2h1V2H6Z" clip-rule="evenodd"/>
-                    </svg>
-                    <NuxtLink :to="`/works`"><span class="flex-1 ms-3 whitespace-nowrap">Works</span></NuxtLink>
-            </a>
-         </li>
-
-      </ul>
-      <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-               <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
-                  <path d="M16 14V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 0 0 0-2h-1v-2a2 2 0 0 0 2-2ZM4 2h2v12H4V2Zm8 16H3a1 1 0 0 1 0-2h9v2Z"/>
-               </svg>
-               <span class="ms-3">Documentation</span>
-            </a>
-         </li>
-      </ul>
-   </div>
-</aside>
-
+    </div>
+  </aside>
 </template>
+
+<script setup>
+import { ref, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+// Define menu items for settings page
+const settingsMenuItems = [
+  { label: 'Profile Details', path: '/users/me/settings?type=profile', icon: `<path fill-rule="evenodd" d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z" clip-rule="evenodd"/>` },
+  { label: 'Account Settings', path: '/users/me/settings?type=account', icon: `<path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>` },
+  { label: 'Notifications', path: '/users/me/settings?type=notifications', icon: `<path fill-rule="evenodd" d="M3.559 4.544c.355-.35.834-.544 1.33-.544H19.11c.496 0 .975.194 1.33.544.356.35.559.829.559 1.331v9.25c0 .502-.203.981-.559 1.331-.355.35-.834.544-1.33.544H15.5l-2.7 3.6a1 1 0 0 1-1.6 0L8.5 17H4.889c-.496 0-.975-.194-1.33-.544A1.868 1.868 0 0 1 3 15.125v-9.25c0-.502.203-.981.559-1.331ZM7.556 7.5a1 1 0 1 0 0 2h8a1 1 0 0 0 0-2h-8Zm0 3.5a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2H7.556Z" clip-rule="evenodd"/>` },
+  { label: 'Privacy Settings', path: '/users/me/settings?type=privacy', icon: `<path fill-rule="evenodd" d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0 2 2 0 0 1-4 0Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z" clip-rule="evenodd"/>` },
+  { label: 'Security', path: '/users/me/settings?type=security', icon: `<path d="M5 3a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5Zm0 12a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H5Zm12 0a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2Zm0-12a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2Z"/><path fill-rule="evenodd" d="M10 6.5a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2h-2a1 1 0 0 1-1-1ZM10 18a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2h-2a1 1 0 0 1-1-1Zm-4-4a1 1 0 0 1-1-1v-2a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1Zm12 0a1 1 0 0 1-1-1v-2a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1Z" clip-rule="evenodd"/>` }
+];
+
+// Define menu items for personalization page
+const personalizationMenuItems = [
+  { label: 'Favorite Genres', path: '/users/me/favorite-genres', icon: `<path fill-rule="evenodd" d="M9 2a1 1 0 0 0-1 1v14a1 1 0 1 0 2 0V3a1 1 0 0 0-1-1Zm-4 6a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0v-6a1 1 0 0 0-1-1Zm12 6a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0v-4a1 1 0 0 0-1-1Zm-4-2a1 1 0 0 0-1 1v10a1 1 0 1 0 2 0v-10a1 1 0 0 0-1-1Z" clip-rule="evenodd"/>` },
+  { label: 'Favorite Authors', path: '/users/me/favorite-authors', icon: `<path fill-rule="evenodd" d="M12 2a1 1 0 0 0-1 1v7a1 1 0 1 0 2 0V3a1 1 0 0 0-1-1Zm-6 5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-5a1 1 0 0 0-1-1Zm12 1a1 1 0 0 0-1 1v9a1 1 0 1 0 2 0v-9a1 1 0 0 0-1-1Zm-6-3a1 1 0 0 0-1 1v11a1 1 0 1 0 2 0v-11a1 1 0 0 0-1-1Z" clip-rule="evenodd"/>` }
+];
+
+// Define menu items for admin page
+const adminMenuItems = [
+  { label: 'Dashboard', path: '/admin/dashboard', icon: `<path fill-rule="evenodd" d="M3 3a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3Zm0 10a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1H3Zm7-10a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-4Zm0 10a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-4Zm7-10a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-4Zm0 10a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-4Z" clip-rule="evenodd"/>` },
+  { label: 'Manage Users', path: '/admin/users', icon: `<path fill-rule="evenodd" d="M4 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2H5v3a1 1 0 1 1-2 0V4a1 1 0 0 1 1-1ZM4 13a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2H5v3a1 1 0 1 1-2 0v-4ZM14 3a1 1 0 0 0-1-1h-3a1 1 0 1 0 0 2h3v3a1 1 0 1 0 2 0V4ZM13 12a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-4Z" clip-rule="evenodd"/>` },
+  { label: 'Settings', path: '/admin/settings', icon: `<path fill-rule="evenodd" d="M6 3a1 1 0 0 0-1 1v2.17c0 .53.21 1.04.59 1.41L8.41 10l-2.83 2.83c-.38.37-.59.88-.59 1.41V17a1 1 0 0 0 1 1h2.17c.53 0 1.04-.21 1.41-.59L12 15.59l2.83 2.83c.37.38.88.59 1.41.59H19a1 1 0 0 0 1-1v-2.17c0-.53-.21-1.04-.59-1.41L15.59 12l2.83-2.83c.38-.37.59-.88.59-1.41V4a1 1 0 0 0-1-1h-2.17c-.53 0-1.04.21-1.41.59L12 8.41 9.17 5.59C8.8 5.21 8.29 5 7.76 5H5.59L6 3Z" clip-rule="evenodd"/>` }
+];
+
+// State to manage selected and hovered items
+const selectedItem = ref(0);
+const hoveredItem = ref(null);
+const route = useRoute();
+
+// Determine the current menu items based on the route
+const currentMenuItems = computed(() => {
+  if (route.path.includes('settings')) {
+    return settingsMenuItems;
+  } else if (route.path.includes('favorite-genres') || route.path.includes('favorite-authors')) {
+    return personalizationMenuItems;
+  } else if (route.path.includes('admin')) {
+    return adminMenuItems;
+  }
+  return [];
+});
+
+const headerTitle = computed(() => {
+  if (route.path.includes('settings')) {
+    return 'USER SETTINGS';
+  } else if (route.path.includes('favorite-genres') || route.path.includes('favorite-authors')) {
+    return 'PERSONALIZATION';
+  } else if (route.path.includes('admin')) {
+    return 'ADMIN PANEL';
+  } else {
+    return 'DASHBOARD';
+  }
+});
+
+const selectItem = (index) => {
+  selectedItem.value = index;
+};
+
+const hoverItem = (index) => {
+  hoveredItem.value = index;
+};
+
+// Watch for route changes to update selected item
+watch(
+  () => route.fullPath,
+  (newPath) => {
+    currentMenuItems.value.forEach((item, index) => {
+      if (newPath.includes(item.path)) {
+        selectedItem.value = index;
+      }
+    });
+  },
+  { immediate: true }
+);
+
+// Set initial selected item based on the current route
+onMounted(() => {
+  currentMenuItems.value.forEach((item, index) => {
+    if (route.fullPath.includes(item.path)) {
+      selectedItem.value = index;
+    }
+  });
+});
+</script>
+
+<style scoped>
+/* Optional: Customize styles further if needed */
+</style>
