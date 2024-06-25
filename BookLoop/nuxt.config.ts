@@ -18,6 +18,12 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Book Loop',
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css'
+        }
+      ]
     }
   },
   imports: {
@@ -31,7 +37,7 @@ export default defineNuxtConfig({
   },
   components: true,
   hooks: {
-    'pages:extend' (pages) {
+    'pages:extend'(pages) {
       // Adiciona a rota personalizada para 'new'
       pages.push({
         name: 'new-listing',
@@ -47,4 +53,4 @@ export default defineNuxtConfig({
       })
     }
   }
-})
+});

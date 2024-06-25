@@ -74,7 +74,7 @@ async function login() {
       console.log(data.user);
    
       // Redirect to the specific page after login
-      router.push('/');
+      router.push('/works');
     }
   } catch (err) {
     // Catch any other errors and set the error message

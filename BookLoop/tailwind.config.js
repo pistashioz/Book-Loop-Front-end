@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
   content: [
@@ -54,16 +55,16 @@ module.exports = {
       screens: {
         'tablet': '640px',
         // => @media (min-width: 640px) { ... }
-  
+
         'laptop': '1920px',
-        // => @media (min-width: 1024px) { ... }
-  
+        // => @media (min-width: 1920px) { ... }
+
         'desktop': '2560px',
-        // => @media (min-width: 1280px) { ... }
+        // => @media (min-width: 2560px) { ... }
       },
     },
   },
   plugins: [
     require('flowbite/plugin')
   ],
-};
+}

@@ -1,5 +1,5 @@
 <template>
-   <NuxtPage />
+  <NuxtPage />
   <div class="text-center" v-if="isLoading">
     <div role="status">
       <svg
@@ -21,39 +21,40 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <WorkDetails v-else-if="work" :work="work" />
+  <WorkDetails v-else-if="work" :work="work"/> 
   <div v-else>Work not found</div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import {
+  fetchWorkById,
+  fetchLiteraryReviews,
+} from '~/composables/api/workService';
 import WorkDetails from '~/components/WorkDetails.vue';
 
 const route = useRoute();
 const workId = route.params.workId;
-
 const work = ref(null);
 const isLoading = ref(true);
 
-/* onMounted(async () => {
+onMounted(async () => {
   try {
     // Fetch the work data by ID
     const workData = await fetchWorkById(workId);
     if (workData.success) {
       work.value = workData.data;
-      console.log('work valuee', work.value)
+      console.log('work value', work.value);
       try {
-        const reviewsData = await fetchLiteraryReviews(workId)
-        if (reviewsData.success && reviewsData.reviews.length > 0){
-          work.value.LiteraryReviews = reviewsData.reviews
-        }
-        else{
+        const reviewsData = await fetchLiteraryReviews(workId);
+        if (reviewsData.success && reviewsData.reviews.length > 0) {
+          work.value.LiteraryReviews = reviewsData;
+        } else {
           console.error('Error fetching reviews', reviewsData.error);
         }
-      }
-      catch(error) {
-        console.log('Error fetching data', error)
+      } catch (error) {
+        console.log('Error fetching data', error);
       }
     } else {
       console.error('Error fetching work data:', workData.error);
@@ -63,5 +64,5 @@ const isLoading = ref(true);
   } finally {
     isLoading.value = false;
   }
-}); */
+});
 </script>

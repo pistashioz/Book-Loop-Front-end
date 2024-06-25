@@ -23,25 +23,24 @@ export function useUserService() {
     }
   };
 
-    // Function to resend verification email
-    const resendVerificationEmailApi = async (email) => {
-      try {
-        const response = await $api.post('/users/resend-verification-email', { email });
-        return response.data;
-      } catch (error) {
-        throw error;
-      }
-    };
-  
-  
-    const requestPasswordReset = async () => {
-      try {
-        const response = await $api.post('/users/request-password-reset');
-        return response;
-      } catch (error) {
-        throw error;
-      }
-    };
+  // Function to resend verification email
+  const resendVerificationEmailApi = async (email) => {
+    try {
+      const response = await $api.post('/users/resend-verification-email', { email });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const requestPasswordReset = async () => {
+    try {
+      const response = await $api.post('/users/request-password-reset');
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
 
   // Update user address
   const updateUserAddress = async (data) => {
@@ -98,13 +97,13 @@ export function useUserService() {
     try {
       let path;
       if (!tab) {
-        path = `users/${userId}`
+        path = `users/${userId}`;
       } else {
-        console.log(tab)
-        path = `users/${userId}?tab=${tab.tab}`
+        console.log(tab);
+        path = `users/${userId}?tab=${tab.tab}`;
       }
       const response = await $api.get(path);
-      console.log(response.data)
+      console.log(response.data);
       return response.data;
     } catch (error) {
       throw error;
@@ -131,6 +130,7 @@ export function useUserService() {
     }
   };
 
+  // Get followers
   const getFollowers = async (userId, page = 1, limit = 10) => {
     try {
       const response = await $api.get(`users/${userId}/followers`, { params: { page, limit } });
@@ -140,12 +140,29 @@ export function useUserService() {
     }
   };
 
+  // Get following
   const getFollowing = async (userId, page = 1, limit = 10) => {
     try {
       const response = await $api.get(`users/${userId}/following`, { params: { page, limit } });
       return response.data;
     } catch (error) {
       throw error;
+    }
+  };
+
+  // Find all users
+  const findAll = async (currentPage) => {
+    try {
+      const response = await $api.get('/users', {
+        params: {
+          page: currentPage,
+        },
+      });
+      console.log('response users', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return { status: 500, json: { message: 'Error fetching users' } };
     }
   };
 
@@ -163,6 +180,7 @@ export function useUserService() {
     unfollowUser,
     getFollowers,
     getFollowing,
-    requestPasswordReset
+    requestPasswordReset,
+    findAll,
   };
 }
