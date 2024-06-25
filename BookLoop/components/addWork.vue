@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="crud-modal" tabindex="-1" aria-hidden="true" class="modal-overlay fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50">
-      <div class="relative p-2 w-full max-w-2xl max-h-full">
+      <div class="relative p-4 w-full max-w-3xl max-h-full mx-auto">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <!-- Modal header -->
@@ -36,14 +36,14 @@
                 <label for="author" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Authors</label>
                 <select id="author" v-model="author" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                   <option value="" disabled>Select</option>
-                  <option v-for="author in authors" :value ="author">{{author}}</option>
+                  <option v-for="author in authors" :value="author">{{author}}</option>
                 </select>
               </div>
               <div>
                 <label for="publisherName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Publisher Name</label>
-                <select id="author" v-model="publisher" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <select id="publisher" v-model="publisher" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                   <option value="" disabled>Select</option>
-                  <option v-for="publisher in publishers" :value ="publisher">{{publisher}}</option>
+                  <option v-for="publisher in publishers" :value="publisher">{{publisher}}</option>
                 </select>
               </div>
               <div>
@@ -244,5 +244,9 @@ const submitForm = async () => {
 <style>
 .modal-overlay {
   z-index: 50;
+}
+
+#crud-modal .max-w-3xl {
+  max-width: 40rem;
 }
 </style>

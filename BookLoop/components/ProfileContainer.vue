@@ -323,6 +323,8 @@ import {
   getReviewsComments
 } from '~/composables/api/workService'; 
 
+import { Modal } from 'flowbite';
+
 const { addListingToWishlist, removeListingFromWishlist } = useWishlistService();
 const { followUser: followUserService, unfollowUser: unfollowUserService, getFollowers, getFollowing, getUserProfile } = useUserService();
 
@@ -415,10 +417,10 @@ const getStars = (rating) => {
 };
 
 const handleLikeUnlike = async (workId, literaryReviewId, isLiked) => {
-  if (!profile.value.isUser) {
-    console.warn('User is not logged in.');
-    return;
-  }
+  // if (!profile.value.isUser) {
+  //   console.warn('User is not logged in.');
+  //   return;
+  // }
   
   try {
     console.log('isLiked', isLiked)
@@ -536,11 +538,13 @@ const unfollowUser = async (userId) => {
 };
 
 const likeListing = async (listingId) => {
-  if (!profile.value.isUser) {
+  console.log(profile)
+/*   if (!profile.value.isUser) {
     console.warn('User is not logged in.');
     return;
-  }
+  } */
   try {
+
     await addListingToWishlist(listingId);
     const listing = profile.value.listings.rows.find((item) => item.listingId === listingId);
     if (listing) {

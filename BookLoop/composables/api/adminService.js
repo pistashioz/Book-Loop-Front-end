@@ -1,6 +1,7 @@
 const { $api } = useNuxtApp();
 const error = ref(null)
 export async function toggleSuspension(userId, suspension) {
+  const { $api } = useNuxtApp();
   error.value = null
   try{
     console.log(userId, suspension)
@@ -16,6 +17,7 @@ export async function toggleSuspension(userId, suspension) {
 
 
   export async function deleteUser(userId) {
+    const { $api } = useNuxtApp();
     try {
       const { data, error } = await $api.delete(`/users/${userId}`); 
       if (error) {
@@ -32,6 +34,7 @@ export async function toggleSuspension(userId, suspension) {
   }
   
   export async function getUsersForDeletion(){
+    const { $api } = useNuxtApp();
     try {
       const response = await $api.get(`/users/scheduled-to-delete`);
       console.log('response for get users for deletion: ', response)
@@ -42,6 +45,7 @@ export async function toggleSuspension(userId, suspension) {
     }
   }
   export async function getSuspendedUsers(){
+    const { $api } = useNuxtApp();
     try {
       const response = await $api.get(`/users/suspended-users`);
       return response.data;
@@ -55,6 +59,7 @@ export async function toggleSuspension(userId, suspension) {
   // person functions
 
 export const getPersons = async (role, currentPage, limit) => {
+  const { $api } = useNuxtApp();
   try {
     console.log('get person role: ', role)
     console.log('get current page: ', currentPage)
@@ -74,6 +79,7 @@ export const getPersons = async (role, currentPage, limit) => {
 };
 
 export const getAuthors = async () => {
+  const { $api } = useNuxtApp();
   try {
       const response = await $api.get(`/persons`, {
         params: {
@@ -89,6 +95,7 @@ export const getAuthors = async () => {
 
 
 export const removePerson = async (personId) => {
+  const { $api } = useNuxtApp();
   try {
     const { data, error} = await $api.delete(`/persons/${personId}`)
     if (error) {
@@ -103,6 +110,7 @@ export const removePerson = async (personId) => {
 }
 
 export const updatePerson = async (personId, personName) => {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.patch(`/persons/${personId}`, { personName });
     return response;
@@ -113,6 +121,7 @@ export const updatePerson = async (personId, personName) => {
 };
 
 export const createPerson = async (roles,personName) => {
+  const { $api } = useNuxtApp();
   try {
     console.log(personName, roles)
     const response = await $api.post(`/persons`, {personName, roles}, {
@@ -128,6 +137,7 @@ export const createPerson = async (roles,personName) => {
 }
 
 export const getRoles = async () => {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get(`/persons/roles`);
     return response;
@@ -138,6 +148,7 @@ export const getRoles = async () => {
 }
 
 export const removeRole = async (personId, role) => {
+  const { $api } = useNuxtApp();
   try {
     console.log(personId, role);
     const { data } = await $api.delete(`/persons/${personId}/roles`, {
@@ -153,6 +164,7 @@ export const removeRole = async (personId, role) => {
 
 
 export const addRole = async (personId, role) => {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.post(`/persons/${personId}/roles`, {role}, {
       headers: {
@@ -167,6 +179,7 @@ export const addRole = async (personId, role) => {
 }
 
 export const getSeries = async(currentPage, limit = 10) => {
+  const { $api } = useNuxtApp();
   try{
     const response = await $api.get(`/book-in-series`, {
       params: {
@@ -186,6 +199,7 @@ export const getSeries = async(currentPage, limit = 10) => {
 // publisher functions
 
 export const getPublishers = async(currentPage, limit = 10) => {
+  const { $api } = useNuxtApp();
   try {
     console.log('get current page: ', currentPage)
       const response = await $api.get(`/publishers`, {
@@ -203,6 +217,7 @@ export const getPublishers = async(currentPage, limit = 10) => {
 }
 
 export const createPublisher = async(publisherName) => {
+  const { $api } = useNuxtApp();
   try {
     console.log(publisherName)
     const response = await $api.post(`/publishers`, {publisherName}, {
@@ -218,6 +233,7 @@ export const createPublisher = async(publisherName) => {
 }
 
 export const removePublisher = async(publisherId) =>  {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.delete(`/publishers/${publisherId}`)
     console.log(response)
@@ -229,6 +245,7 @@ export const removePublisher = async(publisherId) =>  {
 }
 
 export const updatePublisher = async (publisherId, publisherName) => {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.put(`/publishers/${publisherId}`, { publisherName });
     return response;
@@ -239,6 +256,7 @@ export const updatePublisher = async (publisherId, publisherName) => {
 };
 
 export const getGenres = async(currentPage, limit = 10, simple = true) =>{
+  const { $api } = useNuxtApp();
   try{
     const response = await $api.get(`/genres`, {
       params: {
@@ -256,6 +274,7 @@ export const getGenres = async(currentPage, limit = 10, simple = true) =>{
 }
 
 export const updateGenre = async(genreId, genreName) => {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.patch(`/genres/${genreId}`, { genreName });
     return response;
@@ -266,6 +285,7 @@ export const updateGenre = async(genreId, genreName) => {
 }
 
 export const createGenre = async(genreName) => {
+  const { $api } = useNuxtApp();
   try {
     console.log(genreName)
     const response = await $api.post(`/genres`, {genreName}, {
@@ -281,6 +301,7 @@ export const createGenre = async(genreName) => {
 }
 
 export const removeGenre = async(genreId) =>  {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.delete(`/genres/${genreId}`)
     console.log(response)

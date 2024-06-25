@@ -1,7 +1,7 @@
 <template>
   <div>
-    <SideBar/>
-    <Navbar/>
+<!--     <SideBar/> -->
+
     <div class="text-center p-4 sm:ml-64 " v-if="isLoading">
       <div role="status">
         <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -241,6 +241,7 @@
       v-if="showModal"
       :works = "works"
       @close-modal="showModal = false"
+      class="w-96 bg-gray-800/50"
     />
     <div
                         class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
@@ -267,10 +268,15 @@
 </template>
 
 <script setup>
-import SideBar from '~/components/SideBar.vue';
+
 import { ref, onMounted } from 'vue';
 import { fetchWorks, fetchFilteredGenres } from '~/composables/api/workService';  // fetchAuthorByWorkId~
 import {getPersons} from '~/composables/api/adminService'
+
+
+definePageMeta({
+  layout: 'admin'
+})
 
 import WorkCard from '~/components/WorkCard.vue';
 import AddWork from '~/components/addWork.vue';

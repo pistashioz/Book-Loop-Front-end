@@ -776,6 +776,9 @@
   <script setup>
   
 
+  definePageMeta({
+  layout: 'admin'
+})
   import { useUserService } from '~/composables/api/userService';
   const { findAll } = useUserService();
 
