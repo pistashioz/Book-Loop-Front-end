@@ -111,25 +111,24 @@
           >
         </div>
   
+        <!-- Price and Condition -->
         <div id="price-condition-wrapper" class="flex flex-col w-full justify-between items-center gap-x-12">
           <!-- Price -->
           <div class="mb-4 flex flex-col items-end w-full justify-between">
             <span class="flex items-center justify-between w-full">
-                <label for="price" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Price</label>
-          <input
-            type="text"
-            id="price"
-            v-model="price"
-            placeholder="Enter the price"
-            :class="[priceClass, 'mt-1 block w-28 p-2.5 border h-10 text-sm border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white']"
-            required
-          >
-
+              <label for="price" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Price</label>
+              <input
+                type="text"
+                id="price"
+                v-model="price"
+                placeholder="Enter the price"
+                :class="[priceClass, 'mt-1 block w-28 p-2.5 border h-10 text-sm rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white']"
+                required
+              >
             </span>
-
             <p v-if="priceError" class="text-xs text-red-500 mt-1">{{ priceError }}</p>
           </div>
-  
+
           <!-- Condition Dropdown -->
           <div class="mb-4 flex w-full justify-between items-center">
             <label for="condition" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Condition</label>
@@ -157,10 +156,11 @@
               </ul>
             </div>
           </div>
+          <p v-if="conditionError" class="text-xs text-red-500 mt-1">{{ conditionError }}</p>
         </div>
-  
+
         <div class="w-full flex items-center justify-between">
-          <p v-if="showBottomMes" class="text-xs text-gray-500 mt-0">
+          <p v-if="showBottomMes" :class="bottomMesClass">
             {{ bottomMes }}
           </p>
           <button type="submit" class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 ml-auto">
@@ -169,228 +169,255 @@
         </div>
       </form>
     </div>
-  </template>
-  
-  
-  <script setup>
-  import { ref, watch, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { Dropdown } from 'flowbite';
-  
-  const showBottomMes = ref(false);
-  const bottomMes = ref('');
-  
-  const { $api } = useNuxtApp();
-  
-  definePageMeta({
-    layout: 'submit'
-  });
-  
-  const title = ref('');
-  const titleError = ref('');
-  const description = ref('');
-  const descriptionError = ref('');
-  const isbn = ref('');
-  const isbnError = ref('');
-  const author = ref('');
-  const price = ref('');
-  const priceError = ref('');
-  const selectedCondition = ref('');
-  const selectedConditionText = ref('Select Condition');
-  const photoError = ref('');
-  const conditions = [
-    { value: 'New', label: 'New', helperText: 'Brand new book with no signs of wear.' },
-    { value: 'Very Good', label: 'Very Good', helperText: 'Very lightly used with minimal signs of wear.' },
-    { value: 'Good', label: 'Good', helperText: 'Shows some signs of wear but remains fully functional.' },
-    { value: 'Acceptable', label: 'Acceptable', helperText: 'Noticeable wear but still usable and readable.' },
-  ];
-  const message = ref({ text: '', isSuccess: true });
-  const router = useRouter();
-  
-  const files = ref([]);
-  const titleClass = ref('border-gray-300 focus:border-blue-500 focus:ring-blue-500');
-  const descriptionClass = ref('border-gray-300 focus:border-blue-500 focus:ring-blue-500');
-  const titleCountClass = ref('text-gray-700 dark:text-gray-400');
-  const descriptionCountClass = ref('text-gray-700 dark:text-gray-400');
-  const isbnClass = ref('border-gray-300 focus:border-blue-500 focus:ring-blue-500');
-  const priceClass = ref('border-gray-300 focus:border-blue-500 focus:ring-blue-500');
-  
-  const updateTitleCount = () => {
-    if (title.value.length > 100) {
-      title.value = title.value.slice(0, 100);
+</template>
+
+<script setup>
+import { ref, watch, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { Dropdown } from 'flowbite';
+import { useUserStore } from '~/composables/stores/user';
+
+const showBottomMes = ref(false);
+const bottomMes = ref('');
+const bottomMesClass = ref('text-xs text-red-500 font-bold mt-0'); // Default to error class
+
+const { $api } = useNuxtApp();
+
+definePageMeta({
+  layout: 'submit'
+});
+
+const title = ref('');
+const titleError = ref('');
+const description = ref('');
+const descriptionError = ref('');
+const isbn = ref('');
+const isbnError = ref('');
+const author = ref('');
+const price = ref('');
+const priceError = ref('');
+const selectedCondition = ref('');
+const selectedConditionText = ref('Select Condition');
+const conditionError = ref('');
+const photoError = ref('');
+const conditions = [
+  { value: 'New', label: 'New', helperText: 'Brand new book with no signs of wear.' },
+  { value: 'Very Good', label: 'Very Good', helperText: 'Very lightly used with minimal signs of wear.' },
+  { value: 'Good', label: 'Good', helperText: 'Shows some signs of wear but remains fully functional.' },
+  { value: 'Acceptable', label: 'Acceptable', helperText: 'Noticeable wear but still usable and readable.' },
+];
+const message = ref({ text: '', isSuccess: true });
+const router = useRouter();
+
+const files = ref([]);
+const titleClass = ref('border-gray-300 focus:border-blue-500 focus:ring-blue-500');
+const descriptionClass = ref('border-gray-300 focus:border-blue-500 focus:ring-blue-500');
+const titleCountClass = ref('text-gray-700 dark:text-gray-400');
+const descriptionCountClass = ref('text-gray-700 dark:text-gray-400');
+const isbnClass = ref('border-gray-300 focus:border-blue-500 focus:ring-blue-500');
+const priceClass = ref('border-gray-300 focus:border-blue-500 focus:ring-blue-500');
+
+const updateTitleCount = () => {
+  if (title.value.length > 100) {
+    title.value = title.value.slice(0, 100);
+  }
+  if (title.value.length === 100) {
+    titleClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
+    titleCountClass.value = 'text-red-500';
+  } else {
+    titleClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+    titleCountClass.value = 'text-gray-700 dark:text-gray-400';
+  }
+};
+
+const updateDescriptionCount = () => {
+  if (description.value.length > 2000) {
+    description.value = description.value.slice(0, 2000);
+  }
+  if (description.value.length === 2000) {
+    descriptionClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
+    descriptionCountClass.value = 'text-red-500';
+  } else {
+    descriptionClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+    descriptionCountClass.value = 'text-gray-700 dark:text-gray-400';
+  }
+};
+
+const handleFileUpload = (event) => {
+  const selectedFiles = event.target.files;
+  if (selectedFiles.length + files.value.length > 8) {
+    alert('You can only upload up to 8 photos.');
+    return;
+  }
+  for (let i = 0; i < selectedFiles.length; i++) {
+    if (selectedFiles[i].size > 10485760) {
+      alert('Each file must be less than 10MB.');
+      continue;
     }
-    if (title.value.length === 100) {
-      titleClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
-      titleCountClass.value = 'text-red-500';
-    } else {
-      titleClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
-      titleCountClass.value = 'text-gray-700 dark:text-gray-400';
-    }
-  };
-  
-  const updateDescriptionCount = () => {
-    if (description.value.length > 2000) {
-      description.value = description.value.slice(0, 2000);
-    }
-    if (description.value.length === 2000) {
-      descriptionClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
-      descriptionCountClass.value = 'text-red-500';
-    } else {
-      descriptionClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
-      descriptionCountClass.value = 'text-gray-700 dark:text-gray-400';
-    }
-  };
-  
-  const handleFileUpload = (event) => {
-    const selectedFiles = event.target.files;
-    if (selectedFiles.length + files.value.length > 8) {
-      alert('You can only upload up to 8 photos.');
+    files.value.push({ file: selectedFiles[i], rotateAngle: 0 });
+  }
+};
+
+const removeFile = (index) => {
+  files.value.splice(index, 1);
+};
+
+const rotateFile = (index) => {
+  files.value[index].rotateAngle = (files.value[index].rotateAngle + 90) % 360;
+};
+
+const getObjectURL = (file) => {
+  return URL.createObjectURL(file);
+};
+
+const validateISBN = (isbn) => {
+  const regex = /^(97(8|9))?\d{9}(\d|X)$/;
+  if (!isbn || regex.test(isbn)) {
+    return true;
+  }
+  return false;
+};
+
+const validateAndFetchAuthor = async () => {
+  if (validateISBN(isbn.value)) {
+    isbnClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+    isbnError.value = '';
+    await fetchAuthor();
+  } else {
+    isbnClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
+    isbnError.value = 'Invalid ISBN format.';
+    showBottomMes.value = false; // Hide bottom message if ISBN is invalid
+  }
+};
+
+const fetchAuthor = async () => {
+  showBottomMes.value = false; // Reset the state initially
+  try {
+    if (!isbn.value) {
       return;
     }
-    for (let i = 0; i < selectedFiles.length; i++) {
-      if (selectedFiles[i].size > 10485760) {
-        alert('Each file must be less than 10MB.');
-        continue;
-      }
-      files.value.push({ file: selectedFiles[i], rotateAngle: 0 });
-    }
-  };
-  
-  const removeFile = (index) => {
-    files.value.splice(index, 1);
-  };
-  
-  const rotateFile = (index) => {
-    files.value[index].rotateAngle = (files.value[index].rotateAngle + 90) % 360;
-  };
-  
-  const getObjectURL = (file) => {
-    return URL.createObjectURL(file);
-  };
-  
-  const validateISBN = (isbn) => {
-    const regex = /^(97(8|9))?\d{9}(\d|X)$/;
-    if (!isbn || regex.test(isbn)) {
-      return true;
-    }
-    return false;
-  };
-  
-  const validateAndFetchAuthor = async () => {
-    if (validateISBN(isbn.value)) {
-      isbnClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
-      isbnError.value = '';
-      await fetchAuthor();
+    const response = await $api.get(`/works/books?isbn=${isbn.value}`);
+    if (response.data && response.data.author) {
+      author.value = response.data.author;
     } else {
-      isbnClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
-      isbnError.value = 'Invalid ISBN format.';
-      showBottomMes.value = false; // Hide bottom message if ISBN is invalid
-    }
-  };
-  
-  const fetchAuthor = async () => {
-    showBottomMes.value = false; // Reset the state initially
-    try {
-      if (!isbn.value) {
-        return;
-      }
-      const response = await $api.get(`/works/books?isbn=${isbn.value}`);
-      if (response.data && response.data.author) {
-        author.value = response.data.author;
-      } else {
-        author.value = 'Author not found';
-        showBottomMes.value = true;
-        bottomMes.value = 'This ISBN is correct, but we couldn’t find any publishing info.';
-      }
-    } catch (error) {
-      console.error('Failed to fetch author:', error);
       author.value = 'Author not found';
+      showBottomMes.value = true;
       bottomMes.value = 'This ISBN is correct, but we couldn’t find any publishing info.';
-      showBottomMes.value = true;
     }
-  };
-  
-  const clearAuthor = () => {
-    author.value = '';
-    bottomMes.value = '';
-  };
-  
-  const validateForm = () => {
-    let isValid = true;
-    if (title.value.length < 3) {
-      titleClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
-      titleError.value = 'Title must be at least 3 characters long.';
-      isValid = false;
-    } else {
-      titleClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
-      titleError.value = '';
-    }
-    if (description.value.length < 10) {
-      descriptionClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
-      descriptionError.value = 'Description must be at least 10 characters long.';
-      isValid = false;
-    } else {
-      descriptionClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
-      descriptionError.value = '';
-    }
-    const priceValue = parseFloat(price.value);
-    if (isNaN(priceValue) || priceValue < 1 || priceValue > 1000) {
-      priceClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
-      priceError.value = 'Price must be between 1 and 1000.';
-      isValid = false;
-    } else {
-      priceClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
-      priceError.value = '';
-    }
-    if (files.value.length < 2) {
-      photoError.value = 'You must upload at least 2 photos.';
-      isValid = false;
-    } else {
-      photoError.value = '';
-    }
-    return isValid;
-  };
-  
-  const submitListing = async () => {
-    if (!validateForm()) {
-      showBottomMes.value = true;
-      bottomMes.value = 'Please correct the errors in the form.';
-      return;
-    }
-    
-    // Display the bottom message
+  } catch (error) {
+    console.error('Failed to fetch author:', error);
+    author.value = 'Author not found';
+    bottomMes.value = 'This ISBN is correct, but we couldn’t find any publishing info.';
     showBottomMes.value = true;
-    bottomMes.value = 'Your listing has been submitted and is pending approval.';
-  
-    // Wait for 5 seconds before redirecting
-    setTimeout(() => {
-      // Logic to submit the form
-      // Example: await axios.post('/api/listings', { title, description, isbn, author, price, condition: selectedCondition.value });
-      router.push('/listings');
-    }, 5000);
-  };
-  
-  const selectCondition = (condition) => {
-    selectedCondition.value = condition;
-    selectedConditionText.value = conditions.find(c => c.value === condition).label;
-    dropdown.hide();
-  };
-  
-  let dropdown;
-  
-  onMounted(() => {
-    const $targetEl = document.getElementById('dropdownCondition');
-    const $triggerEl = document.getElementById('dropdownConditionButton');
-    const options = {
-      placement: 'bottom',
-      triggerType: 'click',
-    };
-    dropdown = new Dropdown($targetEl, $triggerEl, options);
+  }
+};
+
+const clearAuthor = () => {
+  author.value = '';
+  bottomMes.value = '';
+};
+
+const validateForm = () => {
+  let isValid = true;
+  if (title.value.length < 3) {
+    titleClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
+    titleError.value = 'Title must be at least 3 characters long.';
+    isValid = false;
+  } else {
+    titleClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+    titleError.value = '';
+  }
+  if (description.value.length < 10) {
+    descriptionClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
+    descriptionError.value = 'Description must be at least 10 characters long.';
+    isValid = false;
+  } else {
+    descriptionClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+    descriptionError.value = '';
+  }
+  const priceValue = parseFloat(price.value);
+  if (isNaN(priceValue) || priceValue < 1 || priceValue > 1000) {
+    priceClass.value = 'border-red-500 focus:border-red-500 focus:ring-red-500';
+    priceError.value = 'Price must be between 1 and 1000.';
+    isValid = false;
+  } else {
+    priceClass.value = 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+    priceError.value = '';
+  }
+  if (files.value.length < 2) {
+    photoError.value = 'You must upload at least 2 photos.';
+    isValid = false;
+  } else {
+    photoError.value = '';
+  }
+  if (!conditions.some(condition => condition.value === selectedCondition.value)) {
+    conditionError.value = 'You must select a valid condition.';
+    isValid = false;
+  } else {
+    conditionError.value = '';
+  }
+  return isValid;
+};
+
+const userStore = useUserStore();
+
+const submitListing = async () => {
+  if (!validateForm()) {
+    showBottomMes.value = true;
+    bottomMes.value = 'Please correct the errors in the form.';
+    bottomMesClass.value = 'text-xs text-red-500 font-bold mt-0';
+    return;
+  }
+
+  const listingData = new FormData();
+  listingData.append('sellerUserId', userStore.userId);
+  listingData.append('listingTitle', title.value);
+  listingData.append('listingDescription', description.value);
+  listingData.append('ISBN', isbn.value);
+  listingData.append('price', price.value);
+  listingData.append('listingCondition', selectedCondition.value);
+
+  files.value.forEach((fileObj, index) => {
+    listingData.append(`photos`, fileObj.file); // Add all photos
   });
-  </script>
-  
-  
-  
+
+  try {
+    const response = await $api.post('/listings', listingData);
+    if (response.data.success) {
+      showBottomMes.value = true;
+      bottomMes.value = response.data.listing.availability === 'Active' ? 'Your listing has been submitted and is now active.' : 'Your listing has been submitted and is pending approval.';
+      bottomMesClass.value = 'text-xs text-green-500 font-bold mt-0';
+      setTimeout(() => {
+        router.push('/listings');
+      }, 5000);
+    } else {
+      throw new Error(response.data.message || 'Failed to create listing');
+    }
+  } catch (error) {
+    showBottomMes.value = true;
+    bottomMes.value = `Error: ${error.message}`;
+    bottomMesClass.value = 'text-xs text-red-500 font-bold mt-0';
+  }
+};
+
+const selectCondition = (condition) => {
+  selectedCondition.value = condition;
+  selectedConditionText.value = conditions.find(c => c.value === condition).label;
+  dropdown.hide();
+};
+
+let dropdown;
+
+onMounted(() => {
+  const $targetEl = document.getElementById('dropdownCondition');
+  const $triggerEl = document.getElementById('dropdownConditionButton');
+  const options = {
+    placement: 'bottom',
+    triggerType: 'click',
+  };
+  dropdown = new Dropdown($targetEl, $triggerEl, options);
+});
+</script>
 
 <style scoped>
 .border-red-500 {
@@ -413,5 +440,8 @@
 }
 .focus\:ring-blue-500:focus {
   ring-color: #3b82f6;
+}
+.text-green-500 {
+  color: #10b981;
 }
 </style>
