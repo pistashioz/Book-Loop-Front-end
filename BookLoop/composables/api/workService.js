@@ -1,8 +1,7 @@
 import { useNuxtApp } from '#app';
 
-const { $api } = useNuxtApp();
-
 export async function fetchWorks(currentPage, arrGenres, arrAuthors, language, minRating, maxRating) {
+  const { $api } = useNuxtApp();
   const genres = arrGenres.length > 0 ? arrGenres.join(', ') : null;
   const authors = arrAuthors.length > 0 ? arrAuthors.join(', ') : null;
   console.log(genres, authors)
@@ -25,6 +24,7 @@ export async function fetchWorks(currentPage, arrGenres, arrAuthors, language, m
 }
 
 export async function fetchWorksNoParams() {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get('/works', {});
     console.log('response works', response);
@@ -35,6 +35,7 @@ export async function fetchWorksNoParams() {
 }
 
 export async function fetchWorkById(workId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get(`/works/${workId}`);
     console.log('response works id', response);
@@ -45,6 +46,7 @@ export async function fetchWorkById(workId) {
 }
 
 export async function fetchEditionsByWorkId(workId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get(`/works/${workId}/editions`);
     return response.data;
@@ -54,6 +56,7 @@ export async function fetchEditionsByWorkId(workId) {
 }
 
 export async function fetchLiteraryReviews(workId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get(`/works/${workId}/reviews`);
     return response.data;
@@ -63,6 +66,7 @@ export async function fetchLiteraryReviews(workId) {
 }
 
 export async function fetchLiteraryReviewsPagination(workId, currentPage) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get(`/works/${workId}/reviews`, {
       params: {
@@ -76,6 +80,7 @@ export async function fetchLiteraryReviewsPagination(workId, currentPage) {
 }
 
 export async function fetchBookGenres(workId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get(`/genres/${workId}`);
     return response.data;
@@ -85,6 +90,7 @@ export async function fetchBookGenres(workId) {
 }
 
 export async function addLiteraryReview(workId, reviewData) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.post(`/works/${workId}/reviews`, reviewData, {
       headers: {
@@ -98,6 +104,7 @@ export async function addLiteraryReview(workId, reviewData) {
 }
 
 export async function removeWork(workId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.delete(`/works/${workId}`);
     return response;
@@ -107,6 +114,7 @@ export async function removeWork(workId) {
 }
 
 export async function addWork(workData) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.post('/works', workData, {});
     return response.data;
@@ -116,6 +124,7 @@ export async function addWork(workData) {
 }
 
 export async function addEdition(workId, editionData) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.post(`/works/${workId}/editions`, editionData, {
       headers: {
@@ -128,18 +137,21 @@ export async function addEdition(workId, editionData) {
   }
 }
 
-export async function getReviewsComments(workId, literaryReviewId) {
+export async function getReviewsComments(workId, literaryReviewId, page = 1, limit = 10) {
+  const { $api } = useNuxtApp();
   console.log(workId, literaryReviewId);
   try {
-    const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}/comments`);
+    const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}/comments`, {
+      params: { page, limit }
+    });
     return response.data;
   } catch (error) {
-    console.error('Error retrieving comments:', error);
+    throw error;
   }
 }
 
-
 export async function addComment(workId, literaryReviewId, commentData) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.post(`/works/${workId}/reviews/${literaryReviewId}/comments`, commentData, {
       headers: {
@@ -154,6 +166,7 @@ export async function addComment(workId, literaryReviewId, commentData) {
 }
 
 export async function getReview(workId, literaryReviewId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}`);
     return response.data;
@@ -163,6 +176,7 @@ export async function getReview(workId, literaryReviewId) {
 }
 
 export async function likeReview(workId, literaryReviewId) {
+  const { $api } = useNuxtApp();
   console.log(workId, literaryReviewId);
   try {
     const response = await $api.post(`/works/${workId}/reviews/${literaryReviewId}/likes`);
@@ -173,6 +187,7 @@ export async function likeReview(workId, literaryReviewId) {
 }
 
 export async function unlikeReview(workId, literaryReviewId) {
+  const { $api } = useNuxtApp();
   console.log(workId, literaryReviewId);
   try {
     const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}/likes`);
@@ -183,6 +198,7 @@ export async function unlikeReview(workId, literaryReviewId) {
 }
 
 export async function updateReview(workId, literaryReviewId, reviewData) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.patch(`/works/${workId}/reviews/${literaryReviewId}`, reviewData);
     console.log('response:', response);
@@ -194,6 +210,7 @@ export async function updateReview(workId, literaryReviewId, reviewData) {
 }
 
 export async function removeReview(workId, literaryReviewId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}`);
     return response;
@@ -203,6 +220,7 @@ export async function removeReview(workId, literaryReviewId) {
 }
 
 export async function getComments(workId, literaryReviewId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get(`/works/${workId}/reviews/${literaryReviewId}/comments`);
     return response.data;
@@ -212,6 +230,7 @@ export async function getComments(workId, literaryReviewId) {
 }
 
 export async function removeComment(workId, literaryReviewId, commentId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}/comments/${commentId}`);
     return response;
@@ -221,6 +240,7 @@ export async function removeComment(workId, literaryReviewId, commentId) {
 }
 
 export async function updateComment(workId, literaryReviewId, commentId, commentData) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.patch(`/works/${workId}/reviews/${literaryReviewId}/comments/${commentId}`, commentData);
     console.log('response:', response);
@@ -232,6 +252,7 @@ export async function updateComment(workId, literaryReviewId, commentId, comment
 }
 
 export async function likeComment(workId, literaryReviewId, commentId, userId) {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.post(`/works/${workId}/reviews/${literaryReviewId}/comments/${commentId}/likes`, {
       userId,
@@ -244,6 +265,7 @@ export async function likeComment(workId, literaryReviewId, commentId, userId) {
 }
 
 export async function removeLikeComment(workId, literaryReviewId, commentId, userId) {
+  const { $api } = useNuxtApp();
   console.log(workId, commentId, literaryReviewId, userId);
   try {
     const response = await $api.delete(`/works/${workId}/reviews/${literaryReviewId}/comments/${commentId}/likes`, {
@@ -258,6 +280,7 @@ export async function removeLikeComment(workId, literaryReviewId, commentId, use
 }
 
 export async function findGenres() {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get('/genres?simple=true&page=1&limit=10');
     return response.data;
@@ -267,6 +290,7 @@ export async function findGenres() {
 }
 
 export async function fetchFilteredGenres() {
+  const { $api } = useNuxtApp();
   try {
     const response = await $api.get('/genres');
     return response.data;
@@ -274,5 +298,3 @@ export async function fetchFilteredGenres() {
     console.error('Error retrieving filtered genres:', error);
   }
 }
-
-

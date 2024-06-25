@@ -48,7 +48,9 @@ const router = useRouter();
 const userStore = useUserStore();
 
 
-
+definePageMeta({
+  layout: 'login'
+});
 
 // Reactive variables for form inputs and error message
 const usernameOrEmail = ref('');
@@ -74,7 +76,7 @@ async function login() {
       console.log(data.user);
    
       // Redirect to the specific page after login
-      router.push('/works');
+      router.push('/');
     }
   } catch (err) {
     // Catch any other errors and set the error message

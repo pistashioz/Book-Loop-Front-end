@@ -64,6 +64,20 @@ watch(
   { immediate: true } // Fetch data immediately on component mount
 );
 
+
+// Watch for changes in the route path
+watch(
+  () => route.path,
+  async (newPath) => {
+    if (newPath === '/login' || newPath === '/') {
+      await router.push(newPath); // Redirect to login if the path changes to login
+    } else {
+      fetchData(queryType.value); // Fetch data based on the new route path
+    }
+  },
+  { immediate: true }
+);
+
 // Fetch initial data
 fetchData(queryType.value);
 </script>

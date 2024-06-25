@@ -1,40 +1,36 @@
 <template>
-  <div class="flex flex-col items-center space-y-4 h-full overflow-hidden border mb-10">
+  <div class="flex flex-col items-center h-full overflow-hidden mb-10">
     <!-- Linha 1 -->
     <div class="w-full border-b border-gray-900 flex flex-col justify-start items-start py-4 flex-1">
       <!-- Conteúdo da Linha 1 -->
-      <h1 class="text-6xl font-bold font-cabinet ml-4 mt-4">
+      <h1 class="text-6xl font-bold font-cabinet ml-4 ">
         BOOKS
       </h1>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ml-4 mt-2 w-full">
         <div v-for="edition in editions" :key="edition.UUID" class="flex flex-col items-center">
-          <img :src="edition.coverImage" alt="Cover Image" class="w-32 h-48 object-cover mb-2">
+          <NuxtLink :to="`/works/${edition.workId}/editions/${edition.UUID}`">
+            <img :src="edition.coverImage" alt="Cover Image" class="w-32 h-48 object-cover mb-2">
+          </NuxtLink>
           <p class="text-lg">{{ edition.title }}</p>
           <p class="text-sm text-gray-600">{{ edition.publisherName }} - {{ edition.publicationDate }}</p>
         </div>
       </div>
     </div>
     <!-- Linha 2 -->
-    <div class="w-full border-b border-gray-900 flex flex-col justify-start items-start py-4 flex-1">
+    <div class="w-full border-gray-900 flex flex-col justify-start items-start py-4 flex-1">
       <!-- Conteúdo da Linha 2 -->
-      <h1 class="text-6xl font-bold font-cabinet ml-4 mt-4">
+      <h1 class="text-6xl font-bold font-cabinet ml-4 ">
         LISTINGS
       </h1>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ml-4 mt-2 w-full">
         <div v-for="listing in listings" :key="listing.listingId" class="flex flex-col items-center">
-          <img :src="listing.imageUrl" alt="Listing Image" class="w-32 h-48 object-cover mb-2">
+          <NuxtLink :to="`/listings/${listing.listingId}`">
+            <img :src="listing.imageUrl" alt="Listing Image" class="w-32 h-48 object-cover mb-2">
+          </NuxtLink>
           <p class="text-lg">{{ listing.listingTitle }}</p>
           <p class="text-sm text-gray-600">{{ listing.seller.username }} - {{ listing.price }}</p>
         </div>
       </div>
-    </div>
-    <!-- Linha 3 -->
-    <div class="w-full flex flex-col justify-start items-start py-4 flex-1">
-      <!-- Conteúdo da Linha 3 -->
-      <h1 class="text-6xl font-bold font-cabinet ml-4 mt-4">
-        FEED
-      </h1>
-      <!-- Conteúdo do Feed -->
     </div>
   </div>
 </template>
@@ -51,6 +47,7 @@ onMounted(async () => {
   try {
     const editionsData = await fetchEditions();
     const listingsData = await fetchListings();
+    console.log(editionsData, listingsData)
     editions.value = editionsData.editions;
     listings.value = listingsData.listings;
   } catch (error) {

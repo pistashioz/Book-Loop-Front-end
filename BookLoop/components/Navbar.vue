@@ -1,11 +1,9 @@
-<!-- BookLoop/components/Navbar.vue -->
-
 <template>
   <div>
     <header>
-      <nav class="flex justify-between py-20 items-center bg-white ">
-        <h1 class="text-xl  font-bold">
-          <NuxtLink to="/" class="uppercase text-xl font-cabinet ">Book Loop</NuxtLink>
+      <nav class="flex justify-between pt-16 mb-5 items-center bg-white">
+        <h1 class="text-xl font-bold">
+          <NuxtLink to="/" class="uppercase text-xl font-cabinet">Book Loop</NuxtLink>
         </h1>
         <div class="flex flex-grow justify-center items-center">
           <div class="flex w-full max-w-md">
@@ -15,9 +13,7 @@
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
               </svg>
             </button>
-            <div v-if="isDropdownOpen('categories')" id="dropdown" class="absolute 
-            z-10 bg-white divide-y divide-gray-100 
-            rounded-lg shadow w-44 dark:bg-gray-700 top-20 mt-4">
+            <div v-if="isDropdownOpen('categories')" id="dropdown" class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 top-20 mt-4">
               <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                 <li>
                   <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Listings</button>
@@ -44,6 +40,9 @@
         <ul class="flex items-center space-x-4">
           <li v-if="!userId" class="font-semibold text-gray-700">
             <NuxtLink to="/login">Login</NuxtLink>
+          </li>
+          <li v-if="!userId" class="font-semibold text-gray-700">
+            <NuxtLink to="/register">Register</NuxtLink>
           </li>
           <template v-else>
             <li id="messages" class="flex items-center">
@@ -73,8 +72,7 @@
                 </template>
               </button>
               <!-- Dropdown menu -->
-              <div v-if="isDropdownOpen('avatar')" id="userDropdown" class="absolute z-10 
-              left-0 top-12 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900 dark:divide-gray-600">
+              <div v-if="isDropdownOpen('avatar')" id="userDropdown" class="absolute z-10 left-0 top-12 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900 dark:divide-gray-600">
                 <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
                   <div>{{ username }}</div>
                   <div class="font-medium truncate">{{ email }}</div>
@@ -90,7 +88,7 @@
                     <NuxtLink to="/users/me/favorite-genres" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Personalization</NuxtLink>
                   </li>
                   <li v-if="isAdmin">
-                    <NuxtLink to="/admin" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Admin Panel</NuxtLink>
+                    <NuxtLink to="/works" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Admin Panel</NuxtLink>
                   </li>
                 </ul>
                 <div class="py-1">
@@ -99,11 +97,11 @@
               </div>
             </li>
             <button 
-      @click="goToNewListing" 
-      type="button" 
-      class="py-2.5 px-5 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-      Sell a book!
-    </button>
+              @click="goToNewListing" 
+              type="button" 
+              class="py-2.5 px-5 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+              Sell a book!
+            </button>
           </template>
         </ul>
       </nav>

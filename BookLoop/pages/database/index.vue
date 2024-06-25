@@ -774,8 +774,7 @@
   </template>
   
   <script setup>
-  import SideBar from '~/components/SideBar.vue';
-
+  
 
   import { useUserService } from '~/composables/api/userService';
   const { findAll } = useUserService();

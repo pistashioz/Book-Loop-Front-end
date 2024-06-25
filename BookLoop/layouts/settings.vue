@@ -3,7 +3,7 @@
     <Navbar class="w-7/12"/>
     <div :class="['relative flex w-7/12 top-5 space-x-12', justifyClass]">
       <Sidebar v-if="showSidebar" />
-      <NuxtPage :class="[showSidebar ? '2xl:w-3/12 lg:w-5/12 sm:w-6/12 laptop:w-4/12' : 'w-4/12']" />
+      <NuxtPage :class="[showSidebar ? '2xl:w-3/12 lg:w-5/12 sm:w-6/12 laptop:w-6/12' : 'w-4/12']" />
     </div>
   </div>
 </template>

@@ -1,9 +1,8 @@
 <template>
   <div class="flex flex-col h-screen items-center">
-    <Navbar class="laptop:w-7/12" /> 
-    <SideBar v-if="isAdmin" />
-    <NuxtPage class="flex flex-col mb-8 w-full justify-start overflow-hidden" />
-    <!-- <NuxtPage class="flex flex-col mb-8 w-full justify-start overflow-hidden" /> -->
+    <Navbar class="laptop:w-7/12" />
+    <NuxtPage class="flex flex-col w-full justify-start overflow-hidden" />
+
   </div>
 </template>
 
@@ -16,6 +15,9 @@ import { useRouter } from 'vue-router';
 const userStore = useUserStore();
 const { isAdmin } = storeToRefs(userStore); 
 const router = useRouter();
+
+
+
 
 // Function to handle user logout
 async function logout() {

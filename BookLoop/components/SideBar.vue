@@ -38,7 +38,10 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { routerKey } from 'vue-router';
 import { useRoute, useRouter } from 'vue-router';
+
+const router = useRouter();
 
 // Define menu items for settings page
 const settingsMenuItems = [
@@ -86,9 +89,12 @@ const headerTitle = computed(() => {
     return 'PERSONALIZATION';
   } else if (route.path.includes('admin')) {
     return 'ADMIN PANEL';
-  } else {
-    return 'DASHBOARD';
+  } else if (route.path === '/login' || route.path === '/') {
+     router.push('/login'); // Redirect to login if the path changes to login
   }
+  /* else {
+    return 'DASHBOARD';
+  } */
 });
 
 const selectItem = (index) => {
@@ -111,6 +117,9 @@ watch(
   },
   { immediate: true }
 );
+
+
+
 
 // Set initial selected item based on the current route
 onMounted(() => {
