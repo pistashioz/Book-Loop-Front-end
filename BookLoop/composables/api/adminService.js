@@ -166,6 +166,22 @@ export const addRole = async (personId, role) => {
   }
 }
 
+export const getSeries = async(currentPage, limit = 10) => {
+  try{
+    const response = await $api.get(`/book-in-series`, {
+      params: {
+        page: currentPage,
+        limit
+      }
+    })
+    console.log('response get series:', response)
+    return response
+  }
+ catch(error){
+  console.error('Error fetching series:', error)
+  throw error
+ }
+}
 
 // publisher functions
 

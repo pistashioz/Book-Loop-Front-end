@@ -34,7 +34,36 @@
 
       </div>
     </div>
-    <LiteraryReviews :reviews="work.LiteraryReviews" v-if="work.LiteraryReviews && work.LiteraryReviews.reviews.length > 0" :work="work" />
+    <div>
+      <LiteraryReviews :reviews="work.LiteraryReviews" v-if="work.LiteraryReviews && work.LiteraryReviews.reviews.length > 0" :work="work" />
+        <div v-else>
+          <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
+  <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+    <div class="flex items-center gap-2">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Reviews (0)</h2>
+
+      <div class="mt-2 flex items-center gap-2 sm:mt-0">
+        <p class="text-sm font-medium leading-none text-gray-500 hover:no-underline dark:text-white"> Leave a review and let us know what you think! </p>
+      </div>
+    </div>
+
+    <div class="my-6 gap-8 sm:flex sm:items-start md:my-8">
+      <div class="shrink-0 space-y-4">
+        <p class="text-2xl font-semibold leading-none text-gray-900 dark:text-white">0 out of 5</p>
+        <button type="button" data-modal-target="review-modal" data-modal-toggle="review-modal" class="mb-2 me-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" @click="showModal = true">Write a review</button>
+      </div>
+    </div>
+  </div>
+          </section>
+          <AddReview v-show="showModal" v-if="showModal"
+        :workId="work.workId"
+        @close-modal="closeModal"
+        @review-added="handleReviewAdded"/>
+        
+        </div>
+    </div>
+    
+
     <Editions :editions="work.otherEditions" v-if="work.otherEditions && work.otherEditions.length > 0" :work="work" />
   </div>
 </template>
@@ -43,7 +72,8 @@
 import { ref } from 'vue';
 import LiteraryReviews from './LiteraryReviews.vue';
 import Editions from './Editions.vue';
-
+import AddReview from '~/components/AddReview.vue';
+const showModal = ref(false)
 const props = defineProps({
   work: {
     type: Object,
@@ -52,7 +82,14 @@ const props = defineProps({
 });
 console.log('work', props.work)
 console.log('work reviews', props.work.LiteraryReviews)
+const closeModal = () => {
+  showModal.value = false;
 
+  };
+const handleReviewAdded = (review) => {
+  props.work.LiteraryReviews.reviews.push(review.review);
+  props.work.LiteraryReviews.totalReviews++;
+}
 </script>
 
 <style scoped>

@@ -45,6 +45,14 @@
                 Genres
             </button>
         </li>
+        <li class="me-2">
+            <button @click.prevent="changePage('series')" :class="{'text-gray-900': currentPage === 'series'}" class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group">
+                <svg class="flex-shrink-0 w-5 h-5 text-gray-500  dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M6 2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 1 0 0-2h-2v-2h2a1 1 0 0 0 1-1V4a2 2 0 0 0-2-2h-8v16h5v2H7a1 1 0 1 1 0-2h1V2H6Z" clip-rule="evenodd"/>
+                    </svg>
+                Series
+            </button>
+        </li>
     </ul>
 </div>
 
@@ -625,6 +633,141 @@
         </div>
         
     </div> 
+    <div class="container mx-auto px-4 sm:px-8" v-if="currentPage === 'series'">
+        <div class="py-8">
+            <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-semibold leading-tight">Series</h2>
+            <button @click = "showAddGenreModal = true" data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                Create Series
+            </button>
+        </div>
+            <div class="my-2 flex sm:flex-row flex-col">
+                <div class="flex flex-row mb-1 sm:mb-0">
+                </div>
+                <div class="block relative">
+                    <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-gray-500">
+                            <path
+                                d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z">
+                            </path>
+                        </svg>
+                    </span>
+                    <input placeholder="Search"
+                        class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+                </div>
+            </div>
+            <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full leading-normal">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    ID
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Name
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Works Count
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Total Reviews
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Publication Range
+                                </th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="serie in series" :key="serie.seriesId" >
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm ">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10">
+
+
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                {{serie.seriesId}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                         {{ serie.seriesName }} 
+                                    </p>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                         {{ serie.worksCount }} 
+                                    </p>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                         {{ serie.totalReviews }} 
+                                    </p>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                         {{ serie.publicationRange }} 
+                                    </p>
+                                </td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"  @click="toggleDropdown(serie.seriesId)">
+                                    <button id="dropdownMenuIconButton"  data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                            <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                        </svg>
+                                    </button>       
+                                    <div id="dropdownDots" :class="{'dropdown-content': true, 'show': isShowDropdown[serie.seriesId]}" class="dropdown-content z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                                            <li>
+                                                <button class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @click="openEditSerie(serie.seriesId)">Edit</button>
+                                            </li>
+                                            <li>
+
+                                                <button class="block px-4 text-red-500 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-semibold" @click="deleteSerie(serie.seriesId)">Delete</button>
+                                                
+                                            </li>
+                                        </ul>
+                                    </div>            
+                                </td>
+                            </tr>   
+                        </tbody>
+                    </table>
+                    <div
+                        class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
+                        <span class="text-xs xs:text-sm text-gray-900">
+                            Showing 1 to 10 of {{totalGenres}} Entries
+                        </span>
+                        <div class="inline-flex mt-2 xs:mt-0">
+                            <button 
+                                class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                                 @click="genrePrevPage">
+                                Prev
+                            </button>
+                            <button
+                                class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                                 @click="genreNextPage">
+                                Next
+                            </button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div> 
 </body>
       </div>
     </div>
@@ -640,7 +783,7 @@
   import AddPublisherModal from '~/components/AddPublisher.vue'
   import AddGenreModal from '~/components/AddGenre.vue'
   import RemoveRoleModal from '~/components/RemovePersonRoles.vue'
-  import { toggleSuspension, deleteUser, getUsersForDeletion, getSuspendedUsers, getPersons, removePerson, getPublishers, removePublisher, getGenres, removeGenre } from '~/composables/api/adminService';
+  import { toggleSuspension, deleteUser, getUsersForDeletion, getSuspendedUsers, getPersons, removePerson, getPublishers, removePublisher, getGenres, removeGenre, getSeries } from '~/composables/api/adminService';
   const isShowDropdown = reactive({})
   const props = defineProps({
     user: Object,
@@ -668,6 +811,9 @@
   const genreTotalPages = ref(0)
   const genreCurrentPage = ref(1)
   const selectedPersonId = ref(null)
+  const series = ref([])
+  const seriesCurrentPage = ref(0)
+  const seriesTotalPages = ref(0)
   const showModal = ref(false)
   const showEditPublisherModal = ref(false)
   const showEditGenreModal = ref(false)
@@ -1062,12 +1208,30 @@ const fetchGenres = async () => {
   }
 };
 
+const fetchSeries = async () => {
+    isLoading.value = true
+    try {
+        console.log(seriesCurrentPage.value)
+        const seriesData = await getSeries(1)
+    
+        console.log('Fetched Series data:', seriesData.data)
+        if (seriesData.data.success){
+            series.value = seriesData.data.series
+            console.log(series.value)
+        }
+    }catch (error) {
+    console.error('Error fetching series', error);
+    } finally {
+    isLoading.value = false;
+  }
+}
 const onFilterChange = async (event) => {
   event.preventDefault();
   fetchUsers();
   fetchPersons();
   fetchPublishers();
   fetchGenres();
+  fetchSeries()
 };
 
   onMounted(async () => {
@@ -1076,6 +1240,7 @@ const onFilterChange = async (event) => {
     await fetchPersons()
     await fetchPublishers()
     await fetchGenres()
+    await fetchSeries()
 });
 // estou a ter um erro no qual quando clico numa das opções da filtragem, faz o reload da pagina, já experimenttei com preventdefault e nada
 

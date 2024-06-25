@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <div class="mt-6 divide-y divide-gray-200 dark:divide-gray-700" v-for="review in reviewsArr">
+    <div class="mt-6 divide-y divide-gray-200 dark:divide-gray-700" v-for="review in reviewsArr" v-if="work.LiteraryReviews && work.LiteraryReviews.reviews.length > 0" >
       <div class="gap-3 pb-6 sm:flex sm:items-start">
         <div class="shrink-0 space-y-2 sm:w-48 md:w-72">
           <div class="flex items-center gap-0.5">
