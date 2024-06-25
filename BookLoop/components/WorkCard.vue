@@ -80,7 +80,7 @@ const props = defineProps({
 });
 const showModal = ref(false);
 const selectedWorkId = ref(null);
-
+const works = ref([])
 
 const openAddEditionModal = (work) => {
   selectedWorkId.value = work;
@@ -91,7 +91,13 @@ const deleteWork = async(workId) => {
   try{
     const response = await removeWork(workId)
     console.log(response)
-    //works.value  = works.value.filter(work => work.workId !== workId)
+    console.log('??')
+    console.log(works.value)
+    if (response){
+      works.value = works.value.filter(work => work.workId !== workId);
+      console.log('works after deleting work:', works.value);
+    }
+
   }
   catch(error){
     console.error("Error deleting work")

@@ -23,6 +23,17 @@ export async function fetchWorks(currentPage, arrGenres, arrAuthors, language, m
   }
 }
 
+export async function fetchWorksNoParams(){
+  try {
+    const response = await $api.get('/works', {
+    });
+    console.log('response works', response);
+    return response.data;
+  } catch (error) {
+    console.error('Error retrieving works:', error);
+  }
+}
+
 
 export async function fetchWorkById(workId) {
   try {
@@ -113,7 +124,7 @@ export async function addWork(workData) {
     const response = await $api.post('/works', workData, {});
     return response.data;
   } catch (error) {
-    console.error('Error uploading work:', error);
+    throw error
   }
 }
 

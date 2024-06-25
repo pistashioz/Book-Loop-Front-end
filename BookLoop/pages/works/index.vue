@@ -239,6 +239,7 @@
       </div>
             <AddWork 
       v-if="showModal"
+      :works = "works"
       @close-modal="showModal = false"
     />
     <div

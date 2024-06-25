@@ -73,6 +73,19 @@ export const getPersons = async (role, currentPage, limit) => {
   }
 };
 
+export const getAuthors = async () => {
+  try {
+      const response = await $api.get(`/persons`, {
+        params: {
+          role: 'author',
+        }
+      });
+      console.log('respose get authors: ', response)
+      return response.data;
+  } catch (error) {
+      throw error;
+  }
+}
 
 export const removePerson = async (personId) => {
   try {
