@@ -21,7 +21,7 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <WorkDetails v-else-if="work" :work="work" /> 
+  <WorkDetails v-else-if="work" :work="work"/> 
   <div v-else>Work not found</div>
 </template>
 
@@ -29,6 +29,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import {
+  fetchWorks,
   fetchWorkById,
   fetchEditionsByWorkId,
   fetchLiteraryReviews,
@@ -38,7 +39,6 @@ import WorkDetails from '~/components/WorkDetails.vue';
 
 const route = useRoute();
 const workId = route.params.workId;
-
 const work = ref(null);
 const isLoading = ref(true);
 

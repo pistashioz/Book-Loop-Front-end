@@ -87,6 +87,7 @@ export const getAuthors = async () => {
   }
 }
 
+
 export const removePerson = async (personId) => {
   try {
     const { data, error} = await $api.delete(`/persons/${personId}`)

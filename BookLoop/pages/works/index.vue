@@ -232,7 +232,7 @@
           <p  class="text-black/50 group-hover:text-white group-hover:smooth-hover text-center">Add New Work</p>
         </div>
       </button>
-      <WorkCard v-for="w in works" :key="w.workId" :work="w" :coverImage="w.coverImage" />
+      <WorkCard v-for="w in works" :key="w.workId" :works="works" :work="w" :coverImage="w.coverImage"  @workDeleted="handleWorkDeletion" />
             
           </div>
         </div>
@@ -324,6 +324,9 @@ if (currentPage.value < totalPages.value) {
   }
 }
 };
+const handleWorkDeletion = async(workId) => {
+  works.value = works.value.filter(work => work.workId !== workId);
+}
 const fetchWorksData = async () => {
   console.log(selectedGenres.value, selectedAuthors.value)
   console.log('selected language',selectedLanguage.value)

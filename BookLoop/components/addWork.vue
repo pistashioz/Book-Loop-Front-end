@@ -41,7 +41,10 @@
               </div>
               <div>
                 <label for="publisherName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Publisher Name</label>
-                <input v-model="publisherName" type="text" name="publisherName" id="publisherName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Publisher Name" required>
+                <select id="author" v-model="publisher" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                  <option value="" disabled>Select</option>
+                  <option v-for="publisher in publishers" :value ="publisher">{{publisher}}</option>
+                </select>
               </div>
               <div>
                 <label for="genre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Genres</label>
@@ -102,7 +105,7 @@
 import { ref, onMounted } from 'vue';
 import MultiSelectDropdown from './MultiSelectDropdown.vue';
 import { addWork, fetchWorks, findGenres, fetchWorksNoParams } from '~/composables/api/workService';
-import {getAuthors} from '~/composables/api/adminService'
+import {getAuthors, getPublishers} from '~/composables/api/adminService'
 import { defineEmits } from 'vue';
 
 const title = ref('');
@@ -112,8 +115,10 @@ const authors = ref([]);
 const genres = ref([]);
 const languages = ref([])
 const author = ref('');
+const publishers = ref([])
 const ISBN = ref('');
 const synopsis = ref('');
+const publisher = ref('')
 const editionType = ref('');
 const languageId = ref('');
 const pageNumber = ref(null);
@@ -162,6 +167,15 @@ onMounted(async () => {
     else {
       console.error('Error fetching authors:', authorsData.error);
     }
+    const publishersData = await getPublishers(1)
+    console.log('publishers data:',publishersData)
+    if (publishersData.success){
+      publishers.value  = publishersData.publishers.map((publisher) => publisher.publisherName);
+      console.log('publishers value:', publishers.value) 
+    }
+    else {
+      console.error('Error fetching publishers:', publishersData.error)
+    }
   } catch (error) {
     console.error('An unexpected error occurred:', error);
   }
@@ -197,7 +211,7 @@ const submitForm = async () => {
       genres: [...selectedOptions.value],
       edition: {
         ISBN: ISBN.value,
-        publisherName: publisherName.value,
+        publisherName: publisher.value,
         synopsis: synopsis.value,
         editionType: editionType.value,
         languageId: languageId.value,

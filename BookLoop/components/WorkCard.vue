@@ -72,30 +72,32 @@
 <script setup>
 import { ref } from 'vue';
 import SavedModal from '~/components/addEdition.vue';
-import {removeWork} from '~/composables/api/workService'
+import { removeWork} from '~/composables/api/workService'
 import WorkDetails from './WorkDetails.vue';
 const props = defineProps({
   work: Object,
   coverImage: String,
+  works: String
 });
+const emit = defineEmits(['work-deleted']);
 const showModal = ref(false);
 const selectedWorkId = ref(null);
-const works = ref([])
+
 
 const openAddEditionModal = (work) => {
   selectedWorkId.value = work;
   showModal.value = true;
 };
 
+
 const deleteWork = async(workId) => {
   try{
+    console.log( props.works)
+    
     const response = await removeWork(workId)
     console.log(response)
-    console.log('??')
-    console.log(works.value)
     if (response){
-      works.value = works.value.filter(work => work.workId !== workId);
-      console.log('works after deleting work:', works.value);
+      emit('work-deleted', workId); 
     }
 
   }
